@@ -1,4 +1,4 @@
-# Thuật ngữ bóng đá (足球术语表)
+# Thuật ngữ bóng đá
 
 > Nguồn: trích xuất từ WanJuan-Vietnamese corpus (CC BY 4.0)
 

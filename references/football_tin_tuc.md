@@ -1,4 +1,4 @@
-# Viết bản tin bóng đá (足球新闻稿)
+# Viết bản tin bóng đá
 
 > Nguồn: trích xuất từ WanJuan-Vietnamese corpus (CC BY 4.0)
 

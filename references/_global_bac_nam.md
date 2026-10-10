@@ -1,4 +1,4 @@
-# bac_nam
+# Phương ngữ Bắc - Nam
 
 # Hướng dẫn thực chiến: Khác biệt từ vựng và cách nói giữa miền Bắc và miền Nam
 

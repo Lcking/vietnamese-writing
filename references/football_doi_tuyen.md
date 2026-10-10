@@ -1,4 +1,4 @@
-# Tuyển quốc gia Việt Nam (越南国家队报道)
+# Tuyển quốc gia Việt Nam
 
 > Nguồn: trích xuất từ WanJuan-Vietnamese corpus (CC BY 4.0)
 

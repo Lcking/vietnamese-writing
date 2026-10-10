@@ -104,6 +104,26 @@ client = LLMClient({"base_url": "https://api.openai.com/v1",
 print(client.chat(system_prompt, user_task))
 ```
 
+## Đây là "skill bơm kiến thức qua prompt", KHÔNG phải mô hình được huấn luyện
+
+Cần phân biệt rõ hai hướng tiếp cận:
+
+| | **Skill này (prompt-injection)** | **Mô hình fine-tune** |
+|---|---|---|
+| Trọng số mô hình | Không đổi | Đã huấn luyện lại |
+| Kiến thức nằm ở | File trong repo (`references/`, `examples/`) | Trong tham số mô hình |
+| Phần cứng cần | Không (chỉ cần endpoint LLM có sẵn) | GPU lớn (thuê H100...) + hàng trăm GB ngữ liệu |
+| Chi phí / thời gian | Gần như bằng 0, sửa được tức thì | Vài ngày đến vài tuần, tốn kém |
+| Sửa 1 quy tắc | Sửa file .md là xong | Phải huấn luyện lại |
+| Trần chất lượng | Phụ thuộc mô hình nền | Có thể cao hơn khi tinh chỉnh phong cách rất đặc thù |
+
+**Kết luận:** với mục tiêu "viết tiếng Việt đúng văn phong, đặc biệt trong bóng đá",
+hướng skill-prompt này là hiệu quả nhất về chi phí. Việc fine-tune chỉ đáng cân nhắc khi
+cần **sao chép chính xác phong cách của một bình luận viên cụ thể**, có vài chục nghìn mẫu
+sạch thật tập trung, và ngân sách duy trì dài hạn.
+
+Xem thêm `PROVENANCE.md` để biết bằng chứng truy xuất nguồn gốc của nội dung.
+
 ## Ngữ liệu (không bắt buộc)
 
 Skill **không cần** ngữ liệu gốc để hoạt động. Khi gọi, nó chỉ đọc `references/`
@@ -186,6 +206,23 @@ export VIET_LLM_MODEL="gpt-4o"
 | 本地 Qwen (vLLM) | `http://localhost:8005/v1` | `qwen-3.8-27b-awq` |
 
 > 提示:若使用带思考链的模型(如本地 Qwen3),建议开启 `disable_thinking` 选项,速度可提升数倍且质量不降。
+
+### 这是「提示词注入型 skill」，不是微调模型
+
+必须区分两条路线:
+
+| | **本 skill(提示词注入)** | **微调模型(fine-tune)** |
+|---|---|---|
+| 模型权重 | 不变 | 已重新训练 |
+| 知识存放 | repo 里的文件(`references/`、`examples/`) | 模型参数里 |
+| 所需硬件 | 无(只需一个现成 LLM 端点) | 大 GPU(租 H100…) + 几百 GB 语料 |
+| 成本/时间 | 近乎为零,随时可改 | 几天到几周,昂贵 |
+| 改一条规则 | 改 .md 文件即可 | 必须重新训练 |
+| 效果天花板 | 取决于基座模型 | 复刻极特定风格时可能更高 |
+
+结论:对"写出地道越南语、尤其足球场景"这个目标,提示词路线性价比最高。只有当需要**精确复刻某位特定解说员的风格**、且有数万条干净聚焦样本与长期预算时,微调才值得考虑。
+
+另见 `PROVENANCE.md`,了解内容来源的证据链。
 
 ### 使用
 
@@ -284,6 +321,15 @@ python bin/viet_writer.py --task "Bình luận trận Việt Nam - Thái Lan"
 
 **Attribution:** Knowledge and examples extracted from the WanJuan-Vietnamese
 dataset (Shanghai AI Laboratory / OpenDataLab), CC BY 4.0.
+
+**This is a prompt-injection skill, not a fine-tuned model.** The base LLM's
+weights are unchanged; all knowledge lives in the repo's `references/` and
+`examples/` files. This means no GPU, near-zero cost, and instant edits (change a
+`.md` rule and you're done) — as opposed to fine-tuning, which retrains weights,
+needs large GPUs and hundreds of GB of data, and costs days to weeks. Fine-tuning
+is only worth it when you need to replicate one specific commentator's style with
+tens of thousands of clean, focused samples and a long-term budget. See
+`PROVENANCE.md` for the full evidence chain.
 
 **Corpus (optional):** The skill does **not** need the raw corpus to run — it
 only reads `references/` and `examples/` shipped in the repo. Rebuilding the

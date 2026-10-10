@@ -1,4 +1,4 @@
-# xung_ho
+# Đại từ xưng hô
 
 # Hướng dẫn sử dụng hệ thống xưng hô trong tiếng Việt
 

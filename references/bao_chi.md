@@ -1,4 +1,4 @@
-# Tin tức báo chí (新闻报道)
+# Tin tức báo chí
 
 > Nguồn dữ liệu: WanJuan-Vietnamese / news/general
 > Tạo bởi: Qwen3 local (AI Pod)

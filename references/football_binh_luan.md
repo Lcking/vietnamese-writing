@@ -1,4 +1,4 @@
-# Phong cách bình luận bóng đá (解说风格)
+# Phong cách bình luận bóng đá
 
 > Nguồn: trích xuất từ WanJuan-Vietnamese corpus (CC BY 4.0)
 
@@ -26,8 +26,8 @@ Trong các bài phân tích chiến thuật hoặc thống kê, nhịp điệu c
 
 Một đặc trưng không thể thiếu trong văn hóa bóng đá Việt Nam là việc sử dụng các biệt danh, tính từ hình tượng để gọi tên cầu thủ hoặc đội bóng. Điều này giúp cá nhân hóa các nhân vật và tạo sự gần gũi với người hâm mộ.
 
-*   **Biệt danh cá nhân:** Cristiano Ronaldo thường được gọi là "CR7" hoặc "Người đặc biệt" (dù "Người đặc biệt" thường dùng cho Mourinho, nhưng trong ngữ cảnh chung, các ngôi sao đều có danh xưng riêng). Trong bài viết về Mourinho, ông được gọi là *"Người đặc biệt"*, một biệt danh đã ăn sâu vào tâm trí người hâm mộ, gợi lên hình ảnh một nhà cầm quân khốc liệt, không khoan nhượng.
-*   **Hình tượng hóa đội bóng:** Đội tuyển Hà Lan được ví là *"cơn lốc màu da橙"* (màu da cam) trong bài viết về De Ligt. Đây là một phép ẩn dụ thị giác mạnh mẽ, biến đội bóng thành một hiện tượng tự nhiên, gợi lên sự nhanh nhẹn, khó lường và sức mạnh hủy diệt.
+*   **Biệt danh cá nhân:** Cristiano Ronaldo thường được gọi là *"CR7"*. Biệt danh *"Người đặc biệt"* (The Special One) gắn với **José Mourinho**, không dùng cho Ronaldo. Ví dụ trong bài viết về Mourinho: ông được gọi là *"Người đặc biệt"*, một biệt danh đã ăn sâu vào tâm trí người hâm mộ, gợi lên hình ảnh một nhà cầm quân khốc liệt, không khoan nhượng. — *Lưu ý: không gán sai biệt danh giữa các nhân vật.*
+*   **Hình tượng hóa đội bóng:** Đội tuyển Hà Lan được ví là *"cơn lốc màu da cam"* (橙色旋风) trong nhiều bài viết. Đây là một phép ẩn dụ thị giác mạnh mẽ, biến đội bóng thành một hiện tượng tự nhiên, gợi lên sự nhanh nhẹn, khó lường và sức mạnh hủy diệt.
 *   **Tên gọi biểu tượng:** Juventus được gọi là *"Bianconeri"* (màu trắng đen), Arsenal là *"Pháo thủ London"*, Real Madrid là *"Kền kền trắng"*. Việc sử dụng các tên gọi này không chỉ để phân biệt mà còn để khơi gợi lịch sử và bản sắc của từng CLB.
 
 **4. Kết luận**

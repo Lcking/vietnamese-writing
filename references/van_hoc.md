@@ -45,5 +45,5 @@ Dưới đây là hướng dẫn kỹ thuật cho AI khi xử lý hoặc tạo n
 *   **Lỗi 2: Dùng từ ngữ hiện đại, phi văn học trong bối cảnh cổ điển/kỳ ảo:** Tránh dùng slang, từ ngữ mạng, hoặc thuật ngữ kỹ thuật hiện đại nếu không phù hợp với bối cảnh.
     *   *Sai:* "Harry mở app để kiểm tra bùa chú." (Trong bối cảnh Harry Potter, nên dùng "mở cuốn sách" hoặc "thực hiện nghi thức").
 *   **Lỗi 3: Thiếu nhất quán trong chính tả và thuật ngữ:** Tên riêng, địa danh, thuật ngữ pháp thuật phải giữ nguyên hoặc phiên âm nhất quán từ đầu đến cuối.
-    *   *Sai:* Lúc thì "Hogwarts", lúc thì "Hogwarts", lúc thì "Hogwart".
-    *   *Đúng:* Thống nhất dùng "Hogwarts" hoặc "Hogwarts" (tùy quy tắc NXB) xuyên suốt.
+    *   *Sai:* Lúc thì viết "Hogwarts", lúc lại viết "Hogwart" hoặc "Học viện Hogwarts" — không nhất quán.
+    *   *Đúng:* Thống nhất dùng một dạng, ví dụ "Hogwarts", xuyên suốt văn bản.

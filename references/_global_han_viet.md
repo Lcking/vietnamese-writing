@@ -1,4 +1,4 @@
-# han_viet
+# Từ Hán-Việt
 
 # Cân bằng từ Hán-Việt và thuần Việt trong văn viết
 

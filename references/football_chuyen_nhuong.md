@@ -1,4 +1,4 @@
-# Tin chuyển nhượng (转会新闻写法)
+# Tin chuyển nhượng
 
 > Nguồn: trích xuất từ WanJuan-Vietnamese corpus (CC BY 4.0)
 

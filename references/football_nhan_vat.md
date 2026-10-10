@@ -1,4 +1,4 @@
-# Chân dung cầu thủ/HLV (人物报道)
+# Chân dung cầu thủ & HLV
 
 > Nguồn: trích xuất từ WanJuan-Vietnamese corpus (CC BY 4.0)
 

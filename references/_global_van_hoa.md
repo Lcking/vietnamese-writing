@@ -1,4 +1,4 @@
-# van_hoa
+# Sắc thái văn hóa
 
 **Hướng dẫn viết tiếng Việt chuẩn: Nuôi dưỡng "hồn" văn hóa bản địa**
 
