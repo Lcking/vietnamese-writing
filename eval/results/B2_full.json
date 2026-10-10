@@ -1,0 +1,21 @@
+{
+  "id": "B2",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "full",
+  "chars": 3299,
+  "seconds": 90.2,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 10325,
+    "total_tokens": 11639,
+    "completion_tokens": 1314,
+    "prompt_tokens_details": {
+      "cached_tokens": 8192
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "# Man City — Arsenal: Màn so tài của hai ông lớn thành Manchester và London\n\n## Bối cảnh\n\nCuộc đối đầu giữa Manchester City và Arsenal luôn là một trong những trận cầu đáng chờ đợi nhất của mỗi mùa giải Ngoại hạng Anh. Hai đội đều là những thế lực thống trị bóng đá Anh trong nhiều năm qua, và mỗi lần chạm trán đều mang tính chất của một cuộc so tài giữa hai triết lý bóng đá hiện đại.\n\n## Phong độ và lực lượng\n\n**Manchester City** dưới thời Pep Guardiola tiếp tục duy trì phong độ ổn định. Đội bóng áo xanh thành Manchester vẫn thể hiện sự vượt trội về khả năng kiểm soát bóng, với hệ thống pressing và chuyển trạng thái nhanh gọn. Hàng công của họ luôn là mối đe dọa thường trực, đặc biệt khi các cầu thủ chạy cánh có không gian để xâm nhập. Tuy nhiên, ở những trận đấu lớn, Man City đôi khi bị bắt bài khi đối thủ lùi sâu và chờ phản công.\n\n**Arsenal** mùa này cho thấy sự tiến bộ rõ rệt. Đội bóng của Mikel Arteta không còn là phiên bản hay bị vỡ trận ở những phút cuối như trước. Hàng thủ chơi chắc chắn hơn, trong khi tuyến giữa có khả năng tổ chức và giữ bóng tốt. Arsenal đang ngày càng tự tin trong việc đối đầu các đội mạnh, đặc biệt khi được chơi ở sân nhà Emirates. Tuy nhiên, khi phải đá sân khách trước một đối thủ có khả năng kiểm soát bóng vượt trội, Arsenal vẫn cần giải pháp để thoát pressing và tạo đột biến.\n\n## Lịch sử đối đầu\n\nTrong những lần gặp gỡ gần nhất, hai đội thường tạo ra những trận đấu có nhiều bàn thắng. Arsenal không còn là đối thủ dễ bị bắt nạt như giai đoạn trước, nhưng Man City vẫn giữ thành tích đối đầu nhỉnh hơn. Đáng chú ý, những trận đấu giữa hai đội thường không thiếu kịch tính, với nhiều pha phản công nhanh và các tình huống quyết định ở những phút cuối.\n\n## Điểm nóng chiến thuật\n\n**Khả năng kiểm soát bóng của Man City:** Guardiola vẫn đặt nặng việc nắm quyền kiểm soát. Nếu Arsenal lùi sâu, Man City sẽ có nhiều không gian để xoay xở. Câu hỏi là liệu hàng công của Arsenal có đủ nhanh để trừng phạt những khoảnh khắc Man City bị đẩy lên cao hay không.\n\n**Sức ép từ hai biên của Arsenal:** Arsenal thường khai thác hai cánh để tạo đột biến. Nếu các hậu vệ biên của Man City bị kéo dạt, khoảng trống trung lộ có thể được khai thác. Ngược lại, nếu Man City thu hẹp được khoảng cách giữa các tuyến, Arsenal sẽ gặp khó trong việc tiếp cận khung thành.\n\n**Cầu thủ quyết định:** Ở mỗi bên, một pha cá nhân xuất sắc có thể thay đổi cục diện. Man City có các cầu thủ có khả năng tạo đột biến từ không có, còn Arsenal cũng sở hữu những chân sút biết cách tận dụng cơ hội trong những trận đấu lớn.\n\n## Dự đoán\n\nTrận đấu được kỳ vọng sẽ mở màn với thế trận cân bằng, khi Arsenal không ngại áp đặt lối chơi ngay từ đầu. Man City sẽ cần thời gian để phá vỡ hàng thủ đối phương, nhưng với chất lượng đội hình, họ thường tìm được lời giải trước khi hiệp một khép lại.\n\nKịch bản dễ xảy ra nhất là một trận đấu có nhiều bàn thắng, với lợi thế nghiêng về Man City nhờ chiều sâu đội hình và kinh nghiệm các trận đấu lớn. Tuy nhiên, Arsenal hoàn toàn có khả năng tạo bất ngờ nếu tận dụng tốt các pha phản công và giữ được sự lạnh lùng trước khung thành đối thủ.\n\nTỷ số 2-1 cho Manchester City là kịch bản hợp lý, nhưng đừng ngạc nhiên nếu Arsenal có ngày thi đấu thăng hoa và mang về kết quả khác. Đây là trận đấu mà một khoảnh khắc cá nhân có thể định đoạt mọi thứ.",
+  "_has_expect": false
+}

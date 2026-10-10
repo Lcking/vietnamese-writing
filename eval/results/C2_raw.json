@@ -1,0 +1,21 @@
+{
+  "id": "C2",
+  "group": "social",
+  "genre": "social_post",
+  "config": "raw",
+  "chars": 507,
+  "seconds": 14.8,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 72,
+    "total_tokens": 351,
+    "completion_tokens": 279,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "chưa xác nhận"
+  ],
+  "output": "**TIN NHANH | Chưa xác nhận thông tin HLV từ chức**\n\nHiện tại, **chưa xác nhận** thông tin về việc HLV từ chức.\n\nCác nguồn tin chưa được xác thực đang lan truyền, nhưng chưa có bất kỳ tuyên bố chính thức nào từ ban huấn luyện hay câu lạc bộ. Mọi thông tin xoay quanh chủ đề này **chưa xác nhận** và có thể chưa phản ánh đúng thực tế.\n\nChúng tôi sẽ cập nhật ngay khi có thông báo chính thức.\n\n---\n*Lưu ý: Đây là thông tin chưa được kiểm chứng. Vui lòng chờ xác nhận từ các kênh chính thức trước khi chia sẻ.*",
+  "_has_expect": true
+}

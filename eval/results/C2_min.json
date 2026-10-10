@@ -1,0 +1,21 @@
+{
+  "id": "C2",
+  "group": "social",
+  "genre": "social_post",
+  "config": "min",
+  "chars": 142,
+  "seconds": 9.7,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 428,
+    "total_tokens": 604,
+    "completion_tokens": 176,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "chưa xác nhận"
+  ],
+  "output": "Đến thời điểm hiện tại, đội bóng **chưa xác nhận** việc HLV từ chức. Mọi thông tin liên quan sẽ được cập nhật sau khi có thông báo chính thức.",
+  "_has_expect": true
+}

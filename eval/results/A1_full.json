@@ -1,0 +1,23 @@
+{
+  "id": "A1",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "full",
+  "chars": 1678,
+  "seconds": 113.1,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 11270,
+    "total_tokens": 13221,
+    "completion_tokens": 1951,
+    "prompt_tokens_details": {
+      "cached_tokens": 8192
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "2-0"
+  ],
+  "output": "# Quang Hải lên tiếng, U23 Việt Nam đánh bại U23 Malaysia 2-0 ở vòng loại\n\nTrên sân Mỹ Đình, U23 Việt Nam đã có chiến thắng thuyết phục 2-0 trước U23 Malaysia trong trận đấu thuộc vòng loại U23 châu Á. Pha lập công của Quang Hải ở phút 67 cùng bàn thắng quyết định ở những phút cuối giúp thầy trò HLV trưởng nắm lợi thế quan trọng trong cuộc đua giành vé đi tiếp.\n\n## Diễn biến trận đấu\n\nHiệp một diễn ra với thế trận cân bằng. U23 Việt Nam chủ động kiểm soát bóng, đẩy cao đội hình, trong khi U23 Malaysia phòng ngự chặt, chờ cơ hội phản công. Các pha lên bóng của đội chủ nhà chưa đủ sắc sảo để xé tan hàng thủ đối phương, và cả hai đội phải chia điểm với tỷ số 0-0 sau 45 phút đầu.\n\nSang hiệp hai, U23 Việt Nam tăng tốc độ. Phút 67, từ một pha phản công nhanh, Quang Hải nhận bóng ở rìa vòng cấm, xoay người dứt điểm quyết đoán, mở tỷ số 1-0 cho đội chủ nhà. Bàn thắng này giải tỏa áp lực cho các học trò, đồng thời khiến hàng thủ U23 Malaysia lung lay.\n\nPhút 82, U23 Việt Nam có bàn thắng nhân đôi cách biệt. Tiền đạo người Hà Nội bật cao đánh đầu hiểm hóc sau quả phạt góc, ấn định chiến thắng 2-0 cho đội chủ nhà.\n\n## Phát biểu sau trận\n\nChia sẻ trong cuộc họp báo sau trận, HLV trưởng của U23 Việt Nam cho biết: \"Cả đội đã thể hiện tinh thần chiến đấu tốt. Bàn thắng của Quang Hải là rất quan trọng, nhưng tôi hài lòng với cách các cầu thủ duy trì sự tập trung đến những phút cuối. Chúng tôi sẽ tiếp tục chuẩn bị cho trận đấu tiếp theo.\"\n\n## Ý nghĩa\n\nVới 3 điểm có được, U23 Việt Nam giữ vững ngôi đầu bảng, tạo lợi thế lớn trong cuộc đua giành vé dự vòng chung kết U23 châu Á. Chiến thắng này cũng giúp các cầu thủ trẻ có thêm sự tự tin trước những thử thách phía trước.",
+  "_has_expect": true
+}

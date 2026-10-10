@@ -1,0 +1,19 @@
+{
+  "id": "B2",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "raw",
+  "chars": 3004,
+  "seconds": 147.2,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 68,
+    "total_tokens": 2437,
+    "completion_tokens": 2369,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Vì bạn chưa nêu **ngày thi đấu, giải đấu và sân nhà/sân khách**, mình sẽ soi theo trục đối đầu chung giữa **Man City – Arsenal**. Đây chỉ là **phân tích bóng đá**, **không phải lời khuyên cá cược**.\n\n## 1. Bối cảnh trận đấu\nMan City và Arsenal là hai đội thuộc nhóm mạnh nhất Premier League, nên trận gặp nhau thường mang tính **chiến thuật cao**, ít khi một chiều.  \n- Nếu **Man City đá sân nhà**: ưu thế lớn hơn, đặc biệt nhờ sức ép từ sân nhà và khả năng kiểm soát bóng.\n- Nếu **Arsenal đá sân khách**: họ thường ưu tiên tổ chức phòng ngự chặt, chờ phản công và hạn chế sai số.\n\n## 2. Điểm mạnh của Man City\n- **Kiểm soát bóng tốt**, pressing cường độ cao.\n- Khả năng **tấn công từ cánh vào trong** rất đa dạng.\n- Khi có không gian, Man City thường tạo ra nhiều cơ hội thực sự.\n- Trên sân nhà, họ thường thi đấu tự tin, chủ động ép sân nếu sớm dẫn bàn.\n\n## 3. Điểm mạnh của Arsenal\n- **Tổ chức phòng ngự có kỷ luật**, đặc biệt khi đối đầu với các đội lớn.\n- Khả năng **phản công nhanh**, tận dụng khoảng trống khi đối thủ dâng cao.\n- Thường thi đấu rất chặt, hạn chế sai số, và có thể chơi theo kịch bản “giữ trận + phản công”.\n- Nếu Arsenal vào trận với động lực tốt, họ hoàn toàn đủ sức khiến Man City gặp khó.\n\n## 4. Kịch bản trận đấu\n### Kịch bản 1: Man City kiểm soát và thắng\nNếu Man City có đủ nhân sự quan trọng và sớm phá vỡ thế phòng ngự của Arsenal, họ có thể thắng với tỷ số cách biệt vừa phải.  \n**Tỷ số tham khảo: 2-1 hoặc 3-1.**\n\n### Kịch bản 2: Arsenal phòng ngự tốt, trận đấu cân bằng\nArsenal thường có thể khiến trận đấu diễn ra chặt, ít khoảng trống. Khi đó bàn thắng có thể đến chậm, và kết quả hòa là hoàn toàn có thể.  \n**Tỷ số tham khảo: 1-1.**\n\n### Kịch bản 3: Bất lợi cho Man City nếu Arsenal phản công hiệu quả\nNếu Arsenal phòng ngự tốt và tận dụng được 1–2 pha phản công sắc sảo, họ có thể tạo nên bất ngờ.  \n**Tỷ số tham khảo: 0-1 Arsenal hoặc 1-2 Arsenal.**\n\n## 5. Yếu tố quyết định\n- **Nhân sự**: chấn thương, treo giò, đặc biệt ở hàng tiền vệ và hàng công, sẽ ảnh hưởng rất lớn.\n- **Sân nhà**: Man City thường được đánh giá cao hơn khi đá tại Etihad.\n- **Phong độ thời điểm thi đấu**: nếu một đội đang có chuỗi trận tốt, ưu thế sẽ nghiêng về họ.\n- **Áp lực lịch thi đấu**: đội nào vừa thi đấu dày có thể chịu ảnh hưởng về thể lực.\n- **Tâm lý**: Arsenal thường vào những trận lớn với quyết tâm rất cao, nên không nên đánh giá thấp họ.\n\n## 6. Dự đoán xu hướng chung\n- Trận đấu nhiều khả năng **căng, chặt và có tính chiến thuật cao**.\n- Man City thường là đội **chiếm thế tốt hơn**, nhưng Arsenal đủ khả năng gây khó dễ.\n- Bàn thắng có thể đến nhưng không quá tưng bừng nếu Arsenal phòng ngự tốt.\n- Kịch bản có nhiều khả năng: **Man City thắng sát nút hoặc trận hòa**.\n\n**Tỷ số tham khảo:**  \n- **2-1 Man City**  \n- **1-1**  \n- Nếu Arsenal phòng ngự xuất sắc và phản công hiệu quả: **0-1 Arsenal**\n\n> Lưu ý: đây chỉ là phân tích xu hướng bóng đá, **không phải lời khuyên cá cược**. Nếu bạn muốn mình soi sát hơn, hãy gửi thêm **ngày thi đấu, giải đấu, sân nhà/sân khách**.",
+  "_has_expect": false
+}

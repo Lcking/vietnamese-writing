@@ -1,0 +1,23 @@
+{
+  "id": "C2",
+  "group": "social",
+  "genre": "social_post",
+  "config": "full",
+  "chars": 157,
+  "seconds": 28.7,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 10445,
+    "total_tokens": 10883,
+    "completion_tokens": 438,
+    "prompt_tokens_details": {
+      "cached_tokens": 8192
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "chưa xác nhận"
+  ],
+  "output": "Đang có tin HLV sắp từ chức sau vòng đấu này. **Chưa xác nhận** — chưa có thông báo chính thức nào từ phía CLB. Sẽ cập nhật ngay khi có thông tin chính thức.",
+  "_has_expect": true
+}

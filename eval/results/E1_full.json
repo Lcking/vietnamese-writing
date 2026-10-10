@@ -1,0 +1,21 @@
+{
+  "id": "E1",
+  "group": "low_info",
+  "genre": "football_tin_tuc",
+  "config": "full",
+  "chars": 923,
+  "seconds": 118.5,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 11263,
+    "total_tokens": 12970,
+    "completion_tokens": 1707,
+    "prompt_tokens_details": {
+      "cached_tokens": 8192
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**Khi trái bóng lăn**\n\nKhông cần biết ai đối đầu ai, không cần biết kết cục sẽ ra sao, chỉ cần tiếng còi vang lên là cả khán đài như thay đổi. Người ta nín thở, người ta đứng dậy, người ta nắm chặt tay nhau trong im lặng.\n\nCó những khoảnh khắc, một pha cứu bóng cũng đủ khiến tiếng vỗ tay vang lên. Có những nỗ lực chạy hết mình, dù chỉ để tranh một đường chuyền, cũng khiến người lạ ngồi bên cạnh cùng đồng cảm. Người hâm mộ đến với trận đấu không chỉ để xem, mà để cùng nhau tin, cùng nhau hy vọng, cùng nhau sống trọn một niềm vui hoặc nỗi tiếc nuối.\n\nSức hút của bóng đá nằm ở chỗ đó. Dù sau này có kể lại, có người sẽ nhớ nụ cười, có người sẽ nhớ tiếng thở dài, nhưng tất cả đều cùng hướng về một khoảnh khắc duy nhất: lúc trái bóng đang lăn, và mọi người cùng ngồi trong một không gian của cảm xúc.\n\nKhi trận đấu khép lại, người ta rời đi không chỉ với niềm vui hay nỗi buồn, mà còn mang theo một phần ký ức khó quên.",
+  "_has_expect": false
+}

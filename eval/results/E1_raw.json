@@ -1,0 +1,19 @@
+{
+  "id": "E1",
+  "group": "low_info",
+  "genre": "football_tin_tuc",
+  "config": "raw",
+  "chars": 805,
+  "seconds": 41.6,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 77,
+    "total_tokens": 796,
+    "completion_tokens": 719,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Có những khoảnh khắc mà cả sân như nín thở.\n\nKhông cần biết ai thắng, ai thua. Chỉ cần nghe tiếng bóng chạm đất, cảm nhận nhịp chân trên mặt cỏ, và thấy lòng mình theo từng đường chuyền mà đập dồn dập.\n\nBóng lăn. Nó không biết mệt, không biết đau, chỉ biết đi về phía trước. Người thì chạy, người thì dừng, người thì thở dốc. Cỏ ướt, gió lùa, và giữa khoảng không ấy, tất cả như cùng một nhịp.\n\nCó lần, khi bóng chạm xà ngang rồi bật ra, người ta vẫn vỗ tay. Có lần, khi một pha cứu thua khiến cả khán đài bật dậy, nước mắt không hiểu sao mà rớt. Bóng đá không chỉ là một trận đấu. Nó là nơi ta được quyền hy vọng, được phép thất vọng, và rồi lại đứng dậy.\n\nHết trận, sân vắng dần. Chỉ còn tiếng nói cười lảnh lót của ai đó nhặt lại chiếc bóng, và mặt cỏ vẫn im lặng, như chưa từng chứng kiến bao cảm xúc.",
+  "_has_expect": false
+}

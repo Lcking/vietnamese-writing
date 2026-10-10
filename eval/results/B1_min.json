@@ -1,0 +1,19 @@
+{
+  "id": "B1",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "min",
+  "chars": 2444,
+  "seconds": 136.6,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 427,
+    "total_tokens": 2812,
+    "completion_tokens": 2385,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "# Nhận định trước trận Việt Nam — Indonesia tối mai\n\nTrận đấu tối mai giữa Việt Nam và Indonesia chắc chắn sẽ là một cuộc đối đầu giàu cảm xúc, không thiếu áp lực và cũng không thể xem nhẹ bất kỳ chi tiết nào. Ở cấp độ hiện tại, Indonesia không còn là đối thủ dễ bắt nạt. Những cải thiện về lực lượng, kinh nghiệm thi đấu quốc tế và khả năng thích nghi với cường độ cao khiến họ trở thành một đội bóng đáng gờm, đặc biệt khi được chơi theo hệ thống pressing và chuyển trạng thái nhanh.\n\nĐiểm mạnh của Indonesia nằm ở sự tự tin, khả năng pressing cường độ cao và những pha bóng từ trung lộ. Nếu kiểm soát tốt tuyến giữa, họ sẽ tạo ra nhiều phương án tiếp cận khung thành. Bên cạnh đó, Indonesia cũng có lợi thế ở các tình huống cố định và khả năng duy trì pressing sau khi mất bóng. Đây là thứ mà bất kỳ đối thủ nào cũng cần chuẩn bị kỹ.\n\nVới Việt Nam, lợi thế lớn nhất vẫn là sự ổn định trong cách tổ chức và khả năng kiểm soát nhịp độ trận đấu. Nếu thi đấu có kỷ luật, giữ cự ly đội hình tốt và hạn chế những pha pressing quá nóng vội, chúng ta sẽ có cơ hội khiến Indonesia rơi vào thế chờ bóng. Hàng tiền vệ sẽ là điểm mấu chốt. Ai cầm bóng tốt hơn, ai giữ được sự bình tĩnh trong những khoảnh khắc quyết định, người đó sẽ có nhiều lợi thế.\n\nTuy nhiên, Indonesia không phải đội dễ bị dồn ép. Họ có thể chấp nhận một phần thế trận, chờ phản công và khai thác khoảng trống sau lưng hàng thủ. Vì vậy, Việt Nam không chỉ cần kiểm soát bóng mà còn phải phòng thủ chắc chắn, đặc biệt ở các pha bóng hai và tình huống cố định. Một sai lầm nhỏ trong phòng ngự, hoặc một khoảnh khắc mất tập trung, có thể khiến cục diện trận đấu thay đổi rất nhanh.\n\nDĩ nhiên, bóng đá không phải phép tính chính xác. Indonesia có thể bất ngờ chơi hay hơn dự kiến, còn Việt Nam cũng có thể gặp ngày không may về thể lực hoặc vận động. Vì thế, không nên đặt nặng chuyện thắng thua trước khi trận đấu bắt đầu. Điều quan trọng là tinh thần, sự tỉnh táo và khả năng thích ứng trong 90 phút.\n\nTối mai, nhiều khả năng sẽ là một trận đấu cân tài, cân sức. Indonesia sẽ đến với sự tự tin, còn Việt Nam cần giữ vững bản lĩnh và không bị cuốn theo thế trận đối phương. Đội nào kiểm soát tốt hơn, hạn chế sai số tốt hơn và tạo ra cơ hội nguy hiểm hơn sẽ là đội có nhiều cơ hội giành kết quả tốt.\n\nCùng chờ xem sân đấu tối mai sẽ mang đến câu trả lời. Điều đáng mong chờ nhất là một trận đấu tưng bừng, sòng phẳng và nhiều cảm xúc, đúng với chất lượng của bóng đá khu vực hiện tại.",
+  "_has_expect": false
+}

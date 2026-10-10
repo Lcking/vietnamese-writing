@@ -1,0 +1,21 @@
+{
+  "id": "B1",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "full",
+  "chars": 1594,
+  "seconds": 165.5,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 10328,
+    "total_tokens": 12983,
+    "completion_tokens": 2655,
+    "prompt_tokens_details": {
+      "cached_tokens": 8192
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "# Nhận định trước trận Việt Nam — Indonesia tối mai\n\nTrận đấu tối mai giữa Việt Nam và Indonesia có nhiều điểm đáng chờ đợi. Đây không chỉ là màn so tài giữa hai đội bóng có truyền thống trong khu vực, mà còn là cuộc đối đầu nơi cả hai đều muốn khẳng định vị thế.\n\nVề phía Việt Nam, điểm tựa thường nằm ở sự gắn kết, khả năng phòng ngự có tổ chức và sự tỉnh táo trong các tình huống quyết định. Khi các tuyến duy trì được khoảng cách hợp lý, đội bóng áo đỏ có thể tạo ra nhiều pha lên bóng hiệu quả, đặc biệt từ những pha chuyển trạng thái nhanh. Nếu hàng công tận dụng tốt cơ hội, đây sẽ là yếu tố giúp Việt Nam tạo ra khác biệt.\n\nIndonesia lại mang đến áp lực bằng sự máu lửa và tính tập thể. Trong những lần chạm trán gần đây, đội bóng xứ vạn đảo thường thể hiện quyết tâm cao, không ngại tranh chấp và sẵn sàng pressing để bắt lỗi. Nếu Indonesia duy trì được cường độ trong suốt 90 phút, họ hoàn toàn có thể khiến trận đấu trở nên khó đoán.\n\nĐiểm nóng sẽ nằm ở tuyến giữa. Đội nào kiểm soát tốt hơn nhịp độ, hạn chế được sai số trong các pha chuyển đổi, sẽ có lợi thế. Các tình huống cố định cũng cần được chú ý, bởi trong một trận đấu chặt chẽ, chỉ một khoảnh khắc lơi lỏng cũng có thể thay đổi cục diện.\n\nKịch bản dễ xảy ra nhất là một trận đấu cân bằng, với hai đội đều thận trọng trong những phút đầu. Nếu có bàn thắng mở tỷ số, cuộc chơi có thể trở nên cởi mở hơn. Việt Nam có thể được đánh giá nhỉnh hơn một chút nhờ sự ổn định và kinh nghiệm, nhưng Indonesia hoàn toàn đủ tiềm năng để tạo bất ngờ. Vì vậy, kết quả cuối cùng nhiều khả năng chỉ được định hình vào những phút cuối cùng.",
+  "_has_expect": false
+}

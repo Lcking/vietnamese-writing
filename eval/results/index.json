@@ -1,0 +1,308 @@
+[
+  {
+    "id": "A1",
+    "group": "news",
+    "genre": "football_tin_tuc",
+    "config": "full",
+    "chars": 1678,
+    "seconds": 113.1,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "2-0"
+    ],
+    "_has_expect": true
+  },
+  {
+    "id": "A1",
+    "group": "news",
+    "genre": "football_tin_tuc",
+    "config": "min",
+    "chars": 623,
+    "seconds": 54.2,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "2-0"
+    ],
+    "_has_expect": true
+  },
+  {
+    "id": "A1",
+    "group": "news",
+    "genre": "football_tin_tuc",
+    "config": "raw",
+    "chars": 579,
+    "seconds": 23.2,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "2-0"
+    ],
+    "_has_expect": true
+  },
+  {
+    "id": "A2",
+    "group": "news",
+    "genre": "football_tin_tuc",
+    "config": "full",
+    "chars": 977,
+    "seconds": 82.1,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "A2",
+    "group": "news",
+    "genre": "football_tin_tuc",
+    "config": "min",
+    "chars": 687,
+    "seconds": 39.9,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "A2",
+    "group": "news",
+    "genre": "football_tin_tuc",
+    "config": "raw",
+    "chars": 801,
+    "seconds": 18.4,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "B1",
+    "group": "pre_match",
+    "genre": "football_pre_match",
+    "config": "full",
+    "chars": 1594,
+    "seconds": 165.5,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "B1",
+    "group": "pre_match",
+    "genre": "football_pre_match",
+    "config": "min",
+    "chars": 2444,
+    "seconds": 136.6,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "B1",
+    "group": "pre_match",
+    "genre": "football_pre_match",
+    "config": "raw",
+    "chars": 3687,
+    "seconds": 107.1,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "B2",
+    "group": "pre_match",
+    "genre": "football_pre_match",
+    "config": "full",
+    "chars": 3299,
+    "seconds": 90.2,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "B2",
+    "group": "pre_match",
+    "genre": "football_pre_match",
+    "config": "min",
+    "chars": 3679,
+    "seconds": 153.5,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "B2",
+    "group": "pre_match",
+    "genre": "football_pre_match",
+    "config": "raw",
+    "chars": 3004,
+    "seconds": 147.2,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "C1",
+    "group": "social",
+    "genre": "social_post",
+    "config": "full",
+    "chars": 154,
+    "seconds": 28.5,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "C1",
+    "group": "social",
+    "genre": "social_post",
+    "config": "min",
+    "chars": 297,
+    "seconds": 13.2,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "C1",
+    "group": "social",
+    "genre": "social_post",
+    "config": "raw",
+    "chars": 133,
+    "seconds": 23.2,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "C2",
+    "group": "social",
+    "genre": "social_post",
+    "config": "full",
+    "chars": 157,
+    "seconds": 28.7,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "chưa xác nhận"
+    ],
+    "_has_expect": true
+  },
+  {
+    "id": "C2",
+    "group": "social",
+    "genre": "social_post",
+    "config": "min",
+    "chars": 142,
+    "seconds": 9.7,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "chưa xác nhận"
+    ],
+    "_has_expect": true
+  },
+  {
+    "id": "C2",
+    "group": "social",
+    "genre": "social_post",
+    "config": "raw",
+    "chars": 507,
+    "seconds": 14.8,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "chưa xác nhận"
+    ],
+    "_has_expect": true
+  },
+  {
+    "id": "D1",
+    "group": "rewrite",
+    "genre": "football_tin_tuc",
+    "config": "full",
+    "chars": 37,
+    "seconds": 37.6,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "2-1"
+    ],
+    "_has_expect": true
+  },
+  {
+    "id": "D1",
+    "group": "rewrite",
+    "genre": "football_tin_tuc",
+    "config": "min",
+    "chars": 61,
+    "seconds": 19.4,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "2-1"
+    ],
+    "_has_expect": true
+  },
+  {
+    "id": "D1",
+    "group": "rewrite",
+    "genre": "football_tin_tuc",
+    "config": "raw",
+    "chars": 55,
+    "seconds": 7.0,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "2-1"
+    ],
+    "_has_expect": true
+  },
+  {
+    "id": "E1",
+    "group": "low_info",
+    "genre": "football_tin_tuc",
+    "config": "full",
+    "chars": 923,
+    "seconds": 118.5,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "E1",
+    "group": "low_info",
+    "genre": "football_tin_tuc",
+    "config": "min",
+    "chars": 128,
+    "seconds": 42.9,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  },
+  {
+    "id": "E1",
+    "group": "low_info",
+    "genre": "football_tin_tuc",
+    "config": "raw",
+    "chars": 805,
+    "seconds": 41.6,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [],
+    "_has_expect": false
+  }
+]

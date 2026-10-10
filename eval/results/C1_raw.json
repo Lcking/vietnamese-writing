@@ -1,0 +1,19 @@
+{
+  "id": "C1",
+  "group": "social",
+  "genre": "social_post",
+  "config": "raw",
+  "chars": 133,
+  "seconds": 23.2,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 73,
+    "total_tokens": 464,
+    "completion_tokens": 391,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Việt Nam vào chung kết AFF Cup! Tự hào một chặng đường đã đi qua. Chúc đội tuyển tiếp tục vững vàng, bản lĩnh và chạm tới vinh quang.",
+  "_has_expect": false
+}

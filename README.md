@@ -24,6 +24,7 @@ trình sinh văn bản của LLM — **không cần huấn luyện, không cần
 
 - ⚽ **Trọng tâm bóng đá**: thuật ngữ, phong cách bình luận, bản tin, chuyển nhượng, tuyển Việt Nam
 - ✅ Hoạt động với **mọi LLM** có API tương thích OpenAI (GPT / Gemini / Kimi / Claude / Qwen local...)
+  — "tương thích" nghĩa là giao thức API; chất lượng đầu ra hiện **chỉ mới đo trên Qwen local**, hãy tự kiểm chứng mô hình khác bằng `eval/`
 - ✅ 13 thể loại viết (7 đa thể loại + 6 chuyên bóng đá) + 6 nhóm quy tắc dùng chung
 - ✅ 160 bài báo bóng đá thật làm ví dụ mẫu (few-shot)
 - ✅ Kiến thức nền trích xuất từ **303GB ngữ liệu tiếng Việt** (WanJuan-Vietnamese, CC BY 4.0)
@@ -170,7 +171,8 @@ Xem [LICENSE](LICENSE).
 ### 特点
 
 - ⚽ **以足球为核心**:术语表、解说风格、比赛新闻稿、转会新闻、国家队报道、球员/教练人物
-- ✅ 适配**任意 LLM**(GPT / Gemini / Kimi / Claude / 本地 Qwen…… 只要 OpenAI 兼容)
+- ✅ **接口兼容**任意 OpenAI 兼容端点的 LLM(GPT / Gemini / Kimi / Claude / 本地 Qwen……)
+  —— 指 API 协议兼容;效果目前**仅在本地 Qwen 上实测**,跨模型效果请自行用 `eval/` 验证
 - ✅ 13 个写作 genre(7 通用 + 6 足球)+ 6 组通用规范
 - ✅ 160 篇真实越南语足球文章作 few-shot 范例
 - ✅ 知识源自 **303GB 越南语语料**(WanJuan-Vietnamese,CC BY 4.0)
@@ -302,7 +304,9 @@ focus on **football commentary and sports journalism**.
 
 It injects Vietnamese writing norms — extracted from 300GB of native Vietnamese
 corpora (WanJuan-Vietnamese) — into any OpenAI-compatible LLM. No training, no
-GPU required.
+GPU required. Note: "compatible" means the API protocol interoperates; output
+quality has so far only been measured on a local Qwen model — verify other
+models yourself using `eval/`.
 
 **Coverage:** 6 football genres (terminology, live commentary, match reports,
 transfer news, national team, player/coach profiles), 7 general genres
