@@ -1,0 +1,6 @@
+# Vietnamese Writing Skill — chỉ dùng thư viện chuẩn Python
+# (không cần cài thêm gì; file này để trống có chủ đích)
+#
+# Code chỉ dùng: json, urllib, pathlib, argparse, os, sys — đều có sẵn trong Python 3.8+.
+# Nếu muốn dùng PyYAML cho config.yaml, bỏ comment dòng dưới:
+# pyyaml>=6.0

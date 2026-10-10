@@ -1,0 +1,57 @@
+# Vietnamese Writing Skill — License
+
+## Phần mềm (code)
+
+Mã nguồn trong repo này (thư mục `src/`, `bin/`, các script) được phát hành theo
+giấy phép **MIT License**.
+
+Copyright (c) 2026 <YOUR NAME>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Dữ liệu & kiến thức (references/)
+
+Nội dung trong thư mục `references/` (các hướng dẫn viết theo thể loại và chủ đề)
+được **trích xuất và tổng hợp** từ bộ dữ liệu:
+
+> **WanJuan-Vietnamese** (万卷丝路-越南语)
+> Nhà xuất bản: Shanghai Artificial Intelligence Laboratory
+> và Corpus Data Alliance for Foundation Model
+> Giấy phép: **Creative Commons Attribution 4.0 International (CC BY 4.0)**
+> https://creativecommons.org/licenses/by/4.0/
+> Nguồn: https://github.com/opendatalab/WanJuan3.0
+> Bài báo: https://arxiv.org/pdf/2501.14506
+
+Theo giấy phép CC BY 4.0, các nội dung phái sinh từ bộ dữ liệu này phải ghi công
+(attribution) cho tác giả gốc. Việc ghi công được thực hiện trong file này, trong
+`README.md` và trong tiêu đề của từng file trong `references/`.
+
+Khi sử dụng lại, vui lòng giữ nguyên phần ghi công này.
+
+---
+
+## Ghi công (Attribution statement)
+
+Vietnamese Writing Skill sử dụng kiến thức trích xuất từ **WanJuan-Vietnamese**,
+một bộ ngữ liệu tiếng Việt quy mô lớn (khoảng 303GB, 80 triệu dòng) do
+**Shanghai Artificial Intelligence Laboratory (OpenDataLab)** phát hành theo giấy phép
+**CC BY 4.0**. Chúng tôi trân trọng cảm ơn tập thể tác giả đã xây dựng và chia sẻ
+bộ dữ liệu mở này.

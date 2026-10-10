@@ -1,0 +1,29 @@
+# Cấu hình ví dụ cho Vietnamese Writing Skill
+# Copy file này thành config.yaml rồi sửa.
+
+# Endpoint LLM (tương thích OpenAI)
+base_url: "https://api.openai.com/v1"
+api_key: "sk-your-key-here"
+model: "gpt-4o"
+
+# Tham số sinh
+max_tokens: 4000
+temperature: 0.7
+
+# Ví dụ cấu hình khác:
+# --- Google Gemini ---
+# base_url: "https://generativelanguage.googleapis.com/v1beta/openai"
+# model: "gemini-2.5-pro"
+#
+# --- Moonshot Kimi ---
+# base_url: "https://api.moonshot.cn/v1"
+# model: "kimi-k2-0905-preview"
+#
+# --- DeepSeek ---
+# base_url: "https://api.deepseek.com/v1"
+# model: "deepseek-chat"
+#
+# --- Qwen local (vLLM) ---
+# base_url: "http://localhost:8005/v1"
+# model: "qwen-3.8-27b-awq"
+# api_key: "local"
