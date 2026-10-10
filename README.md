@@ -27,7 +27,7 @@ trình sinh văn bản của LLM — **không cần huấn luyện, không cần
 ## Cài đặt
 
 ```bash
-git clone https://github.com/<your-username>/vietnamese-writing.git
+git clone https://github.com/Lcking/vietnamese-writing.git
 cd vietnamese-writing
 # Không cần thư viện ngoài (chỉ dùng thư viện chuẩn Python 3.8+).
 # Tùy chọn: pip install pyyaml   # nếu muốn đọc config.yaml
@@ -99,6 +99,27 @@ client = LLMClient({"base_url": "https://api.openai.com/v1",
 print(client.chat(system_prompt, user_task))
 ```
 
+## Ngữ liệu (không bắt buộc)
+
+Skill **không cần** ngữ liệu gốc để hoạt động. Khi gọi, nó chỉ đọc `references/`
+và `examples/` (đã có sẵn trong repo, ~750KB). Bạn **không cần** tải 303GB ngữ liệu.
+
+Chỉ khi bạn muốn **trích xuất lại / mở rộng** sang lĩnh vực khác, mới cần chạy
+`bin/extract_corpus.py` **thủ công** (script này **không tự chạy** khi clone):
+
+```bash
+# Điều kiện: tự tải WanJuan-Vietnamese raw (~303GB, CC BY 4.0) về máy bạn.
+# 1) Xem trước (dry-run, KHÔNG ghi file)
+python bin/extract_corpus.py --raw /path/to/WanJuan-Vietnamese/raw
+# 2) Trích xuất thật (~10GB, chỉ chạy khi bạn thêm --yes)
+python bin/extract_corpus.py --raw /path/to/.../raw --out ./viet_football --yes
+# 3) Chọn bài mẫu vào examples/
+python bin/extract_corpus.py --pick ./viet_football/football_corpus.jsonl --examples ./examples/football
+```
+
+Ai chạy, người đó tốn dung lượng (ngữ liệu lưu trên máy **của bạn**, không ảnh
+hưởng repo hay người khác). Không thêm `--yes` thì chỉ thống kê, không ghi gì.
+
 ## Ghi công
 
 Kiến thức (`references/`) và ví dụ (`examples/`) được trích xuất từ bộ dữ liệu
@@ -139,3 +160,10 @@ python bin/viet_writer.py --task "Bình luận trận Việt Nam - Thái Lan"
 
 **Attribution:** Knowledge and examples extracted from the WanJuan-Vietnamese
 dataset (Shanghai AI Laboratory / OpenDataLab), CC BY 4.0.
+
+**Corpus (optional):** The skill does **not** need the raw corpus to run — it
+only reads `references/` and `examples/` shipped in the repo. Rebuilding the
+football corpus from WanJuan is a **manual, optional** step
+(`bin/extract_corpus.py`; never runs automatically on clone). It requires you to
+obtain the ~303GB WanJuan raw data yourself, and the extracted ~10GB is stored on
+your own machine. Dry-run by default; add `--yes` to actually write.
