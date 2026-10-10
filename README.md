@@ -111,14 +111,16 @@ Chỉ khi bạn muốn **trích xuất lại / mở rộng** sang lĩnh vực kh
 # Điều kiện: tự tải WanJuan-Vietnamese raw (~303GB, CC BY 4.0) về máy bạn.
 # 1) Xem trước (dry-run, KHÔNG ghi file)
 python bin/extract_corpus.py --raw /path/to/WanJuan-Vietnamese/raw
-# 2) Trích xuất thật (~10GB, chỉ chạy khi bạn thêm --yes)
+# 2) Trích xuất thật (~10GB) — cần CẢ --yes VÀ export VIET_REBUILD_OK=1
+export VIET_REBUILD_OK=1
 python bin/extract_corpus.py --raw /path/to/.../raw --out ./viet_football --yes
 # 3) Chọn bài mẫu vào examples/
 python bin/extract_corpus.py --pick ./viet_football/football_corpus.jsonl --examples ./examples/football
 ```
 
 Ai chạy, người đó tốn dung lượng (ngữ liệu lưu trên máy **của bạn**, không ảnh
-hưởng repo hay người khác). Không thêm `--yes` thì chỉ thống kê, không ghi gì.
+hưởng repo hay người khác). Không có `--yes` **hoặc** không có `VIET_REBUILD_OK=1`
+thì chỉ thống kê, không ghi gì.
 
 ## Ghi công
 
@@ -166,4 +168,5 @@ only reads `references/` and `examples/` shipped in the repo. Rebuilding the
 football corpus from WanJuan is a **manual, optional** step
 (`bin/extract_corpus.py`; never runs automatically on clone). It requires you to
 obtain the ~303GB WanJuan raw data yourself, and the extracted ~10GB is stored on
-your own machine. Dry-run by default; add `--yes` to actually write.
+your own machine. Dry-run by default; writing requires **both** `--yes` **and**
+`VIET_REBUILD_OK=1` in the environment.

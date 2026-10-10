@@ -18,12 +18,17 @@ skill 写作时只读 references/ 和 examples/(都已在 repo 内),与本脚本
     python bin/extract_corpus.py --raw /path/to/WanJuan-Vietnamese/raw
 
     # 2) 确认无误后真提取(写入 10GB 级文件)
+    #    注意:必须显式设置 VIET_REBUILD_OK=1,否则即使加了 --yes 也会退回 dry-run
+    export VIET_REBUILD_OK=1
     python bin/extract_corpus.py --raw /path/to/.../raw --out ./viet_football --yes
 
     # 3) 精选范文进 examples/(按主题分桶)
     python bin/extract_corpus.py --pick ./viet_football/football_corpus.jsonl --examples ./examples/football
 
-安全默认:不传 --yes 时只统计命中量,dry-run,不写盘。
+安全默认(三重防误运行):
+  1. 本脚本不参与安装,repo 无助跑机制会自动调用它。
+  2. 不传 --yes 时只统计命中量,dry-run,不写盘。
+  3. 即使传了 --yes,若未设 VIET_REBUILD_OK=1,仍会退回 dry-run。
 """
 import argparse
 import glob
@@ -76,7 +81,17 @@ def is_football(text):
     return [k for k in PRECISE if k in t]
 
 
+GUARD_ENV = "VIET_REBUILD_OK"
+
+
 def run_extract(raw_dir, out_dir, yes):
+    # ── 双重闸门:即使传了 --yes,也必须有显式环境变量才允许写盘 ──
+    if yes and os.environ.get(GUARD_ENV) != "1":
+        print(f"[已拦截] 检测到 --yes,但未设置环境变量 {GUARD_ENV}=1。")
+        print(f"         为防止误运行,本次退回 dry-run(不写盘)。")
+        print(f"         确认要真提取,请先执行:export {GUARD_ENV}=1\n")
+        yes = False
+
     files = sorted(glob.glob(os.path.join(raw_dir, "*", "*", "*.jsonl")))
     if not files:
         sys.exit(f"[错误] 在 {raw_dir} 下未找到 */*/*.jsonl。请确认 --raw 指向 WanJuan 的 raw/ 目录。")
@@ -191,7 +206,7 @@ def main():
     ap = argparse.ArgumentParser(description="从 WanJuan-Vietnamese 原始语料重建足球语料(可选高级工具,不参与 skill 安装)")
     ap.add_argument("--raw", help="WanJuan 原始语料 raw/ 目录(提取模式)")
     ap.add_argument("--out", default="./viet_football", help="提取输出目录(默认 ./viet_football)")
-    ap.add_argument("--yes", action="store_true", help="确认真提取并写盘(不加则为 dry-run 预览)")
+    ap.add_argument("--yes", action="store_true", help="确认真提取并写盘(还需环境变量 VIET_REBUILD_OK=1,否则退回 dry-run)")
     ap.add_argument("--pick", help="范文精选:输入的 football_corpus.jsonl(精选模式)")
     ap.add_argument("--examples", default="./examples/football", help="范文输出目录(默认 ./examples/football)")
     ap.add_argument("--per-theme", type=int, default=20, help="每主题精选条数(默认 20)")
