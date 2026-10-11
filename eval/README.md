@@ -34,6 +34,28 @@ Chỉ số ghi lại: số ký tự, thời gian, `finish_reason`, token, và **
 `run_eval.py` tự kiểm tra các bẫy: với mỗi ca có quy tắc `forbid` / `expect`, nó đánh dấu
 nếu đầu ra chứa từ bị cấm hoặc thiếu thông tin bắt buộc (ví dụ ca C2 phải có "chưa xác nhận").
 
+### Bước 2b — Phát hiện dữ kiện bịa (`bin/check_fabrication.py`)
+
+Trong so sánh nhiều mô hình, phát hiện quan trọng nhất là: **mô hình tầm trung / mô hình
+nhỏ chạy cấu hình `full` (prompt dài) hay CHÈN dữ kiện cụ thể mà đề bài không cung cấp** —
+mốc thời gian ("trưa nay"), hành động tổ chức ("chính thức thông báo"), cảnh sân đấu
+("khán đài rộn ràng"), con số/tỉ số. Chỉ mô hình mạnh mới giữ được kỷ luật "không bịa".
+
+Công cụ này **đánh dấu** (không phán quyết) những chỗ cần đối chiếu:
+
+```bash
+# kiểm 1 đầu ra
+python bin/check_fabrication.py --task "..." --text-file output.txt
+# quét toàn bộ kết quả eval
+python bin/check_fabrication.py --scan-eval eval/results
+```
+
+Nó bỏ qua các câu mang phủ định ("không bịa", "chưa xác nhận"), và so với đề bài để loại
+mảnh vốn có sẵn trong đề. **Kết quả là danh sách nghi vấn cho người đọc, không phải điểm số.**
+
+> **Khuyến nghị triển khai:** nếu dùng mô hình tầm trung / mô hình nhỏ, chạy cấu hình `min`
+> (quy tắc ngắn) thay vì `full`, và bật `check_fabrication.py` như một lớp kiểm tra đầu ra.
+
 ### Bước 3 — Chấm mù bởi người bản ngữ (**cần người thật**)
 
 Đây là phần **không thể tự động hóa**: một biên tập viên tiếng Việt chấm điểm mù
