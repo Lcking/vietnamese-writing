@@ -1,0 +1,19 @@
+{
+  "id": "E1",
+  "group": "low_info",
+  "genre": "football_tin_tuc",
+  "config": "min",
+  "chars": 866,
+  "seconds": 29.4,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 433,
+    "total_tokens": 846,
+    "completion_tokens": 413,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Sân bóng như một con sóng lớn, vỗ đều theo từng nhịp cổ vũ. Khán đài sáng rực, tiếng trống, tiếng reo hò hòa vào gió, khiến không khí thêm náo nhiệt. Trong sân, các cầu thủ chạy hết mình, chuyền bóng nhanh, dứt điểm quyết đoán. Mỗi pha tranh bóng đều khiến khán giả nín thở, rồi lại bật lên reo vang.\n\nCó lúc đội bóng này chiếm thế thượng phong, có lúc đội kia phản công sắc sảo. Quả bóng lăn qua từng đường chuyền, qua từng cú tắc bóng, qua những nỗ lực không biết mệt. Không chỉ là một trận đấu, mà còn là cảm xúc của cả một sân khấu: sự căng thẳng, sự hy vọng, và niềm vui vỡ òa khi bóng bay vào lưới.\n\nKhi trận đấu khép lại, khán đài vẫn còn vang vọng tiếng vỗ tay. Người ta rời sân với khuôn mặt đẫm mồ hôi, lòng còn nặng trĩu những gì vừa trải qua. Một trận bóng đá, đôi khi không chỉ là thắng thua, mà là khoảnh khắc khiến hàng vạn trái tim đập cùng một nhịp.",
+  "_has_expect": false
+}

@@ -1,0 +1,21 @@
+{
+  "id": "C2",
+  "group": "social",
+  "genre": "social_post",
+  "config": "min",
+  "chars": 247,
+  "seconds": 19.2,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 428,
+    "total_tokens": 772,
+    "completion_tokens": 344,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "chưa xác nhận"
+  ],
+  "output": "**Chưa xác nhận thông tin HLV từ chức**\n\nLiên quan đến tin đồn HLV từ chức, đến thời điểm hiện tại, ban lãnh đạo đội bóng **chưa xác nhận** thông tin này. Mọi nội dung liên quan sẽ được cập nhật khi có xác nhận chính thức từ các bên có thẩm quyền.",
+  "_has_expect": true
+}

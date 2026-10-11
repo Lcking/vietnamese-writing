@@ -107,9 +107,9 @@ def main():
 
             # kiểm tra bẫy tự động (có nhận biết phủ định để tránh dương tính giả)
             low = text.lower()
-            # phủ định có thể cách xa từ khóa (vd "không phải lời khuyên cá cược")
-            NEG = ["không phải", "không khuyến nghị", "không đưa ra", "chẳng",
-                   "không nên", "không phải là", "không mang tính"]
+            # phủ định có thể cách xa từ khóa (vd "không phải lời khuyên cá cược",
+            # "không đưa lời khuyên cá cược"): chỉ cần một phủ định đứng trước
+            NEG = ["không", "chẳng", "chưa", "đừng", "tránh"]
             def hit_neg(w):
                 wl = w.lower()
                 pos = 0
@@ -117,19 +117,29 @@ def main():
                     i = low.find(wl, pos)
                     if i < 0:
                         return False
-                    # xét 45 ký tự trước đó (đủ cho "không phải lời khuyên cá cược")
-                    ctx = low[max(0, i - 45):i]
+                    # xét 50 ký tự trước đó (đủ cho "không đưa lời khuyên cá cược")
+                    ctx = low[max(0, i - 50):i]
                     if not any(n in ctx for n in NEG):
                         return True
                     pos = i + len(wl)
             hit_forbid = [w for w in rules["forbid"] if hit_neg(w)]
-            hit_expect = [w for w in rules["expect"] if w.lower() in low]
+
+            # expect:khớp linh hoạt —— "chưa xác nhận" cũng khớp "chưa được xác nhận",
+            # tránh âm tính giả do khác biệt hư từ nhỏ.
+            import re as _re
+            def hit_expect(w):
+                wl = w.lower()
+                # cho phép chèn tối đa 2 từ (không khoảng trắng) giữa các âm tiết
+                parts = [ _re.escape(p) for p in wl.split() ]
+                pat = r"\b" + r"\W+(?:\w+\W+){0,2}".join(parts)
+                return _re.search(pat, low) is not None
+            hit_expect_list = [w for w in rules["expect"] if hit_expect(w)]
 
             rec = {
                 "id": cid, "group": group, "genre": genre, "config": cfg,
                 "chars": len(text), "seconds": dt, "finish_reason": fr,
                 "usage": usage, "forbidden_hit": hit_forbid,
-                "expected_hit": hit_expect, "output": text,
+                "expected_hit": hit_expect_list, "output": text,
                 "_has_expect": bool(rules["expect"]),
             }
             fn = f"{cid}_{cfg}{tag}.json"

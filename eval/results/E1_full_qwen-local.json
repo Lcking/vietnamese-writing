@@ -1,0 +1,21 @@
+{
+  "id": "E1",
+  "group": "low_info",
+  "genre": "football_tin_tuc",
+  "config": "full",
+  "chars": 469,
+  "seconds": 108.1,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 11263,
+    "total_tokens": 12988,
+    "completion_tokens": 1725,
+    "prompt_tokens_details": {
+      "cached_tokens": 8192
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Trên sân cỏ, các cầu thủ bước vào cuộc đối đầu căng thẳng. Những đường chuyền ngắn gọn, những pha phong tỏa quyết liệt và những tình huống phản công nhanh tạo nên nhịp độ hấp dẫn. Lối chơi liên tục biến hóa, khi thì dâng cao, khi thì co cụm. Khán đài rộn ràng tiếng cổ vũ, tiếp thêm sức mạnh cho người chơi. Có tiếng reo mừng khi bóng vào lưới, có ánh mắt tiếc nuối khi cơ hội bị bỏ lỡ. Trận đấu khép lại trong dư âm của nỗ lực, chiến thuật và cảm xúc của người hâm mộ.",
+  "_has_expect": false
+}

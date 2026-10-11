@@ -1,0 +1,29 @@
+{
+  "id": "C2",
+  "group": "social",
+  "genre": "social_post",
+  "config": "full",
+  "chars": 92,
+  "seconds": 4.8,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 11748,
+    "completion_tokens": 157,
+    "total_tokens": 11905,
+    "prompt_tokens_details": {
+      "cached_tokens": 11717,
+      "cache_write_tokens": 28,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 121,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Thông tin HLV từ chức hiện **chưa được xác nhận**. Cần chờ thông báo chính thức từ đội bóng.",
+  "_has_expect": true
+}

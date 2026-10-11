@@ -1,0 +1,29 @@
+{
+  "id": "A2",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "full",
+  "chars": 423,
+  "seconds": 6.9,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 12208,
+    "completion_tokens": 314,
+    "total_tokens": 12522,
+    "prompt_tokens_details": {
+      "cached_tokens": 12174,
+      "cache_write_tokens": 31,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 186,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "# CLB Hà Nội bổ nhiệm HLV mới thay người tiền nhiệm\n\nCLB Hà Nội đã bổ nhiệm HLV mới, khép lại nhiệm kỳ của nhà cầm quân trước đó. Đội bóng Thủ đô kỳ vọng sự thay đổi trên băng ghế huấn luyện sẽ giúp toàn đội có thêm động lực và hướng tới những mục tiêu trong thời gian tới.\n\nHLV mới sẽ tiếp quản công việc tại đội bóng, chuẩn bị cho chặng đường tiếp theo. Hiện CLB Hà Nội chưa nêu tên cụ thể của nhà cầm quân được bổ nhiệm.",
+  "_has_expect": false
+}

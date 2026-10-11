@@ -1,0 +1,23 @@
+{
+  "id": "C2",
+  "group": "social",
+  "genre": "social_post",
+  "config": "full",
+  "chars": 108,
+  "seconds": 24.1,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 10880,
+    "total_tokens": 11210,
+    "completion_tokens": 330,
+    "prompt_tokens_details": {
+      "cached_tokens": 8192
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "chưa xác nhận"
+  ],
+  "output": "Tin HLV từ chức đang lan truyền, nhưng hiện **chưa xác nhận**. Chưa có thông báo chính thức nào được đưa ra.",
+  "_has_expect": true
+}

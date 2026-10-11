@@ -1,0 +1,19 @@
+{
+  "id": "B1",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "full",
+  "chars": 1701,
+  "seconds": 127.4,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 10328,
+    "total_tokens": 12215,
+    "completion_tokens": 1887,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Trước thềm trận đấu tối mai, cuộc đối đầu giữa Việt Nam và Indonesia lại một lần nữa trở thành tâm điểm. Ở những màn chạm trán khu vực, hai đội thường không thiếu ý chí, và chính điều đó khiến trận cầu khó được dự báo trước.\n\nĐội tuyển Việt Nam được đánh giá nhỉnh hơn về kinh nghiệm thi đấu quốc tế và khả năng kiểm soát thế trận. Các cầu thủ Việt Nam thường tạo dựng thế trận chặt chẽ, ưu tiên giữ nhịp ở khu trung tuyến và tận dụng các tình huống chuyển trạng thái. Nếu duy trì được sự ổn định, đội bóng áo đỏ có thể chiếm thế chủ động và tạo ra nhiều cơ hội. Tuy nhiên, bóng đá không thiếu những bất ngờ, và chỉ một vài phút lơ là cũng có thể thay đổi cục diện.\n\nIndonesia lại là đội mang đến nhiều áp lực về tốc độ và quyết tâm. Những pha phản công nhanh, pressing cường độ cao và sự táo bạo trong các tình huống dứt điểm có thể khiến hàng phòng ngự đối phương bất ngờ. Nếu đội khách hạn chế được sai lầm và tận dụng tốt cơ hội, họ hoàn toàn có thể tạo nên kịch bản khó lường.\n\nĐiểm nóng của trận đấu nhiều khả năng sẽ nằm ở khả năng kiểm soát tuyến giữa và kỷ luật trong các pha phản công. Đội nào ít mắc lỗi hơn, giữ được bình tĩnh trước sức ép của trận đấu và giải quyết tốt các tình huống cố định, đội đó sẽ có nhiều lợi thế. Không loại trừ khả năng trận đấu diễn ra cân sức, hoặc một bàn thắng sớm sẽ mở ra thế trận sôi động hơn.\n\nLịch sử đối đầu và phong độ gần đây cho thấy Việt Nam thường được đánh giá cao hơn, nhưng đó không phải bảo chứng tuyệt đối. Kịch bản dễ xảy ra nhất là một trận đấu tăng dần nhiệt, với nhiều pha ăn miếng trả miếng. Nếu phải chọn cửa sáng hơn, đội tuyển Việt Nam vẫn được xem là ứng viên có lợi thế, nhưng Indonesia hoàn toàn đủ khả năng gây khó và tạo bất ngờ.",
+  "_has_expect": false
+}

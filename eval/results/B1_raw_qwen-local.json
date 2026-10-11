@@ -1,0 +1,19 @@
+{
+  "id": "B1",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "raw",
+  "chars": 3299,
+  "seconds": 91.6,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 71,
+    "total_tokens": 1502,
+    "completion_tokens": 1431,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Dưới đây là nhận định mang tính tham khảo, không khẳng định chắc chắn kết quả. Vì tôi không có thông tin thời gian thực về lịch thi đấu, giải đấu cụ thể, đội hình và tình hình lực lượng tối mai, nên phân tích sẽ dựa trên thế mạnh, phong cách và các yếu tố thường thấy của hai đội.\n\n## Bối cảnh chung\n\nTrận Việt Nam — Indonesia thường được dự báo là cuộc đối đầu căng thẳng, có tính cạnh tranh cao. Indonesia những năm gần đây cải thiện lực lượng nhờ nhiều cầu thủ nhập tịch, lối chơi hiện đại, thể lực tốt và khả năng pressing mạnh. Trong khi đó, Việt Nam thường dựa vào tổ chức kỷ luật, khả năng kiểm soát bóng ở thế trận phòng ngự và hiệu quả trong các pha chuyển trạng thái.\n\n## Điểm mạnh của Việt Nam\n\n- **Tổ chức đội hình:** Việt Nam thường giữ cự ly đội hình tốt, hạn chế khoảng trống giữa các tuyến.\n- **Khả năng phòng ngự phản công:** Nếu Indonesia dâng cao, Việt Nam có thể khai thác khoảng trống sau lưng hàng thủ đối phương.\n- **Yếu tố tinh thần:** Nếu thi đấu trên sân nhà hoặc có lợi thế tâm lý, Việt Nam thường chơi quyết tâm và giàu động lực.\n- **Sự ổn định ở các pha bóng cố định:** Phạt góc, phạt trực tiếp và phản công nhanh có thể là điểm tạo đột biến.\n\n## Điểm mạnh của Indonesia\n\n- **Thể lực và cường độ pressing:** Indonesia có thể gây sức ép lớn, nhất là trong 30–45 phút đầu.\n- **Cầu thủ chất lượng ở một số vị trí:** Nếu các cầu thủ chủ lực chơi tốt, Indonesia có khả năng tạo ra những pha bóng cá nhân quyết định.\n- **Lối chơi trực diện:** Indonesia thường không ngại áp đặt nhịp độ, chơi nhanh và mạnh về mặt thể chất.\n- **Khả năng duy trì áp lực:** Nếu kiểm soát tốt khu vực giữa sân, họ có thể khiến Việt Nam khó triển khai bóng.\n\n## Rủi ro của hai đội\n\n- **Việt Nam:** Nếu mất bóng chậm ở tuyến giữa hoặc mắc sai số trong phòng ngự, Indonesia có thể tận dụng rất nhanh.\n- **Indonesia:** Nếu không ghi bàn sớm, đội có thể gặp khó khi đối mặt với một Việt Nam phòng ngự chặt và kiên nhẫn.\n- **Yếu tố thời tiết, mặt sân và trọng tài:** Có thể ảnh hưởng lớn đến nhịp độ trận đấu, đặc biệt nếu trận đấu diễn ra ở điều kiện nóng ẩm.\n\n## Các kịch bản có thể xảy ra\n\n1. **Việt Nam kiểm soát thế trận tốt:**  \n   Nếu đội tuyển Việt Nam giữ được cự ly, hạn chế bị pressing và tận dụng được 1–2 cơ hội phản công, khả năng có điểm hoặc thắng là hoàn toàn có thể.\n\n2. **Indonesia nhập cuộc mạnh và ghi bàn sớm:**  \n   Nếu Indonesia dẫn trước, họ có thể chủ động chơi chậm, chờ phản công. Khi đó Việt Nam sẽ phải đẩy cao đội hình, trận đấu sẽ căng hơn nhưng cũng nhiều khoảng trống hơn.\n\n3. **Trận đấu cân bằng, ít cơ hội:**  \n   Nếu cả hai đội đều phòng ngự có tổ chức, khả năng trận đấu kết thúc với tỷ số hòa hoặc cách biệt 1 bàn là không thấp.\n\n## Chốt nhận định\n\nTrận đấu nhiều khả năng sẽ chặt chẽ, giàu sức cạnh tranh và không dễ đoán. Việt Nam có lợi thế nếu duy trì được sự kỷ luật, hạn chế sai số và hiệu quả trong các pha bóng quyết định. Indonesia có thể gây khó khăn nhờ thể lực, pressing và chất lượng cá nhân.\n\nKhông nên khẳng định trước ai sẽ thắng. Nhiều khả năng đây sẽ là trận đấu kịch tính, nơi một khoảnh khắc nhỏ — pha phản công, pha bóng cố định hoặc sai lầm phòng ngự — có thể thay đổi cục diện. Nếu phải nói chung chung, đây là trận đấu mà **cả hai đội đều có cửa**, và kết quả có thể phụ thuộc lớn vào hiệu suất ngày thi đấu chứ không chỉ danh sách cầu thủ.",
+  "_has_expect": false
+}

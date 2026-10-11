@@ -1,0 +1,29 @@
+{
+  "id": "C1",
+  "group": "social",
+  "genre": "social_post",
+  "config": "min",
+  "chars": 154,
+  "seconds": 4.0,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 439,
+    "completion_tokens": 99,
+    "total_tokens": 538,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 46,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Việt Nam vào chung kết AFF Cup! Một hành trình đáng tự hào và thêm một cơ hội để hướng tới ngôi vô địch. Cùng tiếp lửa cho đội tuyển ở trận đấu cuối cùng!",
+  "_has_expect": false
+}

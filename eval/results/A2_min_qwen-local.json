@@ -1,0 +1,19 @@
+{
+  "id": "A2",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "min",
+  "chars": 831,
+  "seconds": 47.5,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 430,
+    "total_tokens": 1295,
+    "completion_tokens": 865,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**CLB Hà Nội chính thức bổ nhiệm huấn luyện viên mới**\n\nMới đây, Ban chủ nhiệm CLB bóng đá Hà Nội đã chính thức công bố quyết định bổ nhiệm huấn luyện viên mới cho đội một, thay thế người tiền nhiệm.\n\nTheo câu lạc bộ, quyết định được đưa ra sau quá trình cân nhắc kỹ lưỡng về phương pháp làm việc, triết lý huấn luyện cũng như khả năng thích ứng với mục tiêu của đội bóng trong giai đoạn tới. Huấn luyện viên mới sẽ bắt tay vào công việc trong các buổi tập gần nhất, với nhiệm vụ chính là ổn định tổ chức, cải thiện phong độ và giúp các cầu thủ hoàn thiện hơn về mặt chuyên môn.\n\nĐây là thay đổi nhân sự ở vị trí quan trọng, được kỳ vọng sẽ tạo động lực mới cho CLB Hà Nội trong các trận đấu còn lại của mùa giải. Câu lạc bộ cũng khẳng định sẽ tiếp tục đồng hành, hỗ trợ lực lượng chuyên môn để đội bóng hướng tới kết quả tốt nhất.",
+  "_has_expect": false
+}

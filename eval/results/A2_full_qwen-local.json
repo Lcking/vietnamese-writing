@@ -1,0 +1,21 @@
+{
+  "id": "A2",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "full",
+  "chars": 1836,
+  "seconds": 58.1,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 11260,
+    "total_tokens": 12119,
+    "completion_tokens": 859,
+    "prompt_tokens_details": {
+      "cached_tokens": 8192
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "# CLB Hà Nội chính thức có HLV trưởng mới\n\n**Sáng nay, ban lãnh đạo CLB Hà Nội xác nhận đã hoàn tất công tác bổ nhiệm HLV trưởng mới, người sẽ kế nhiệm vị trí mà HLV cũ để lại sau khi hai bên quyết định chia tay từ đầu mùa giải.**\n\nThông báo được câu lạc bộ đưa ra sau cuộc họp nội bộ kéo dài hơn một giờ đồng hồ. Theo đó, vị HLV mới sẽ chính thức ra mắt trong buổi họp báo diễn ra vào chiều mai, kèm theo kế hoạch làm việc cùng đội bóng cho phần còn lại của mùa giải.\n\nVề lý do thay đổi nhân sự, lãnh đạo CLB Hà Nội cho biết: \"Sau thời gian trao đổi thẳng thắn, cả hai bên đều thấy cần có sự thay đổi để phù hợp hơn với mục tiêu trước mắt. Đây là quyết định đã được cân nhắc kỹ lưỡng, không phải phản ứng tức thời sau một kết quả thi đấu.\"\n\nDù không tiết lộ quá nhiều về con người HLV mới, phía câu lạc bộ nhấn mạnh ông \"có kinh nghiệm làm việc ở giải chuyên nghiệp và hiểu rõ áp lực của V.League\". Điều này được xem là tín hiệu tích cực, bởi CLB Hà Nội đang bước vào giai đoạn then chốt của mùa giải, nơi mỗi điểm số đều có thể ảnh hưởng trực tiếp đến cuộc đua vô địch.\n\nTrên các diễn đàn người hâm mộ, phản ứng chia thành hai chiều. Một bộ phận kỳ vọng thay đổi nhân sự sẽ tạo \"làn gió mới\" cho lối chơi, giúp đội bóng thoát khỏi giai đoạn sa sút. Số khác lại lo ngại việc thay HLV giữa mùa giải có thể khiến hệ thống chiến thuật chưa kịp ăn khớp, nhất là khi các trụ cột đang trong chu kỳ thi đấu dày đặc.\n\nDù nhận định nào đúng, việc CLB Hà Nội quyết định thay đổi ghế HLV trưởng một lần nữa cho thấy áp lực thành tích tại đội bóng thủ đô không bao giờ là nhỏ. Nhiệm vụ của người kế nhiệm vì thế không chỉ là giúp đội bóng lấy lại phong độ, mà còn phải thuyết phục được những người hâm mộ vốn luôn đòi hỏi cao nhất ở V.League.\n\nChi tiết về bản hợp đồng và triết lý bóng đá của vị HLV mới sẽ được công bố tại buổi họp báo chiều mai.",
+  "_has_expect": false
+}

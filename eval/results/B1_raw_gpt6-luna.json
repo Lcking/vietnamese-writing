@@ -1,0 +1,29 @@
+{
+  "id": "B1",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "raw",
+  "chars": 773,
+  "seconds": 13.0,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 31,
+    "completion_tokens": 976,
+    "total_tokens": 1007,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 753,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**Nhận định sơ bộ:** nếu trận Việt Nam–Indonesia diễn ra tối 12/10, đây nhiều khả năng là trận đấu chặt chẽ, nơi bàn mở tỷ số và các tình huống chuyển trạng thái có thể quyết định cục diện. Việt Nam cần hạn chế mất bóng ở giữa sân, đồng thời tận dụng bóng chết và những pha phối hợp nhanh. Indonesia có thể gây khó bằng sức ép, tốc độ và các pha phản công.\n\nNếu Việt Nam đá sân nhà, đội có thể nhỉnh hơn đôi chút; còn trên sân khách hoặc sân trung lập, thế trận sẽ cân bằng hơn. **Kịch bản tham khảo: hòa 1–1**, nhưng đây chỉ là dự đoán thận trọng — kết quả còn phụ thuộc đáng kể vào địa điểm, đội hình và phong độ sát ngày thi đấu.\n\nMình chưa xác nhận được giải đấu, sân và danh sách cầu thủ cho trận ngày mai. Nếu bạn gửi thêm thông tin đó, mình có thể nhận định sát hơn.",
+  "_has_expect": false
+}

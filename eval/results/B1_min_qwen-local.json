@@ -1,0 +1,19 @@
+{
+  "id": "B1",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "min",
+  "chars": 1604,
+  "seconds": 43.0,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 427,
+    "total_tokens": 1066,
+    "completion_tokens": 639,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Trận Việt Nam — Indonesia tối mai nhiều khả năng sẽ là một cuộc đối đầu cân tài cân sức, nơi cả hai đội đều có lý do để tin vào cơ hội của mình.\n\nĐội tuyển Việt Nam thường được đánh giá cao ở khả năng kiểm soát thế trận, đặc biệt khi được chơi trên sân nhà. Nếu các cầu thủ duy trì được sự ổn định trong triển khai bóng, hạn chế sai số ở tuyến giữa và tận dụng tốt các tình huống phản công, đội nhà sẽ có nhiều lợi thế. Tuy nhiên, Indonesia không phải đối thủ dễ bắt nạt. Họ có tốc độ, quyết tâm và thường chơi rất pressing ở những trận lớn. Nếu Indonesia giữ được sự tập trung trong hiệp một và khai thác tốt các pha bóng dài, họ hoàn toàn có thể tạo ra bất ngờ.\n\nĐiểm mấu chốt của trận đấu có thể nằm ở khả năng giữ nhịp của hai đội. Bên nào ít犯错 hơn, kiểm soát tốt hơn các pha tranh chấp và tận dụng cơ hội dứt điểm tốt hơn sẽ chiếm ưu thế. Hàng phòng ngự của cả hai đều phải duy trì sự tỉnh táo, vì chỉ cần một khoảnh khắc mất tập trung cũng có thể thay đổi cục diện.\n\nTâm lý cũng là yếu tố đáng chú ý. Việt Nam sẽ có lợi thế về mặt không khí trận đấu, nhưng cũng có thể chịu áp lực lớn nếu không thể thắng sớm. Indonesia thì có thể nhập cuộc thận trọng, chờ đợi thời cơ để phản đòn. Trận đấu vì thế nhiều khả năng sẽ không diễn ra theo kịch bản một chiều, mà sẽ phụ thuộc rất nhiều vào những chi tiết nhỏ trong 90 phút.\n\nToàn bộ cục diện có thể thay đổi chỉ sau một bàn thắng, một pha phạm lỗi nguy hiểm hoặc một quyết sách thay người đúng lúc. Vì vậy, kết quả cuối cùng vẫn còn bỏ ngỏ. Điều có thể dự đoán được là đây sẽ là một trận cầu căng thẳng, giàu cảm xúc và không dễ dàng cho bất kỳ đội nào.",
+  "_has_expect": false
+}

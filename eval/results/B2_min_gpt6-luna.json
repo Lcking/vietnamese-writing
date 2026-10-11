@@ -1,0 +1,29 @@
+{
+  "id": "B2",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "min",
+  "chars": 1012,
+  "seconds": 7.7,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 435,
+    "completion_tokens": 668,
+    "total_tokens": 1103,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 388,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**Nhận định chuyên môn Man City – Arsenal**\n\nĐây thường là cuộc đấu giằng co giữa khả năng kiểm soát bóng của Man City và lối chơi pressing, chuyển trạng thái nhanh của Arsenal. Man City có thể kiên nhẫn kéo giãn hàng thủ đối phương, tìm khoảng trống ở hai biên và khu vực trước vòng cấm. Arsenal sẽ muốn gây sức ép từ sớm, đồng thời tận dụng những pha đoạt bóng để phản công trước khi đối thủ kịp tổ chức lại.\n\nĐiểm then chốt nằm ở khu trung tuyến: nếu Man City thoát pressing và giữ được nhịp trận đấu, họ có thể dồn Arsenal về sâu. Ngược lại, Arsenal càng gây áp lực hiệu quả thì càng có cơ hội tạo ra tình huống nguy hiểm từ những pha chuyển trạng thái. Các tình huống cố định cũng có thể tạo khác biệt trong một trận đấu cân bằng.\n\n**Dự đoán thế trận:** chặt chẽ, ít khoảng trống và có thể được định đoạt bởi một khoảnh khắc cá nhân hoặc sai sót ở hàng thủ. Kết quả cụ thể còn phụ thuộc vào sân đấu, đội hình xuất phát và tình trạng lực lượng hôm đó. Đây là nhận định bóng đá, không phải lời khuyên cá cược.",
+  "_has_expect": false
+}

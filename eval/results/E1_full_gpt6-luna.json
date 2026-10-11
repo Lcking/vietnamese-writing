@@ -1,0 +1,29 @@
+{
+  "id": "E1",
+  "group": "low_info",
+  "genre": "football_tin_tuc",
+  "config": "full",
+  "chars": 510,
+  "seconds": 6.2,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 12210,
+    "completion_tokens": 298,
+    "total_tokens": 12508,
+    "prompt_tokens_details": {
+      "cached_tokens": 12174,
+      "cache_write_tokens": 33,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 147,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Một trận bóng đá không chỉ là cuộc so tài giữa hai đội, mà còn là hành trình của sự kiên nhẫn, phối hợp và quyết tâm. Trên sân, mỗi pha bóng đều mở ra một khả năng mới; mỗi lần chuyển hướng tấn công lại khiến cục diện thêm khó đoán.\n\nĐiều làm nên sức hấp dẫn của trận đấu không chỉ nằm ở kết quả, mà còn ở cách các cầu thủ cùng nhau ứng biến trước từng tình huống. Khi tiếng còi mãn cuộc vang lên, những gì đọng lại có thể là niềm vui, sự tiếc nuối hoặc đơn giản là cảm giác vừa được sống trọn vẹn với bóng đá.",
+  "_has_expect": false
+}

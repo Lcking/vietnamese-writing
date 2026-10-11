@@ -1,0 +1,29 @@
+{
+  "id": "C1",
+  "group": "social",
+  "genre": "social_post",
+  "config": "full",
+  "chars": 52,
+  "seconds": 3.6,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 11748,
+    "completion_tokens": 63,
+    "total_tokens": 11811,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 11745,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 38,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Đội tuyển Việt Nam giành vé vào chung kết AFF Cup! ⚽",
+  "_has_expect": false
+}

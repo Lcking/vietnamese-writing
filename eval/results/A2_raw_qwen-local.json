@@ -1,0 +1,19 @@
+{
+  "id": "A2",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "raw",
+  "chars": 749,
+  "seconds": 29.7,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 74,
+    "total_tokens": 511,
+    "completion_tokens": 437,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**Bản tin: CLB Hà Nội chính thức có huấn luyện viên mới**\n\nSau một giai đoạn không đạt được kết quả như kỳ vọng, ban lãnh đạo CLB Hà Nội đã tiến hành thay đổi trên ghế huấn luyện. Vị trí HLV trưởng sẽ thuộc về một chiến lược gia mới, thay thế người tiền nhiệm trong giai đoạn tới.\n\nTheo nguồn tin từ đội bóng, quyết định này nhằm tạo động lực mới cho toàn đội, đồng thời hướng tới mục tiêu cải thiện phong độ, ổn định lối chơi và nâng cao thành tích ở các giải đấu còn lại. HLV mới sẽ bắt tay ngay vào công tác chuẩn bị, với kỳ vọng giúp CLB Hà Nội sớm tìm lại sự ổn định và khẳng định vị thế trong phần còn lại của mùa giải.\n\nCLB Hà Nội cho biết toàn đội sẽ tiếp tục tập trung, quyết tâm cao độ, hướng tới kết quả tích cực ở những trận đấu sắp tới.",
+  "_has_expect": false
+}

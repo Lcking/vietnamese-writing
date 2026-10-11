@@ -1,0 +1,29 @@
+{
+  "id": "B1",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "min",
+  "chars": 1530,
+  "seconds": 8.3,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 436,
+    "completion_tokens": 534,
+    "total_tokens": 970,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 102,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Trận Việt Nam – Indonesia tối mai hứa hẹn sẽ căng thẳng, bởi đây là cặp đấu luôn có tính cạnh tranh cao. Hai đội hiểu khá rõ lối chơi của nhau, nên những khác biệt nhỏ về phong độ, cách nhập cuộc và khả năng tận dụng cơ hội có thể tạo nên bước ngoặt.\n\nViệt Nam có thể hướng đến lối chơi chắc chắn, giữ cự ly đội hình và kiên nhẫn tìm khoảng trống. Nếu kiểm soát tốt khu vực giữa sân, các cầu thủ áo đỏ sẽ có cơ hội tổ chức những đợt tấn công mạch lạc. Tuy nhiên, đội cũng cần thận trọng trước sức ép và những pha chuyển trạng thái nhanh của Indonesia, nhất là khi để mất bóng ở những vị trí nguy hiểm.\n\nỞ chiều ngược lại, Indonesia thường chơi quyết liệt và không ngại đẩy cao nhịp độ. Họ có thể gây khó khăn bằng những tình huống tranh chấp mạnh và khai thác khoảng trống phía sau hàng thủ. Dẫu vậy, nếu dâng đội hình quá cao, Indonesia cũng có nguy cơ để lộ khoảng trống cho đối thủ phản công.\n\nThế trận vì vậy nhiều khả năng sẽ phụ thuộc vào việc đội nào giữ được sự bình tĩnh và hạn chế sai sót tốt hơn. Một bàn thắng sớm có thể làm thay đổi cách tiếp cận của cả hai bên, nhưng nếu trận đấu giằng co, khả năng tận dụng tình huống cố định và những khoảnh khắc cá nhân sẽ càng quan trọng.\n\nĐây là trận đấu khó đoán, chưa thể khẳng định bên nào sẽ giành chiến thắng. Việt Nam có cơ hội tạo lợi thế nếu duy trì được sự gắn kết và sắc bén ở khâu dứt điểm; Indonesia cũng đủ sức gây bất ngờ nếu tận dụng tốt tốc độ và sức ép. Điều có thể chờ đợi là một cuộc so tài quyết liệt, nơi từng chi tiết nhỏ đều có thể ảnh hưởng đến kết quả.",
+  "_has_expect": false
+}

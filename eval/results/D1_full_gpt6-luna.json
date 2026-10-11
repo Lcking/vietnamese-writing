@@ -1,0 +1,31 @@
+{
+  "id": "D1",
+  "group": "rewrite",
+  "genre": "football_tin_tuc",
+  "config": "full",
+  "chars": 61,
+  "seconds": 2.7,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 12217,
+    "completion_tokens": 23,
+    "total_tokens": 12240,
+    "prompt_tokens_details": {
+      "cached_tokens": 12174,
+      "cache_write_tokens": 40,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "2-1"
+  ],
+  "output": "Trận đấu khép lại với chiến thắng 2-1 nghiêng về đội chủ nhà.",
+  "_has_expect": true
+}

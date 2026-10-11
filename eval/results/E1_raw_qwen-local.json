@@ -1,0 +1,19 @@
+{
+  "id": "E1",
+  "group": "low_info",
+  "genre": "football_tin_tuc",
+  "config": "raw",
+  "chars": 98,
+  "seconds": 46.6,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 77,
+    "total_tokens": 803,
+    "completion_tokens": 726,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Bóng lăn, tiếng reo, sự hồi hộp, và niềm hy vọng của người xem hòa làm một trong một trận bóng đá.",
+  "_has_expect": false
+}

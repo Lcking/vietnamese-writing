@@ -1,0 +1,19 @@
+{
+  "id": "C1",
+  "group": "social",
+  "genre": "social_post",
+  "config": "raw",
+  "chars": 253,
+  "seconds": 23.0,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 73,
+    "total_tokens": 422,
+    "completion_tokens": 349,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Việt Nam vào chung kết AFF Cup!  \nMột tấm vé xứng đáng, một hành trình đầy quyết tâm. Cảm ơn các cầu thủ vì nỗ lực và bản lĩnh trên sân. Giờ là lúc cả nước hướng về trận chung kết — chúc đội tuyển Việt Nam thi đấu thành công!\n\n#ViệtNam #AFFCup #ChungKét",
+  "_has_expect": false
+}

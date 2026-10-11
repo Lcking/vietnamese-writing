@@ -1,0 +1,21 @@
+{
+  "id": "A1",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "min",
+  "chars": 417,
+  "seconds": 54.8,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 440,
+    "total_tokens": 1432,
+    "completion_tokens": 992,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "2-0"
+  ],
+  "output": "U23 Việt Nam đánh bại U23 Malaysia 2-0, Quang Hải ghi bàn phút 67\n\nTrong trận đấu thuộc vòng loại, U23 Việt Nam đã giành chiến thắng 2-0 trước U23 Malaysia. Ở phút 67, Quang Hải lập công, giúp đội tuyển Việt Nam tiếp tục nắm lợi thế và thể hiện sự chắc chắn trong thế trận.\n\nChiến thắng này giúp U23 Việt Nam tích lũy điểm số quan trọng, trong khi U23 Malaysia sẽ cần sớm tìm lại sự cân bằng ở những vòng đấu còn lại.",
+  "_has_expect": true
+}

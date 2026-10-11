@@ -1,0 +1,29 @@
+{
+  "id": "B1",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "full",
+  "chars": 1174,
+  "seconds": 8.7,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 11267,
+    "completion_tokens": 654,
+    "total_tokens": 11921,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 11264,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 335,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "# Việt Nam – Indonesia: Cuộc đối đầu khó lường\n\nTrận đấu giữa Việt Nam và Indonesia vào tối mai hứa hẹn căng thẳng khi hai đội đều có động lực giành kết quả tốt. Đây là cặp đấu thường diễn ra quyết liệt, nơi sự tập trung và khả năng tận dụng cơ hội có thể tạo nên khác biệt.\n\nIndonesia có thể gây sức ép bằng lối chơi giàu tốc độ, đặc biệt trong những pha chuyển trạng thái. Vì vậy, hàng thủ Việt Nam cần giữ cự ly hợp lý và hạn chế để đối phương khai thác khoảng trống sau lưng. Ở chiều ngược lại, Việt Nam có thể tìm cơ hội từ những tình huống phối hợp ở biên, đồng thời cần bình tĩnh trước sức ép để triển khai bóng hiệu quả.\n\nKhu vực giữa sân nhiều khả năng sẽ là điểm nóng. Đội nào kiểm soát được nhịp độ và hạn chế sai sót khi mất bóng sẽ có lợi thế. Những tình huống cố định cũng có thể trở thành phương án quan trọng trong một trận đấu được dự báo không dễ xuất hiện nhiều khoảng trống.\n\nKết quả vì thế khó đoán trước. Việt Nam có cơ hội giành chiến thắng nếu duy trì được sự chắc chắn và tận dụng tốt các thời cơ, nhưng Indonesia cũng đủ khả năng tạo ra thế trận cân bằng. Một trận hòa hoặc chiến thắng sít sao cho một trong hai đội là những kịch bản có thể xảy ra.",
+  "_has_expect": false
+}

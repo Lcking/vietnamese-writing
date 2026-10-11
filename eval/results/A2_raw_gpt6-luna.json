@@ -1,0 +1,29 @@
+{
+  "id": "A2",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "raw",
+  "chars": 281,
+  "seconds": 5.0,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 37,
+    "completion_tokens": 186,
+    "total_tokens": 223,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 98,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**CLB Hà Nội bổ nhiệm HLV mới**\n\nCLB Hà Nội đã bổ nhiệm một HLV mới, thay thế người tiền nhiệm. Đội bóng chưa công bố danh tính nhà cầm quân cũng như thông tin chi tiết về thời hạn hợp đồng.\n\nTân HLV sẽ sớm bắt tay vào công việc, hướng tới các mục tiêu của CLB trong thời gian tới.",
+  "_has_expect": false
+}

@@ -1,0 +1,31 @@
+{
+  "id": "A1",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "full",
+  "chars": 196,
+  "seconds": 4.2,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 12211,
+    "completion_tokens": 203,
+    "total_tokens": 12414,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 12208,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 130,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "2-0"
+  ],
+  "output": "# U23 Việt Nam thắng U23 Malaysia 2-0, Quang Hải ghi bàn ở phút 67\n\nU23 Việt Nam đánh bại U23 Malaysia với tỷ số 2-0 ở vòng loại. Quang Hải ghi bàn ở phút 67, góp công vào chiến thắng của đội nhà.",
+  "_has_expect": true
+}

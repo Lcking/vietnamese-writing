@@ -1,0 +1,31 @@
+{
+  "id": "D1",
+  "group": "rewrite",
+  "genre": "football_tin_tuc",
+  "config": "raw",
+  "chars": 47,
+  "seconds": 2.5,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 46,
+    "completion_tokens": 73,
+    "total_tokens": 119,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 47,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "2-1"
+  ],
+  "output": "Đội chủ nhà đã giành chiến thắng với tỷ số 2-1.",
+  "_has_expect": true
+}

@@ -32,6 +32,20 @@ class LLMError(RuntimeError):
         self.status = status
 
 
+def _autofix_payload(payload, error_detail):
+    """根据服务端 400 报错,推断参数该怎么改。返回 {要改的键: 新键 或 None(删除)}。
+    只处理已知可修正情形;无法判断时返回空 dict(交给上层抛错)。"""
+    d = (error_detail or "").lower()
+    fixes = {}
+    if "max_tokens" in d and "max_completion_tokens" in d and "max_tokens" in payload:
+        fixes["max_tokens"] = "max_completion_tokens"
+    if "temperature" in d and ("unsupported" in d or "not supported" in d):
+        fixes["temperature"] = None
+    if "chat_template_kwargs" in d and ("unsupported" in d or "unknown" in d or "not supported" in d):
+        fixes["chat_template_kwargs"] = None
+    return fixes
+
+
 class LLMResult:
     """保留文本内容的同时携带元数据(finish_reason / truncated / usage)。
     用 str 语义:str(result) 得到文本;result.text 等价。"""
@@ -78,11 +92,25 @@ class LLMClient:
                 {"role": "user", "content": user},
             ],
         }
-        # 只有显式给出才带这两项,避免覆盖服务端/模型自身默认
-        if max_tokens is not None:
-            payload["max_tokens"] = max_tokens
-        if temperature is not None:
-            payload["temperature"] = temperature
+        model = payload["model"]
+
+        # 推理模型(gpt-5/6、o 系列等)拒绝 max_tokens 与自定义 temperature,
+        # 需改用 max_completion_tokens。可用 VIET_LLM_REASONING_HINT=1 显式声明。
+        reasoning = bool(kw.get("reasoning") or self.cfg.get("reasoning"))
+        if not reasoning:
+            m = model.lower()
+            reasoning = any(
+                m.startswith(p) for p in ("gpt-5", "gpt-6", "o1", "o3", "o4")
+            )
+        if reasoning:
+            if max_tokens is not None:
+                payload["max_completion_tokens"] = max_tokens
+            # 推理模型通常只接受默认 temperature=1,不主动传
+        else:
+            if max_tokens is not None:
+                payload["max_tokens"] = max_tokens
+            if temperature is not None:
+                payload["temperature"] = temperature
         # 关闭思考链(本地 Qwen3 等深度思考型模型,可大幅提速)
         if kw.get("disable_thinking") or self.cfg.get("disable_thinking"):
             payload["chat_template_kwargs"] = {"enable_thinking": False}
@@ -96,7 +124,16 @@ class LLMClient:
 
         last_err = None
         attempts = max(1, int(retries or 1))
+        learned = {}  # 记住服务端的参数怪癖,避免重复试错
         for attempt in range(attempts):
+            if learned:
+                for drop, replace in learned.items():
+                    if replace is None:
+                        payload.pop(drop, None)
+                    else:
+                        if drop in payload:
+                            payload[replace] = payload.pop(drop)
+                data = json.dumps(payload).encode()
             req = urllib.request.Request(url, data=data, headers=headers, method="POST")
             try:
                 with urllib.request.urlopen(req, timeout=timeout) as r:
@@ -121,6 +158,13 @@ class LLMClient:
                     last_err = LLMError(f"限流(429):{detail}", kind="rate_limit", status=status)
                     # 限流:退避重试
                 elif 400 <= status < 500:
+                    # 参数类错误:尝试自动修正一次(推理模型/服务端怪癖)
+                    fixed = _autofix_payload(payload, detail)
+                    if fixed and fixed not in learned.values() and attempt + 1 < attempts:
+                        learned.update(fixed)
+                        last_err = LLMError(f"参数错误({status}),已自动修正重试:{detail}",
+                                            kind="param", status=status)
+                        continue
                     raise LLMError(f"请求参数错误({status}):{detail}", kind="param", status=status)
                 else:
                     last_err = LLMError(f"服务端错误({status}):{detail}", kind="server", status=status)

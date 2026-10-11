@@ -1,0 +1,21 @@
+{
+  "id": "D1",
+  "group": "rewrite",
+  "genre": "football_tin_tuc",
+  "config": "min",
+  "chars": 55,
+  "seconds": 18.3,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 442,
+    "total_tokens": 813,
+    "completion_tokens": 371,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "2-1"
+  ],
+  "output": "Trận đấu khép lại với tỷ số 2-1 nghiêng về đội chủ nhà.",
+  "_has_expect": true
+}

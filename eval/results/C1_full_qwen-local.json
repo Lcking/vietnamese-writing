@@ -1,0 +1,19 @@
+{
+  "id": "C1",
+  "group": "social",
+  "genre": "social_post",
+  "config": "full",
+  "chars": 126,
+  "seconds": 45.4,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 10881,
+    "total_tokens": 11351,
+    "completion_tokens": 470,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Đội tuyển Việt Nam đã giành vé vào chung kết AFF Cup. Chúc đội thi đấu vững vàng và đạt kết quả tốt nhất ở trận đấu cuối cùng.",
+  "_has_expect": false
+}

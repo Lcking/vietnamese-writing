@@ -1,0 +1,21 @@
+{
+  "id": "C2",
+  "group": "social",
+  "genre": "social_post",
+  "config": "raw",
+  "chars": 1483,
+  "seconds": 31.3,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 72,
+    "total_tokens": 604,
+    "completion_tokens": 532,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "chưa xác nhận"
+  ],
+  "output": "# Tin bóng đá: HLV [Tên] được cho là đã từ chức – **Chưa xác nhận**\n\n**Cập nhật lúc [thời gian], [ngày/tháng/năm]**\n\nTheo một số nguồn tin từ bên trong ban huấn luyện, HLV [Tên HLV] đã gửi đơn từ chức đến ban lãnh đạo [Tên đội bóng] trong tối qua sau trận thua trước [Đối thủ] với tỷ số [tỷ số].\n\n**Tuy nhiên, đến thời điểm này, thông tin trên vẫn CHƯA XÁC NHẬN.**\n\n---\n\n## Những gì đã và chưa được xác nhận:\n\n- ✅ **Đã xác nhận:** Đội [Tên đội] thua [Đối thủ] ở vòng [số] giải [Tên giải đấu].\n- ❌ **CHƯA XÁC NHẬN:** Việc HLV [Tên] chính thức nộp đơn từ chức.\n- ❌ **CHƯA XÁC NHẬN:** Ban lãnh đạo đội bóng đã nhận được đơn từ chức.\n- ❌ **CHƯA XÁC NHẬN:** Có thay đổi nhân sự trên ban huấn luyện.\n\n---\n\n## Phát ngôn từ các bên liên quan:\n\n**Phó Chủ tịch [Tên], phát biểu trước báo chí:**\n> *\"Chúng tôi chưa nhận được bất kỳ văn bản chính thức nào. Mọi thông tin về việc thay đổi HLV đều chưa xác nhận. Chúng tôi sẽ có thông báo chính thức khi có quyết định cuối cùng.\"*\n\n**Trợ lý HLV [Tên]:**\n> *\"Tôi không thể xác nhận bất kỳ điều gì. Hiện tại, toàn đội đang tập trung chuẩn bị cho trận đấu tiếp theo.\"*\n\n---\n\n## Lưu ý cho người đọc:\n\n> ⚠️ **Mọi thông tin về việc HLV [Tên] từ chức tại thời điểm này đều CHƯA XÁC NHẬN.** Bài viết này chỉ phản ánh các nguồn tin chưa được kiểm chứng. Vui lòng chờ thông báo chính thức từ [Tên đội bóng] trước khi lan truyền thêm.\n\n---\n\n*Bài viết sẽ được cập nhật ngay khi có thông tin chính thức từ CLB.*\n\n**[Tên phóng viên], [Tên báo/đài truyền hình]**",
+  "_has_expect": true
+}

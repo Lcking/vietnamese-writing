@@ -1,0 +1,19 @@
+{
+  "id": "C1",
+  "group": "social",
+  "genre": "social_post",
+  "config": "min",
+  "chars": 230,
+  "seconds": 19.0,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 429,
+    "total_tokens": 725,
+    "completion_tokens": 296,
+    "prompt_tokens_details": null
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Tin vui! Đội tuyển Việt Nam chính thức góp mặt ở trận chung kết AFF Cup.\n\nMột hành trình đầy quyết tâm, một chiến thắng xứng đáng. Cả nước sẽ cùng hướng về trận đấu cuối cùng, tiếp thêm niềm tin cho các cầu thủ.\n\nViệt Nam, cố lên!",
+  "_has_expect": false
+}

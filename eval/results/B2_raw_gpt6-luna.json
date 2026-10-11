@@ -1,0 +1,31 @@
+{
+  "id": "B2",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "raw",
+  "chars": 250,
+  "seconds": 4.3,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 30,
+    "completion_tokens": 210,
+    "total_tokens": 240,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 136,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "forbidden_hit": [
+    "cá cược"
+  ],
+  "expected_hit": [],
+  "output": "Bạn muốn phân tích trận Man City – Arsenal nào? Hai đội gặp nhau nhiều lần; hãy cho mình **ngày thi đấu hoặc giải đấu** để mình phân tích đúng trận. Mình sẽ tập trung vào phong độ, chiến thuật và các cặp đấu đáng chú ý — không đưa lời khuyên cá cược.",
+  "_has_expect": false
+}
