@@ -1,0 +1,14 @@
+{
+  "id": "A1",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "raw",
+  "chars": 36,
+  "seconds": 170.2,
+  "finish_reason": "error",
+  "usage": null,
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "[ERROR] The read operation timed out",
+  "_has_expect": true
+}

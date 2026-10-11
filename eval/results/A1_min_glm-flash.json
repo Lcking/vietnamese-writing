@@ -1,0 +1,26 @@
+{
+  "id": "A1",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "min",
+  "chars": 1326,
+  "seconds": 97.6,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 1096,
+    "completion_tokens_details": {
+      "reasoning_tokens": 695
+    },
+    "prompt_tokens": 434,
+    "prompt_tokens_details": {
+      "cached_tokens": 384
+    },
+    "total_tokens": 1530
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "2-0"
+  ],
+  "output": "**U23 Việt Nam thắng thuyết phục U23 Malaysia 2-0 tại vòng loại U23 châu Á**\n\nTrong trận đấu thuộc khuôn khổ vòng loại U23 châu Á, đội tuyển U23 Việt Nam đã có chiến thắng trọn vẹn 2-0 trước U23 Malaysia, trong đó đội trưởng Quang Hải là người mở tỷ số ở phút 67.\n\nTrận đấu diễn ra căng thẳng trong suốt 45 phút đầu tiên khi U23 Malaysia chơi phòng ngự dày đặc và chủ động lùi sâu. Các cơ hội ghi bàn của U23 Việt Nam trong hiệp một chưa thực sự sắc nét, dù đội bóng của HLV Troussier kiểm soát bóng nhiều và dồn ép đối phương về phần sân nhà.\n\nBước ngoặt của trận đấu đến ở phút 67. Từ pha dàn xếp tình huống cố định, Quang Hải nhận bóng ngoài vòng cấm rồi tung cú sút bằng chân trái đưa bóng đi sát cột dọc, hạ thủ môn đội bạn, mở tỷ số 1-0 cho U23 Việt Nam. Bàn thắng của đội trưởng càng giúp các học trò thi đấu thăng hoa và dồn ép đối thủ mạnh mẽ hơn ở những phút cuối trận.\n\nĐến phút 84, Tiến Linh ấn định chiến thắng 2-0 sau pha dứt điểm cận thành trong vòng cấm, chốt hạ hoàn toàn hy vọng trở lại của U23 Malaysia.\n\nChiến thắng này giúp U23 Việt Nam đi tiếp với mức điểm tối đa sau hai lượt trận, đồng thời đặt một chân vào vòng chung kết U23 châu Á. Ở lượt đấu cuối cùng, thầy trò HLV Troussier sẽ chạm trán U23 Yemen. Một kết quả có lợi sẽ giúp U23 Việt Nam giành vị trí nhất bảng và tấm vé đi tiếp sớm một lượt đấu.",
+  "_has_expect": true
+}

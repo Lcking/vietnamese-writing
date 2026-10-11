@@ -1,0 +1,24 @@
+{
+  "id": "C1",
+  "group": "social",
+  "genre": "social_post",
+  "config": "full",
+  "chars": 163,
+  "seconds": 11.8,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 402,
+    "completion_tokens_details": {
+      "reasoning_tokens": 359
+    },
+    "prompt_tokens": 11717,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 12119
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "Việt Nam chính thức giành vé vào chung kết AFF Cup.\n\nThông tin về đối thủ và lịch thi đấu trận chung kết sẽ được cập nhật khi có công bố chính thức từ Ban tổ chức.",
+  "_has_expect": false
+}

@@ -1,0 +1,24 @@
+{
+  "id": "C1",
+  "group": "social",
+  "genre": "social_post",
+  "config": "min",
+  "chars": 458,
+  "seconds": 23.6,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 643,
+    "completion_tokens_details": {
+      "reasoning_tokens": 474
+    },
+    "prompt_tokens": 428,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1071
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "🇻🇳 **CHUNG KẾT RỒI!**\n\nĐội tuyển Việt Nam đã chính thức giành vé vào trận chung kết AFF Cup! Hành trình đến với ngày hôm nay không hề dễ dàng, nhưng tinh thần không bao giờ bỏ cuộc của các cầu thủ đã tiếp thêm niềm tin cho hàng triệu người hâm mộ.\n\nGiờ là lúc cả nước cùng hướng về đội tuyển, dốc toàn lực cổ vũ cho những ngôi sao vàng trong trận quyết đấu cuối cùng.\n\nViệt Nam ơi, chiến đấu! Về đích nào! ⚽🔥\n\n#AFFCup #TuyenVietNam #ChungKet #TinYeuKhangDinh",
+  "_has_expect": false
+}

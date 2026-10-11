@@ -1,0 +1,24 @@
+{
+  "id": "B1",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "full",
+  "chars": 3265,
+  "seconds": 144.6,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 4956,
+    "completion_tokens_details": {
+      "reasoning_tokens": 4027
+    },
+    "prompt_tokens": 11213,
+    "prompt_tokens_details": {
+      "cached_tokens": 384
+    },
+    "total_tokens": 16169
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "# Nhận định trước trận Việt Nam – Indonesia: Đối đầu truyền kiếp, kịch bản khó lường\n\nTối mai, sân cỏ Đông Nam Á sẽ lại chứng kiến một cuộc chạm trán truyền kiếp: tuyển Việt Nam gặp Indonesia. Không cần nhiều lời giới thiệu, bởi mỗi lần hai đội bắt tay nhau là một lần khán đài dậy sóng, các trang báo lại rực rỡ màu cờ, và người hâm mộ hai nước gần như \"gác lại mọi việc\" để dõi theo từng pha bóng. Đó là lý do dù thuộc khuôn khổ giải đấu nào, cuộc đối đầu này vẫn luôn đáng để chờ đợi.\n\n### Tuyển Việt Nam: bản lĩnh vẫn là tài sản lớn nhất\n\nĐội bóng áo đỏ đang trong giai đoạn làm mới lực lượng, với những gương mặt trẻ ngày càng đảm nhận vai trò quan trọng. Điểm mạnh bền vững nhất của tuyển Việt Nam nhiều năm qua vẫn là tinh thần kỷ luật và lối chơi dựa trên tập thể. Tuy nhiên, trước một Indonesia đá rắn và mạnh về thể lực, đội nhà buộc phải giải quyết tốt hai bài toán: giữ được mạch trận khi bị pressing gắt, và hạn chế sai lầm ở các tình huống bóng chết. Nếu một trong hai việc này không được xử lý ổn thỏa thì 90 phút tối mai sẽ rất vất vả.\n\n### Indonesia: rắn rỏi, trực diện và đầy quyết tâm\n\nIndonesia những năm gần đây đã khác hẳn hình ảnh từng bị coi là \"vật hi sinh\" của khu vực. Họ sở hữu đội hình cường tráng, chơi bóng trực diện, giàu tốc độ, và đặc biệt biết cách gây khó dễ cho mọi đối thủ bằng các pha phản công nhanh cùng những tình huống cố định. Đáng nể nhất là tinh thần chiến đấu: hiếm khi đội bóng này bỏ cuộc trong bất kỳ tình huống nào. Chưa kể, lượng CĐV đông đảo luôn tạo nên một sức ép không nhỏ, dù trận đấu diễn ra ở đâu.\n\n### Lịch sử đối đầu: thế cân bằng đã thay đổi\n\nTrong quá khứ xa hơn, thành tích đối đầu nghiêng hẳn về tuyển Việt Nam; có giai đoạn Indonesia gặp tuyển Việt Nam là gặp nỗi ám ảnh. Nhưng vài năm trở lại đây, cuộc chơi đã công bằng hơn hẳn: ở những lần chạm trán gần nhất, đội bóng xứ Vạn Đảo không còn e ngại gì và thậm chí đã giành được những kết quả khá tốt. Chính vì thế, muốn khẳng định đội nào nhỉnh hơn tuyệt đối ở thời điểm này là điều không dễ.\n\n### Điểm nóng đáng xem\n\n- **Cuộc chiến vùng giữa sân:** khả năng thoát pressing và triển khai bóng của các tiền vệ đội nhà sẽ quyết định đội nào làm chủ nhịp độ.\n- **Bóng chết:** cả hai đội đều nguy hiểm trong các tình huống cố định, và nhiều khả năng bàn thắng sẽ đến từ đó.\n- **Tâm lý:** đội nào ghi bàn mở tỷ số trước sẽ có lợi thế rất lớn, bởi những trận đấu thế này thường được bước ngoặt bằng một khoảnh khắc chứ không phải thế lực áp đảo.\n\n### Dự đoán: cân bằng, chặt chẽ, không dành cho kẻ chủ quan\n\nĐây là kiểu trận đấu mà mọi con số trước giờ bóng lăn chỉ mang tính tham khảo. Xét về thể lực và độ rắn, Indonesia có phần được đánh giá cao hơn; nhưng xét bản lĩnh ở những trận lớn và sự gắn kết tập thể, tuyển Việt Nam chưa bao giờ là đội dễ bắt nạt. Kịch bản dễ xảy ra nhất là một thế trận chặt chẽ, ít bàn thắng, nơi sai lầm nhỏ nhất cũng có thể định đoạt kết quả. Kết quả hòa không phải chuyện lạ, còn nếu một trong hai đội có được niềm vui trọn vẹn, cách biệt nhiều khả năng chỉ dừng lại ở mức tối thiểu.\n\nMột điều duy nhất có thể khẳng định: sẽ không có gì là chắc chắn cho đến khi tiếng còi mãn cuộc vang lên. Người hâm mộ cứ tận hưởng — như thường lệ, Việt Nam gặp Indonesia là trận cầu chưa từng khiến khán giả thất vọng về độ kịch tính.",
+  "_has_expect": false
+}

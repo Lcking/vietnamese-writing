@@ -1,0 +1,24 @@
+{
+  "id": "A2",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "min",
+  "chars": 1569,
+  "seconds": 46.1,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 1441,
+    "completion_tokens_details": {
+      "reasoning_tokens": 981
+    },
+    "prompt_tokens": 430,
+    "prompt_tokens_details": {
+      "cached_tokens": 384
+    },
+    "total_tokens": 1871
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**CLB HÀ NỘI CHÍNH THỨC BỔ NHIỆM TÂN HUẤN LUYỆN VIÊN TRƯỞNG**\n\nBan lãnh đạo CLB Hà Nội vừa công bố quyết định bổ nhiệm tân huấn luyện viên trưởng, chính thức chốt phương án thay người trên băng ghế chỉ đạo sau khi vị HLV cũ chia tay đội bóng.\n\nTrước đó, hai bên đã thống nhất chấm dứt hợp đồng. Người tiền nhiệm để lại nhiều dấu ấn trong suốt thời gian gắn bó, song kết quả thi đấu ở giai đoạn vừa qua chưa đáp ứng được kỳ vọng của Ban điều hành, buộc đội bóng Thủ đô phải tính đến phương án thay đổi nhân sự.\n\nTheo thông cáo từ CLB, việc lựa chọn tân HLV trưởng dựa trên nhiều tiêu chí khắt khe: am hiểu tủ nhân lực trẻ của đội, phù hợp với lối chơi kiểm soát bóng vốn là \"chất riêng\" của Hà Nội, đồng thời có khả năng phối hợp chặt chẽ với ban huấn luyện đội trẻ nhằm duy trì sự liền mạch trong đường lối phát triển.\n\nVị chiến lược gia mới bày tỏ hào hứng trước thử thách: \"Đây là tập thể có nền móng vững và đội hình chất lượng. Ưu tiên trước mắt của chúng tôi là giúp các cầu thủ nhanh chóng ổn định tâm lý, duy trì phong độ và hướng tới những kết quả tích cực nhất ở các vòng đấu còn lại.\"\n\nĐược biết, tân HLV trưởng sẽ có buổi làm việc đầu tiên với đội ngay hôm nay trước khi chính thức đứng lớp ở buổi tập kế tiếp. Dù thay đổi trên băng ghế huấn luyện, Ban lãnh đạo khẳng định các mục tiêu đề ra cho mùa giải vẫn được giữ nguyên, và toàn đội đang dồn hết sức chuẩn bị cho chuỗi trận quan trọng phía trước.\n\nCuộc đua phía trước còn dài, và lựa chọn nhân sự lần này được xem là bước ngoặt có thể định hình lại cục diện của đội bóng Thủ đô trong giai đoạn nước rút.",
+  "_has_expect": false
+}

@@ -1,0 +1,24 @@
+{
+  "id": "E1",
+  "group": "low_info",
+  "genre": "football_tin_tuc",
+  "config": "full",
+  "chars": 2394,
+  "seconds": 79.8,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 2631,
+    "completion_tokens_details": {
+      "reasoning_tokens": 1871
+    },
+    "prompt_tokens": 12186,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 14817
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**Trận bóng không tên**\n\nCó những ngày mà cuộc sống dường như dừng lại để nhường chỗ cho một trận bóng. Từ lúc trời còn chưa tối, người ta đã nhắc nhau, hẹn nhau, chen nhau tìm một chỗ ngồi cạnh màn hình hay một tấm vé vào sân. Bóng đá có sức quyến rũ kỳ lạ ở chỗ ấy: chưa cần bóng lăn, lòng người đã bắt đầu nóng lên.\n\nTiếng còi khai cuộc vang lên, và mọi thứ như được kích hoạt. Hai mươi hai con người đuổi theo một quả bóng, nhưng thực ra họ đang kéo theo hàng triệu trái tim cùng đập. Sân cỏ bừng sáng, khán đài rực sắc cờ, tiếng hò reo dồn dập như sóng vỗ. Mỗi pha lên bóng đều khiến người ta nín thở; mỗi đường chuyền hỏng lại làm khán giả xót xa thay chính đội nhà mình.\n\nTrận bóng đẹp ở chỗ không ai biết điều gì sắp đến. Có những quãng thời gian bóng luân chuyển mượt mà, các đợt tấn công nối nhau như gân mạch, khiến người xem quên cả ly nước trên tay. Có những khoảnh khắc căng như dây đàn: một cơ hội bị bỏ lỡ, một cú dứt điểm sượt qua cột dọc, một pha cứu thua ngoạn mục. Khán giả đứng dậy ngồi xuống, ôm đầu, vỗ tay, gào to tên thần tượng rồi lại ôm mặt — cảm xúc bị xé ra rồi ghép lại liên tục trong suốt chín mươi phút.\n\nRồi khoảnh khắc ấy đến, khoảnh khắc làm cả sân cỏ như nổ tung. Bóng chui vào lưới, và mọi thứ vỡ òa. Người này ôm chặt người kia, nhảy múa, gào thét, thậm chí bật khóc. Bên kia chiến tuyến, những gương mặt gục xuống, đôi mắt xa xăm nhìn về khung thành đã thủng lưới. Đó là nghịch lý của bóng đá: niềm vui của đội này chính là nỗi đau của đội kia, và cả hai đều thật đến mức xót xa.\n\nNỗ lực, mồ hôi, những đường chạy kiệt sức — tất cả được gói lại trong tiếng còi mãn cuộc. Có đội reo vui như thể vừa chinh phục cả thế giới, có đội ngước nhìn bầu trời với đầy tiếc nuối nhưng vẫn vẫy tay cảm ơn khán đài. Còn người hâm mộ thì ở lại thật lâu, ca hát, tranh cãi say sưa về từng pha bóng. Trận đấu kết thúc, nhưng câu chuyện về nó mới chỉ bắt đầu: ở quán ăn ven đường, trên chuyến xe cuối ngày, trong những dòng bình luận ngập tràn mạng xã hội.\n\nVà rồi, cũng chẳng ai nhớ mãi những con số. Người ta nhớ cảm giác tim thót khi trái bóng sượt cột dọc, nhớ tiếng gào khóc vỡ òa, nhớ cả khoảng lặng nghẹt thở kéo dài vài giây trước bàn thắng. Người ta nhớ cảm giác được sống chung một nhịp cảm xúc với hàng vạn người vốn xa lạ. Bóng đá hay ở chỗ ấy: chỉ là hai mươi hai người đuổi theo một quả bóng, nhưng để lại trong lòng khán giả những rung động chẳng bao giờ cũ.",
+  "_has_expect": false
+}

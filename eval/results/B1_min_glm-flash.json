@@ -1,0 +1,24 @@
+{
+  "id": "B1",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "min",
+  "chars": 2793,
+  "seconds": 99.2,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 3225,
+    "completion_tokens_details": {
+      "reasoning_tokens": 2418
+    },
+    "prompt_tokens": 425,
+    "prompt_tokens_details": {
+      "cached_tokens": 384
+    },
+    "total_tokens": 3650
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**Việt Nam – Indonesia (tối mai): Cuộc đối đầu không khoan nhượng, kết quả khó lường**\n\nKhông cần thêm động lực nào khác, chỉ cần nghe đến cái tên Indonesia là đủ để mỗi lần chạm trán giữa hai đội trở nên đặc biệt. Đây là một trong những cặp kình địch lâu đời và sôi nổi nhất Đông Nam Á, nơi mọi pha tranh chấp đều mang màu sắc của niềm tự hào, và mọi bàn thắng đều có sức nặng hơn thường lệ.\n\n**Đội nhà có lợi thế sân bãi, nhưng áp lực cũng không nhỏ**\n\nTrở về thi đấu trên sân nhà cùng sự tiếp sức của hàng vạn khán giả, đội tuyển Việt Nam chắc chắn sẽ được hưởng lợi thế lớn về mặt tinh thần. Môi trường quen thuộc, mặt sân quen thuộc, khí hậu quen thuộc — tất cả là những yếu tố thuận lợi cho lối chơi vốn nhấn mạnh kỹ năng, phối hợp nhỏ và chuyển trạng thái nhanh.\n\nTuy vậy, áp lực từ kỳ vọng của người hâm mộ cũng là con dao hai lưỡi. Ở những trận kình địch, đôi khi chính sự gò bó tâm lý lại khiến đội nhà không chơi được tự nhiên như mong đợi. Nếu hàng tiền vệ sớm kiểm soát được nhịp độ trận đấu, mọi thứ sẽ dễ thở hơn nhiều; ngược lại, nếu để đối thủ mở tỷ số trước, bài toán tâm lý sẽ khó khăn gấp bội.\n\n**Indonesia: đối thủ đã khác xưa**\n\nKhông thể tiếp cận Indonesia bằng con mắt của năm, bảy năm về trước. Đội bóng đến từ xứ sở vạn đảo đã có bước tiến rõ rệt về chất lượng lực lượng, đặc biệt với sự góp mặt của không ít gương mặt nhập tịch mang nền tảng bóng đá phương Tây. Họ chơi bùng nổ về tốc độ, mạnh mẽ trong các pha tranh chấp tay đôi và khá nguy hiểm từ bóng chết.\n\nVới đặc thù đó, khả năng Indonesia sẽ chủ động dâng cao pressing ngay từ đầu hiệp, nhằm khoét vào những tình huống phối hợp mà đội nhà chưa thực sự chắc chắn. Đây là điểm mà ban huấn luyện cần chuẩn bị kỹ nếu không muốn rơi vào thế bị động ngay những phút đầu tiên.\n\n**Những yếu tố có thể quyết định trận đấu**\n\n- **Tâm lý đội chủ nhà:** bản lĩnh chịu áp lực từ kỳ vọng của khán giả nhà – người thứ 12\n- **Kiểm soát nhịp độ:** ai nắm giữ tempo, người đó sẽ dễ sắp đặt thế trận theo ý mình\n- **Bóng chết:** trước một đối thủ có thể hình vượt trội, đây luôn là vũ khí đáng sợ nhất\n- **Sự quyết đoán trong vòng cấm:** cơ hội ở các trận kình địch thường rất ít, ai tận dụng tốt hơn sẽ có lợi thế lớn\n\n**Quả bóng tròn, không ai dám vỗ ngực**\n\nNói thật lòng, đây là một trận đấu quá khó để đưa ra bất kỳ dự đoán chắc chắn nào. Hai đội có phong cách trái ngược, điểm mạnh điểm yếu đều rõ ràng, và lịch sử đối đầu cũng cho thấy chiến thắng chưa bao giờ nằm sẵn trong tay đội nào. Bóng đá vốn là môn thể thao của những bất ngờ — càng đặc biệt hơn ở những trận derby Đông Nam Á.\n\nĐiều duy nhất có thể khẳng định: cả hai đội sẽ không dành cho nhau bất cứ sự nhượng bộ nào, và người hâm mộ có quyền mong chờ một trận đấu quýnh quánh, giàu cảm xúc và đầy cống hiến. Còn về kết quả, hãy để 90 phút trên sân tự trả lời.",
+  "_has_expect": false
+}

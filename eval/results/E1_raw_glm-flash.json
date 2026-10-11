@@ -1,0 +1,24 @@
+{
+  "id": "E1",
+  "group": "low_info",
+  "genre": "football_tin_tuc",
+  "config": "raw",
+  "chars": 1569,
+  "seconds": 67.5,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 2422,
+    "completion_tokens_details": {
+      "reasoning_tokens": 1905
+    },
+    "prompt_tokens": 42,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2464
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "## Một Trận Bóng Đá\n\nTiếng còi khai cuộc vang lên, và khán đài như sôi nguồn.\n\nTôi không muốn kể tên đội bóng nào, cũng chẳng tiện nhớ nổi con số trên bảng tỷ số. Bởi cái đọng lại sau mỗi trận đấu chưa bao giờ là những con số. Đó là hơi thở gấp gáp của hàng vạn con người cùng dồn về một hướng. Là những làn cờ nhấp nhô như sóng. Là tiếng vỗ tay dồn dập, rơi xuống mặt cỏ xanh mướt.\n\nBóng lăn, và thời gian bỗng chạy theo nhịp khác. Có những pha chuyền bóng đẹp đến mức cả sân bật dậy trước khi ai kịp hiểu hết ý đồ. Có những cú dứt điểm vọt xà, và tiếng \"à\" dài vang ra như một cơn gió lùa qua bốn góc khán đài. Có cả những khoảng lặng — khi một cầu thủ ngã xuống và chậm chạp chưa đứng dậy nổi, khi cả sân vận động nín thở, chỉ còn nghe tiếng bước chân của những người túc trực bên rìa sân.\n\nRồi có những khoảnh khắc bùng nổ. Bóng chạm lưới, và tiếng gầm như nhấn chìm cả bầu trời. Người ta ôm nhau, nhảy cẫng lên, xoa đầu những người lạ ngồi bên cạnh như thể họ là người thân sau bao năm thất lạc. Bên kia khán đài, người ta quay lưng, hai tay ôm đầu, lặng đi như sau một cơn sốc.\n\nĐến những phút cuối, ai cũng mỏi, ai cũng khàn. Tiếng cổ vũ không còn dứt khoát như lúc đầu nữa mà thành một thứ rền vang kéo dài, một sự nâng đỡ bằng cả tấm lòng.\n\nRồi tiếng còi kết thúc. Ai thắng, ai thua, ai ghi bàn ở khoảnh khắc nào — tất cả sẽ được viết lại trên báo, trong những cuộc tranh luận sau này. Nhưng với người có mặt ở đó, trận đấu chỉ còn là một cảm giác: tim đập nhanh, cổ họng rát, và một điều gì đó ấm áp kỳ lạ khi hòa vào dòng người lủi thủi rời sân về trong đêm.",
+  "_has_expect": false
+}

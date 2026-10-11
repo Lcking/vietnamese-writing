@@ -111,9 +111,15 @@ class LLMClient:
                 payload["max_tokens"] = max_tokens
             if temperature is not None:
                 payload["temperature"] = temperature
-        # 关闭思考链(本地 Qwen3 等深度思考型模型,可大幅提速)
+        # 关闭思考链(可大幅提速)
+        # 不同厂商参数不同:智谱 GLM 用 thinking={type:disabled};
+        # 本地 Qwen3 等用 chat_template_kwargs.enable_thinking=False。
         if kw.get("disable_thinking") or self.cfg.get("disable_thinking"):
-            payload["chat_template_kwargs"] = {"enable_thinking": False}
+            m = model.lower()
+            if m.startswith(("glm", "chatglm", "zhipu")):
+                payload["thinking"] = {"type": "disabled"}
+            else:
+                payload["chat_template_kwargs"] = {"enable_thinking": False}
 
         url = self.cfg["base_url"].rstrip("/") + "/chat/completions"
         data = json.dumps(payload).encode()

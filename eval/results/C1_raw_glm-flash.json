@@ -1,0 +1,24 @@
+{
+  "id": "C1",
+  "group": "social",
+  "genre": "social_post",
+  "config": "raw",
+  "chars": 721,
+  "seconds": 77.8,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 2549,
+    "completion_tokens_details": {
+      "reasoning_tokens": 2268
+    },
+    "prompt_tokens": 37,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2586
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "🇻🇳 **CHÍNH THỨC: VIỆT NAM GIÀNH VÉ VÀO CHUNG KẾT AFF CUP!** 🏆\n\nSau hai lượt trận bán kết, đội tuyển Việt Nam đã hoàn thành nhiệm vụ: tấm vé chung kết thuộc về Quỷ đỏ.\n\nKết quả này đến từ sự chuẩn bị nghiêm túc, lối chơi kỷ luật và tinh thần thi đấu tập trung của cả đội suốt chặng đường qua. Không may mắn, chỉ có nỗ lực.\n\nChung kết sẽ gồm hai lượt trận trước **[đối thủ]** vào **[ngày]** và **[ngày]**.\n\nMột chặng đường đã qua, hai trận quyết định còn phía trước. Cùng dõi theo và tiếp sức cho đội nhà! 🇻🇳\n\n#TuyenVietNam #AFFCup #QuyDo\n\n---\nBạn điền giúp mình tên đối thủ và lịch thi đấu cụ thể nhé. Nếu muốn giọng văn trang trọng hơn (dạng báo chí) hoặc cá tính hơn (dạng fanpage), mình viết lại phiên bản khác cho bạn.",
+  "_has_expect": false
+}

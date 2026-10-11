@@ -1,0 +1,24 @@
+{
+  "id": "E1",
+  "group": "low_info",
+  "genre": "football_tin_tuc",
+  "config": "min",
+  "chars": 1810,
+  "seconds": 87.5,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 2966,
+    "completion_tokens_details": {
+      "reasoning_tokens": 2402
+    },
+    "prompt_tokens": 433,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 3399
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**Trận bóng ấy**\n\nCó những trận bóng mà sau này ta chẳng nhớ nổi tỷ số, chẳng nhớ ai đã ghi bàn, thế mà mỗi lần nghĩ lại, tim vẫn đập nhanh như mới hôm qua.\n\nTôi đến sân khi khán đài còn thưa thớt. Ở đâu đó tiếng trống đã điểm nhịp, người ta tất bật giăng cờ, kéo băng rôn. Dần dần, khán giả đông như trích, màu sắc tràn xuống từng bậc thềm, tiếng reo hò nối nhau thành những đợt sóng không dứt. Ngồi giữa lòng biển người lúc ấy, tôi mới hiểu vì sao người ta nói bóng đá là niềm vui của đám đông.\n\nTrận đấu mở ra bằng một tiếng còi và cả một cơn nổ của âm thanh. Hai bên nhập cuộc thận trọng, dò xét nhau như hai võ sĩ chưa chịu ra đòn trước. Rồi nhịp độ tăng dần theo từng pha bóng: có những đường lên bóng đẹp đến mức cả khán đài bật đứng dậy, cũng có những cơ hội vuột mất khiến vạn người cùng ôm đầu thở dài. Tôi hò, tôi vỗ tay, tôi mắng yêu cầu thủ nhà, chẳng khác gì những người xung quanh — phút chốc, ai cũng hóa thân thành một huấn luyện viên trong lòng.\n\nĐiều thú vị của bóng đá là cùng xem một pha bóng, mà mỗi người một vẻ: kẻ reo lên, người thở dài; kẻ cho là cơ hội ngàn vàng, người bảo là đáng tiếc khôn nguôi. Chỉ vài giây thôi mà cảm xúc dâng lên trút xuống như thủy triều.\n\nCàng về cuối, mọi thứ căng như dây đàn. Người thì chắp tay cầu nguyện, kẻ thì bịt mắt không dám nhìn. Đến khi tiếng còi mãn cuộc vang lên, cả sân vận động như vừa được trút một gánh nặng: kẻ mừng rơn, người tiếc nuối, song ai nấy đều như vừa cùng nhau vượt qua một hành trình dài.\n\nĐi về giữa dòng người đổ ra cổng, tôi thấy đầu ngón tay mình vẫn còn run nhẹ. Trận đấu hay hay dở, đội mình thắng hay thua, nào có quan trọng bằng cảm giác được đứng giữa muôn vàn con tim cùng đập, cùng mong một điều, cùng thổn thức trong một khoảnh khắc. Trận bóng ấy rồi sẽ nhạt dần trong trí nhớ, nhưng cảm giác ấy, tôi giữ được mãi.",
+  "_has_expect": false
+}

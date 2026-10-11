@@ -4,8 +4,19 @@
     "group": "news",
     "genre": "football_tin_tuc",
     "config": "raw",
-    "chars": 488,
-    "seconds": 24.9,
+    "chars": 36,
+    "seconds": 170.2,
+    "finish_reason": "error",
+    "forbidden_hit": [],
+    "expected_hit": []
+  },
+  {
+    "id": "A1",
+    "group": "news",
+    "genre": "football_tin_tuc",
+    "config": "min",
+    "chars": 1326,
+    "seconds": 97.6,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": [
@@ -16,35 +27,20 @@
     "id": "A1",
     "group": "news",
     "genre": "football_tin_tuc",
-    "config": "min",
-    "chars": 417,
-    "seconds": 54.8,
-    "finish_reason": "stop",
-    "forbidden_hit": [],
-    "expected_hit": [
-      "2-0"
-    ]
-  },
-  {
-    "id": "A1",
-    "group": "news",
-    "genre": "football_tin_tuc",
     "config": "full",
-    "chars": 794,
-    "seconds": 81.4,
-    "finish_reason": "stop",
+    "chars": 53,
+    "seconds": 48.4,
+    "finish_reason": "error",
     "forbidden_hit": [],
-    "expected_hit": [
-      "2-0"
-    ]
+    "expected_hit": []
   },
   {
     "id": "A2",
     "group": "news",
     "genre": "football_tin_tuc",
     "config": "raw",
-    "chars": 749,
-    "seconds": 29.7,
+    "chars": 1783,
+    "seconds": 50.3,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": []
@@ -54,8 +50,8 @@
     "group": "news",
     "genre": "football_tin_tuc",
     "config": "min",
-    "chars": 831,
-    "seconds": 47.5,
+    "chars": 1569,
+    "seconds": 46.1,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": []
@@ -65,8 +61,8 @@
     "group": "news",
     "genre": "football_tin_tuc",
     "config": "full",
-    "chars": 1836,
-    "seconds": 58.1,
+    "chars": 2413,
+    "seconds": 82.0,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": []
@@ -76,8 +72,8 @@
     "group": "pre_match",
     "genre": "football_pre_match",
     "config": "raw",
-    "chars": 3299,
-    "seconds": 91.6,
+    "chars": 2600,
+    "seconds": 146.8,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": []
@@ -87,8 +83,8 @@
     "group": "pre_match",
     "genre": "football_pre_match",
     "config": "min",
-    "chars": 1604,
-    "seconds": 43.0,
+    "chars": 2793,
+    "seconds": 99.2,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": []
@@ -98,8 +94,8 @@
     "group": "pre_match",
     "genre": "football_pre_match",
     "config": "full",
-    "chars": 1701,
-    "seconds": 127.4,
+    "chars": 3265,
+    "seconds": 144.6,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": []
@@ -109,8 +105,8 @@
     "group": "pre_match",
     "genre": "football_pre_match",
     "config": "raw",
-    "chars": 4272,
-    "seconds": 100.2,
+    "chars": 2789,
+    "seconds": 57.9,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": []
@@ -120,9 +116,9 @@
     "group": "pre_match",
     "genre": "football_pre_match",
     "config": "min",
-    "chars": 2509,
-    "seconds": 141.7,
-    "finish_reason": "stop",
+    "chars": 36,
+    "seconds": 170.2,
+    "finish_reason": "error",
     "forbidden_hit": [],
     "expected_hit": []
   },
@@ -131,8 +127,8 @@
     "group": "pre_match",
     "genre": "football_pre_match",
     "config": "full",
-    "chars": 5240,
-    "seconds": 127.7,
+    "chars": 4114,
+    "seconds": 155.3,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": []
@@ -142,71 +138,73 @@
     "group": "social",
     "genre": "social_post",
     "config": "raw",
+    "chars": 721,
+    "seconds": 77.8,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": []
+  },
+  {
+    "id": "C1",
+    "group": "social",
+    "genre": "social_post",
+    "config": "min",
+    "chars": 458,
+    "seconds": 23.6,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": []
+  },
+  {
+    "id": "C1",
+    "group": "social",
+    "genre": "social_post",
+    "config": "full",
+    "chars": 163,
+    "seconds": 11.8,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": []
+  },
+  {
+    "id": "C2",
+    "group": "social",
+    "genre": "social_post",
+    "config": "raw",
+    "chars": 1499,
+    "seconds": 43.2,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "chưa xác nhận",
+      "chưa kiểm chứng"
+    ]
+  },
+  {
+    "id": "C2",
+    "group": "social",
+    "genre": "social_post",
+    "config": "min",
+    "chars": 955,
+    "seconds": 22.3,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "chưa xác nhận"
+    ]
+  },
+  {
+    "id": "C2",
+    "group": "social",
+    "genre": "social_post",
+    "config": "full",
     "chars": 253,
-    "seconds": 23.0,
-    "finish_reason": "stop",
-    "forbidden_hit": [],
-    "expected_hit": []
-  },
-  {
-    "id": "C1",
-    "group": "social",
-    "genre": "social_post",
-    "config": "min",
-    "chars": 230,
-    "seconds": 19.0,
-    "finish_reason": "stop",
-    "forbidden_hit": [],
-    "expected_hit": []
-  },
-  {
-    "id": "C1",
-    "group": "social",
-    "genre": "social_post",
-    "config": "full",
-    "chars": 126,
-    "seconds": 45.4,
-    "finish_reason": "stop",
-    "forbidden_hit": [],
-    "expected_hit": []
-  },
-  {
-    "id": "C2",
-    "group": "social",
-    "genre": "social_post",
-    "config": "raw",
-    "chars": 1483,
-    "seconds": 31.3,
+    "seconds": 28.8,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": [
-      "chưa xác nhận"
-    ]
-  },
-  {
-    "id": "C2",
-    "group": "social",
-    "genre": "social_post",
-    "config": "min",
-    "chars": 247,
-    "seconds": 19.2,
-    "finish_reason": "stop",
-    "forbidden_hit": [],
-    "expected_hit": [
-      "chưa xác nhận"
-    ]
-  },
-  {
-    "id": "C2",
-    "group": "social",
-    "genre": "social_post",
-    "config": "full",
-    "chars": 108,
-    "seconds": 24.1,
-    "finish_reason": "stop",
-    "forbidden_hit": [],
-    "expected_hit": [
-      "chưa xác nhận"
+      "chưa xác nhận",
+      "chưa kiểm chứng"
     ]
   },
   {
@@ -214,7 +212,33 @@
     "group": "rewrite",
     "genre": "football_tin_tuc",
     "config": "raw",
-    "chars": 290,
+    "chars": 457,
+    "seconds": 10.7,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "2-1"
+    ]
+  },
+  {
+    "id": "D1",
+    "group": "rewrite",
+    "genre": "football_tin_tuc",
+    "config": "min",
+    "chars": 58,
+    "seconds": 11.5,
+    "finish_reason": "stop",
+    "forbidden_hit": [],
+    "expected_hit": [
+      "2-1"
+    ]
+  },
+  {
+    "id": "D1",
+    "group": "rewrite",
+    "genre": "football_tin_tuc",
+    "config": "full",
+    "chars": 61,
     "seconds": 13.1,
     "finish_reason": "stop",
     "forbidden_hit": [],
@@ -223,38 +247,12 @@
     ]
   },
   {
-    "id": "D1",
-    "group": "rewrite",
-    "genre": "football_tin_tuc",
-    "config": "min",
-    "chars": 55,
-    "seconds": 18.3,
-    "finish_reason": "stop",
-    "forbidden_hit": [],
-    "expected_hit": [
-      "2-1"
-    ]
-  },
-  {
-    "id": "D1",
-    "group": "rewrite",
-    "genre": "football_tin_tuc",
-    "config": "full",
-    "chars": 98,
-    "seconds": 38.3,
-    "finish_reason": "stop",
-    "forbidden_hit": [],
-    "expected_hit": [
-      "2-1"
-    ]
-  },
-  {
     "id": "E1",
     "group": "low_info",
     "genre": "football_tin_tuc",
     "config": "raw",
-    "chars": 98,
-    "seconds": 46.6,
+    "chars": 1569,
+    "seconds": 67.5,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": []
@@ -264,8 +262,8 @@
     "group": "low_info",
     "genre": "football_tin_tuc",
     "config": "min",
-    "chars": 866,
-    "seconds": 29.4,
+    "chars": 1810,
+    "seconds": 87.5,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": []
@@ -275,8 +273,8 @@
     "group": "low_info",
     "genre": "football_tin_tuc",
     "config": "full",
-    "chars": 469,
-    "seconds": 108.1,
+    "chars": 2394,
+    "seconds": 79.8,
     "finish_reason": "stop",
     "forbidden_hit": [],
     "expected_hit": []

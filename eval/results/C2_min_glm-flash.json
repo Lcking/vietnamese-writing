@@ -1,0 +1,26 @@
+{
+  "id": "C2",
+  "group": "social",
+  "genre": "social_post",
+  "config": "min",
+  "chars": 955,
+  "seconds": 22.3,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 772,
+    "completion_tokens_details": {
+      "reasoning_tokens": 469
+    },
+    "prompt_tokens": 428,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1200
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "chưa xác nhận"
+  ],
+  "output": "📌 **THÔNG TIN CHƯA XÁC NHẬN: VIỆC HLV TỪ CHỨC**\n\nVừa qua, trên mạng xã hội xuất hiện nhiều thông tin cho rằng HLV [tên huấn luyện viên] đã quyết định từ chức khỏi vị trí đứng đầu [đội bóng/tuyển]. Tuy nhiên, đến thời điểm hiện tại, **thông tin này CHƯA ĐƯỢC XÁC NHẬN** từ bất kỳ nguồn chính thức nào.\n\nCụ thể:\n\n- Chưa có thông cáo chính thức từ Ban tổ chức, lãnh đạo đội bóng hoặc bản thân HLV.\n- Chưa có phát biểu trực tiếp trên báo chí hay kênh truyền thông chính thống nào xác nhận việc từ chức.\n- Các thông tin đang lan truyền chỉ dừng lại ở mức **tin đồn và suy đoán**.\n\nVì vậy, chúng tôi tạm thời chưa thể xác nhận hay bác bỏ thông tin trên, và đề nghị quý độc giả **không chia sẻ thiếu kiểm chứng** để tránh gây nhiễu loạn thông tin.\n\nChúng tôi sẽ cập nhật ngay khi có công bố chính thức từ các bên liên quan. Trân trọng cảm ơn sự quan tâm và ủng hộ của quý vị.\n\n---\n*Ghi chú: Vui lòng theo dõi kênh chính thức để nhận thông tin cập nhật sớm nhất.*",
+  "_has_expect": true
+}

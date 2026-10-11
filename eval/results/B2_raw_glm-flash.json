@@ -1,0 +1,24 @@
+{
+  "id": "B2",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "raw",
+  "chars": 2789,
+  "seconds": 57.9,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 1862,
+    "completion_tokens_details": {
+      "reasoning_tokens": 1051
+    },
+    "prompt_tokens": 33,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1895
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "# Phân tích trận đấu: Manchester City vs Arsenal\n\n**Lưu ý trước:** Tôi không biết chính xác trận này diễn ra vào lúc nào, vì lịch đấu thay đổi liên tục và thông tin của tôi có thể không cập nhật. Dưới đây là phân tích dựa trên tương quan chung giữa hai đội — bạn nên đối chiếu với tình hình đội hình mới nhất trước trận.\n\n---\n\n## 1. Bối cảnh đối đầu\n\n- **Arsenal dưới thời Arteta** (người từng là trợ lý của Guardiola) đã vươn lên trở thành đối thủ chính của City ở Premier League qua các mùa 2022–23 và 2023–24, dù cả hai lần đều phải nhường ngôi vô địch cho đội chủ sân Etihad.\n- Trước đó, City từng có chuỗi áp đảo cực dài trước Arsenal, nhưng từ năm 2023, thế cân bằng đã thay đổi rõ rệt.\n- Ở lượt đi gần nhất tại Emirates, Arsenal thắng đậm 5–1 — trận đấu cho thấy khoảng cách đẳng cấp của giai đoạn đó đã thu hẹp và thậm chí đảo chiều.\n\n## 2. Điểm mạnh của từng đội\n\n**Manchester City**\n- Sức mạnh tấn công hàng đầu với Haaland — sát thủ vòng cấm hàng đầu châu Âu.\n- Kiểm soát thế trận, xây dựng từ tuyến dưới rất bài bản.\n- Điểm yếu lớn: sự thiếu vắng Rodri (chấn thương dây chằng) làm midfield mất cân bằng trầm trọng; hàng thủ cũng dễ bị khai thác khi bị pressing cao.\n\n**Arsenal**\n- Hàng thủ thuộc nhóm tốt nhất giải (Saliba, Gabriel, Raya).\n- Cực kỳ nguy hiểm trong các tình huống **phạt góc và bóng chết** — vũ khí đặc trưng dưới thời Arteta.\n- Tốc độ chuyển trạng thái tốt, pressing dâng cao hiệu quả.\n- Điểm yếu: phụ thuộc lớn vào Saka khi anh mạnh khỏe; thiếu số 9 thuần túy đẳng cấp.\n\n## 3. Khía cạnh chiến thuật đáng chú ý\n\n- **Phong cách học trò thầy trò:** Arteta hiểu rất rõ cách Guardiola vận hành, nên Arsenal thường không bị Choán thế trận và biết cách trừng phạt khoảng trống sau lưng hàng thủ City.\n- **Trung tâm trận đấu:** Cuộc chiến giữa Rice/Partey với các tiền vệ sáng tạo của City (Foden, De Bruyne ở giai đoạn đó) sẽ quyết định đội kiểm soát nhịp độ.\n- **Bóng chết:** Đây là lợi thế rõ rệt của Arsenal. City phải tránh phạm lỗi ở khu vực nguy hiểm.\n\n## 4. Các cá nhân cần theo dõi\n\n| Man City | Arsenal |\n|---|---|\n| Haaland — hoàn tất cơ hội | Saka (nếu ra sân) — mũi nhọn chính |\n| Marmoush — hạng mục mới giàu kỹ thuật | Ødegaard — bộ não tấn công |\n| Foden — các pha chọc khe | Rice — bẻ gãy và dẫn lối phản công |\n\n## 5. Kịch bản có thể xảy ra\n\n- Nếu City không kiểm soát được midfield, Arsenal có lợi thế rõ rệt, đặc biệt qua bóng chết và phản công.\n- Nếu Haaland có ngày thi đấu thăng hoa và City giữ được sự cân bằng giữa hai tuyến, đội chủ nhà luôn có khả năng nổ súng ở bất kỳ khoảnh khắc nào.\n- Trận đấu này thường **kịch tính đến những phút cuối** — hầu hết các lần gặp nhau gần đây đều có bàn thắng ở thời lượng bù giờ hoặc thẻ đỏ.\n\n---\n\nBạn muốn tôi đi sâu hơn vào phần nào — chiến thuật, lịch sử đối đầu, hay tình hình cụ thể của một cá nhân?",
+  "_has_expect": false
+}

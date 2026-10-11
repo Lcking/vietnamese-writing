@@ -1,0 +1,14 @@
+{
+  "id": "A1",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "full",
+  "chars": 53,
+  "seconds": 48.4,
+  "finish_reason": "error",
+  "usage": null,
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "[ERROR] Remote end closed connection without response",
+  "_has_expect": true
+}

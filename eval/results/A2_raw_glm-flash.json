@@ -1,0 +1,24 @@
+{
+  "id": "A2",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "raw",
+  "chars": 1783,
+  "seconds": 50.3,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 1644,
+    "completion_tokens_details": {
+      "reasoning_tokens": 1155
+    },
+    "prompt_tokens": 39,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1683
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**CLB Hà Nội công bố tân huấn luyện viên trưởng, khép lại thời kỳ của vị HLV tiền nhiệm**\n\nĐội bóng Thủ đô vừa chính thức bổ nhiệm tân huấn luyện viên trưởng, chỉ ít giờ sau khi thông báo kết thúc hợp đồng với vị chiến lược gia cũ.\n\nTheo thông cáo chính thức, tân HLV ký hợp đồng có thời hạn đến hết mùa giải, kèm điều khoản tự động gia hạn nếu hoàn thành mục tiêu đề ra. Quyết định này được ban lãnh đạo CLB thông qua sau chuỗi kết quả không như kỳ vọng, khi đội bóng bỏ lỡ nhiều điểm số quan trọng ở giai đoạn vừa qua.\n\nTân huấn luyện viên là gương mặt quen thuộc với người hâm mộ Hà Nội. Ông từng gắn bó dài năm với đội bóng Thủ đô với vai trò trợ lý, có hiểu biết sâu sắc về lối chơi và đội hình hiện tại. Trước khi quay lại, ông cũng tích lũy được kinh nghiệm dẫn dắt các đội bóng trong khu vực.\n\nPhát biểu tại lễ giới thiệu, người đại diện CLB chia sẻ: \"Chúng tôi tin rằng sự am hiểu về đội bóng cùng triết lý phù hợp sẽ giúp đội thi đấu đúng với chất lượng. Ban lãnh đạo đặt trọn niềm tin vào tân huấn luyện viên trong chặng đường còn lại của mùa giải.\"\n\nHLV tiền nhiệm ra đi sau trận thất bại ở vòng đấu gần nhất, khiến vị trí của đội trên bảng xếp hạng bị đe dọa. Dù từng có thời gian để lại nhiều dấu ấn, những kết quả sa sút gần đây đã khiến ban lãnh đạo buộc phải đưa ra quyết định thay đổi.\n\nTân HLV dự kiến có buổi tập đầu tiên cùng đội vào cuối tuần này. Trận ra mắt của vị chiến lược gia mới dự kiến diễn ra ngay ở vòng đấu kế tiếp, khi Hà Nội trở về sân nhà tiếp đón đối thủ trực tiếp trong cuộc đua top đầu. Điều này cũng đồng nghĩa với việc vị tân HLV chỉ có ít thời gian để tạo dấu ấn cá nhân ngay từ những ngày đầu nhận nhiệm vụ.\n\n---\n\nBạn có muốn tôi điều chỉnh độ dài, giọng văn (trang trọng hơn hoặc gần gũi hơn), hay thêm phần bình luận của chuyên gia không?",
+  "_has_expect": false
+}

@@ -1,0 +1,24 @@
+{
+  "id": "A2",
+  "group": "news",
+  "genre": "football_tin_tuc",
+  "config": "full",
+  "chars": 2413,
+  "seconds": 82.0,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 2520,
+    "completion_tokens_details": {
+      "reasoning_tokens": 1851
+    },
+    "prompt_tokens": 12183,
+    "prompt_tokens_details": {
+      "cached_tokens": 12160
+    },
+    "total_tokens": 14703
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "**Khép lại trang người cũ, CLB Hà Nội công bố tân HLV trước lượt trận cuối tuần**\n\nTrưa nay, CLB Hà Nội chính thức thông báo kết thúc sự hợp tác với HLV trưởng, đồng thời bổ nhiệm người kế nhiệm để dẫn dắt đội bóng Thủ Đô trong phần còn lại của mùa giải. Quyết định được ban lãnh đạo đưa ra ngay trước lượt trận cuối tuần, khi phong độ của đội đang là mối quan tâm hàng đầu của người hâm mộ.\n\nTheo thông báo từ phía CLB, dù tập thể đã nỗ lực trong suốt thời gian qua, những kết quả đạt được vẫn chưa như kỳ vọng. Chuỗi trận gần đây thiếu thuyết phục khiến vị trí của đội trên bảng xếp hạng ngày càng trượt dài. Ban lãnh đạo nhấn mạnh, sự thay đổi này nhằm \"điều chỉnh kịp thời, giúp đội bóng sớm trở lại quỹ đạo\".\n\nVới người vừa rời ghế nóng, CLB Hà Nội gửi lời cảm ơn và tri ân những đóng góp trong suốt thời gian đồng hành, trong đó có nhiều thành tích đáng nhớ để lại dấu ấn với người hâm mộ. Người thầy cũ vẫn được đánh giá cao về tính chuyên nghiệp, song lựa chọn thay đổi được xem là bước đi cần thiết lúc này.\n\nTân HLV là gương mặt không xa lạ với V.League, từng có nhiều năm làm việc ở môi trường bóng đá Việt Nam và am hiểu văn hóa, con người nơi đây. Người này chính thức đặt bút ký hợp đồng ngắn hạn đến hết mùa giải, với nhiệm vụ trọng tâm là kéo đội trở lại nhóm dẫn đầu.\n\nPhát biểu trong buổi ra mắt, đại diện CLB chia sẻ:\n\n\"Việc thay đổi người đứng đầu băng ghế huấn luyện không phải là một quyết định dễ dàng, nhưng đây là điều cần thiết ở thời điểm hiện tại. Chúng tôi đã cân nhắc rất kỹ và tin rằng người kế nhiệm sẽ mang đến luồng gió mới cho cả tập thể.\"\n\nTrong khi đó, tân HLV tỏ ra vững vàng trước áp lực đang chờ đợi:\n\n\"Tôi hiểu áp lực đang đè nặng lên vai các cầu thủ, nhưng với tôi, áp lực chính là động lực. Tôi cần ít ngày đầu để nắm bắt tình hình, và nhiệm vụ ngay lập tức là chuẩn bị tốt nhất cho trận đấu cuối tuần. Người hâm mộ xứng đáng được thấy một đội bóng quyết tâm và có hình ảnh tích cực hơn.\"\n\nNhư vậy, trận gặp đối thủ mạnh trên sân nhà cuối tuần tới sẽ là buổi \"ra mắt\" thực thụ của tân tướng trên ghế dẫn dắt. Người hâm mộ Thủ Đô đang háo hức chờ đón hiệu ứng quen thuộc mang tên \"ghế nóng mới\", hy vọng đội bóng chủ quản sớm vượt qua giai đoạn khủng hoảng và trở lại với đúng vị thế của mình.\n\nNhìn về phía người rời đi, phía CLB cho biết chúc ông nhiều may mắn trên chặng đường phía trước, dù chưa tiết lộ kế hoạch tiếp theo của người thầy này trong sự nghiệp cầm quân.",
+  "_has_expect": false
+}

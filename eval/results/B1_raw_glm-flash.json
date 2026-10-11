@@ -1,0 +1,24 @@
+{
+  "id": "B1",
+  "group": "pre_match",
+  "genre": "football_pre_match",
+  "config": "raw",
+  "chars": 2600,
+  "seconds": 146.8,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 5193,
+    "completion_tokens_details": {
+      "reasoning_tokens": 4429
+    },
+    "prompt_tokens": 34,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 5227
+  },
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "output": "# Nhận định trước trận Việt Nam — Indonesia\n\n*Lưu ý: mình không có thông tin cập nhật theo thời gian thực, nên không biết chính xác đây là trận ở giải nào, sân nào và danh sách triệu tập mới nhất. Phân tích dưới đây dựa trên bối cảnh gần nhất mình nắm được — bạn hãy đối chiếu thêm với tin tức mới hơn.*\n\n## Bối cảnh đối đầu gần đây\n- Tháng 3/2024, Indonesia thắng cả hai lượt vòng loại World Cup 2026 (1-0 ở Jakarta, 3-0 ở Hà Nội) — giai đoạn khó khăn nhất của Việt Nam dưới thời HLV Troussier.\n- Đến giải vô địch Đông Nam Á 2024, Việt Nam dưới thời HLV Kim Sang-sik thắng ngược 1-0 ngay tại Jakarta, rồi lên ngôi vô địch giải.\n- Indonesia thay ghế huấn luyện, Patrick Kluivert tiếp quản từ đầu 2025 với nền tảng dàn cầu thủ nhập tịch chất lượng.\n\n## Việt Nam\n- **Điểm mạnh:** tính tổ chức cao, khối phòng ngự chắc chắn, phản công nhanh và quyết đoán. Kim Sang-sik có tầm ảnh hưởng với đội về mặt tinh thần rất lớn.\n- **Nhân tố:** Đặng Văn Lâm, Văn Hậu, Hoàng Đức, Quang Hải, Tiến Linh. Nguyễn Xuân Son là \"X-factor\", nhưng cần xem xét tình trạng sau chấn thương.\n- **Rủi ro:** lớp trụ cột đang trưởng thành nhưng cũng lớn tuổi dần; lịch sử gần đây cho thấy đội vẫn gặp khó trước các đội mạnh về thể hình, đá trực diện.\n\n## Indonesia\n- **Điểm mạnh:** Idzes, Thom Haye, Oratmangoen, Struick, Verdonk... cho họ lợi thế rõ rệt về thể hình, cường độ và lối đá châu Âu hiện đại.\n- **Rủi ro:** hệ thống dưới thời Kluivert còn đang trong quá trình hoàn thiện, tính ổn định chưa cao (có những trận thua đậm ở vòng loại World Cup); khả năng gỡ khối phòng ngự thấp chưa phải điểm mạnh.\n\n## Trận đấu sẽ xoay quanh điều gì\n- Việt Nam có kìm được nhịp độ và sức mạnh cơ bắp của đối thủ không — bài toán chưa giải được ở hai lượt đấu đầu 2024.\n- Indonesia có phá được khối phòng ngự thấp, kỷ luật của Việt Nam không.\n- Bóng chết và tình huống cố định: mảng Indonesia nhỉnh hơn về thể hình.\n- Chất lượng đội hình thực sự ra sân — đặc biệt bên phía Indonesia với nhiều biến số về nhân sự nhập tịch.\n\n## Về kết quả\nKhoảng cách giữa hai đội hiện rất mỏng — phần lớn các lần gặp gần nhất chỉ cách biệt một bàn. Ba kịch bản đều hợp lý:\n- **Việt Nam thắng** nếu chơi kỷ luật, hiệu quả trong chuyển trạng thái và tận dụng được sân nhà/động lực.\n- **Indonesia thắng** nếu các cầu thủ nhậpatorium vào phong độ cao và áp đảo về thể lực.\n- **Hòa** hoàn toàn dễ xảy ra nếu cả hai đề cao thận trọng, như trận 0-0 hồi giữa năm 2024.\n\nNói ngắn gọn: đây là trận cân tài cân sức, tốt nhất là đợi những gì diễn ra trên sân. Nếu bạn cho biết thêm trận này thuộc giải gì, sân của ai và đội hình dự kiến, mình có thể phân tích sát hơn.",
+  "_has_expect": false
+}

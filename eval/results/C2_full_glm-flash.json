@@ -1,0 +1,27 @@
+{
+  "id": "C2",
+  "group": "social",
+  "genre": "social_post",
+  "config": "full",
+  "chars": 253,
+  "seconds": 28.8,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 1006,
+    "completion_tokens_details": {
+      "reasoning_tokens": 913
+    },
+    "prompt_tokens": 11717,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 12723
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "chưa xác nhận",
+    "chưa kiểm chứng"
+  ],
+  "output": "Tin CHƯA XÁC NHẬN: một số nguồn cho hay HLV [tên] có thể từ chức khỏi [tên CLB/đội tuyển]. Lưu ý đây là thông tin chưa được kiểm chứng, chưa có phát ngôn chính thức từ CLB. Sẽ cập nhật ngay khi có tin chính thức — mọi người chờ đấy rồi hẵng chia sẻ nhé.",
+  "_has_expect": true
+}

@@ -1,0 +1,27 @@
+{
+  "id": "C2",
+  "group": "social",
+  "genre": "social_post",
+  "config": "raw",
+  "chars": 1499,
+  "seconds": 43.2,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 1604,
+    "completion_tokens_details": {
+      "reasoning_tokens": 1148
+    },
+    "prompt_tokens": 37,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1641
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "chưa xác nhận",
+    "chưa kiểm chứng"
+  ],
+  "output": "Dưới đây là bản tin mẫu (điền thông tin cụ thể vào phần [..]):\n\n---\n\n**Tiêu đề:** Thông tin HLV [tên] từ chức **chưa được xác nhận**\n\n**Nội dung:**\n\nMới đây, trên mạng xã hội lan truyền thông tin cho rằng HLV [tên] đã quyết định từ chức khỏi vị trí huấn luyện trưởng của [đội/CLB].\n\nTuy nhiên, tính đến thời điểm hiện tại, thông tin này **chưa được xác nhận**. [CLB/Liên đoàn] chưa đưa ra bất kỳ thông báo chính thức nào, và bản thân vị HLV cũng chưa lên tiếng. Đến thời điểm viết bài, chưa có nguồn tin chính thức nào xác nhận việc này.\n\nĐại diện [CLB] cho biết sẽ có thông tin rõ ràng trong thời gian sớm nhất [hoặc: chưa phản hồi về thông tin trên].\n\nChúng tôi sẽ cập nhật tin bài ngay khi có xác nhận chính thức từ các bên liên quan.\n\n*Độc giả lưu ý: Đây là thông tin chưa được kiểm chứng, vui lòng không chia sẻ khi chưa có phát ngôn chính thức.*\n\n---\n\n**Bản ngắn (dùng cho mạng xã hội):**\n\n> 🔴 **CHƯA XÁC NHẬN:** Có tin đồn HLV [tên] từ chức. Đến nay, [CLB] và HLV chưa có phát ngôn chính thức. Đề nghị mọi người không chia sẻ thông tin chưa kiểm chứng. Sẽ cập nhật khi có xác nhận.\n\n---\n\n**Một số lưu ý khi viết tin chưa xác nhận:**\n- Đưa cụm \"chưa xác nhận/chưa được kiểm chứng\" vào **ngay tiêu đề hoặc câu đầu tiên**\n- Dùng từ ngăn cách như: \"theo nguồn tin chưa chính thức\", \"được cho là\", \"cho hay\"\n- Tránh khẳng định sự việc đã xảy ra ở bất kỳ câu nào\n- Ghi rõ sẽ cập nhật khi có thông tin chính thức\n\nBạn cho tôi tên HLV, đội bóng và nguồn tin đồn, tôi sẽ hoàn thiện bản tin cụ thể hơn.",
+  "_has_expect": true
+}

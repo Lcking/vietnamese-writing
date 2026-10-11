@@ -1,0 +1,26 @@
+{
+  "id": "D1",
+  "group": "rewrite",
+  "genre": "football_tin_tuc",
+  "config": "raw",
+  "chars": 457,
+  "seconds": 10.7,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 496,
+    "completion_tokens_details": {
+      "reasoning_tokens": 348
+    },
+    "prompt_tokens": 49,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 545
+  },
+  "forbidden_hit": [],
+  "expected_hit": [
+    "2-1"
+  ],
+  "output": "Dưới đây là một số cách viết lại tự nhiên hơn:\n\n- **Trận đấu khép lại với chiến thắng 2-1 dành cho đội chủ nhà.**\n- **Đội chủ nhà đã giành chiến thắng 2-1 ở trận này.**\n- **Cuối cùng, đội chủ nhà vượt qua đối thủ với tỷ số 2-1.**\n- **Chung cuộc, đội chủ nhà thắng 2-1.**\n\nĐiểm chung của các cách viết trên là bỏ cấu trúc \"với tỷ số là... nghiêng về phía\" vốn hơi rườm rà, thay bằng cách diễn đạt trực tiếp và gần gũi hơn với văn phong thể thao thông thường.",
+  "_has_expect": true
+}
