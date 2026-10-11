@@ -71,7 +71,7 @@ THEME_MAP = {
     "football_thuat_ngu": ["phan_tich_chien_thuat"],
     "football_pre_match": ["doi_tuyen_vn", "chau_a", "world_cup"],
     "football_analysis": ["phan_tich_chien_thuat", "champions_league"],
-    "social_post": ["doi_tuyen_vn", "world_cup"],
+    "social_post": ["social_post", "doi_tuyen_vn"],
 }
 
 EXAMPLE_HEADER = (

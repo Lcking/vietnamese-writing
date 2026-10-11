@@ -2,6 +2,11 @@
 
 **Viết bài ngắn cho mạng xã hội về bóng đá (Facebook, X/Twitter, Threads...)**
 
+> **Nguồn ví dụ:** `examples/football/social_post.jsonl` chứa 48 bài NGẮN thật
+> (120–660 ký tự) trích từ ngữ liệu WanJuan. Đã **duyệt thủ công** để loại bài rác,
+> nhưng cột `type` chỉ là **nhãn gợi ý do máy gán**, KHÔNG phải phân loại thể loại
+> đã kiểm định — chỉ dùng để tham khảo cách diễn đạt, không kế thừa dữ kiện.
+
 ## Nguyên tắc chung
 
 - **Ngắn, trực tiếp.** Vào thẳng thông tin, không rào đón dài dòng như bài báo.
