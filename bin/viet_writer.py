@@ -26,18 +26,30 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 REFERENCES = ROOT / "references"
+CARDS = ROOT / "references" / "cards"   # 可执行规则卡(lite 档专用)
 EXAMPLES = ROOT / "examples"
 PROMPTS = ROOT / "prompts"
 
 # 所有可用体裁(显式指定时校验)
 GENRES = ["van_hoc", "bao_chi", "bach_khoa", "cong_van",
-          "mang_xa_hoi", "doi_song", "chuyen_mon",
+          "mang_xa_hoi", "doi_song", "chuyen_mon", "lich_su",
           "football_thuat_ngu", "football_binh_luan", "football_tin_tuc",
           "football_chuyen_nhuong", "football_doi_tuyen", "football_nhan_vat",
-          "football_pre_match", "football_analysis", "social_post"]
+          "football_pre_match", "football_analysis", "social_post",
+          "football_ket_qua"]
+
+# 卡片映射:体裁 → references/cards/<file>(lite 档只读卡片)
+CARD_MAP = {
+    "football_ket_qua": "ket_qua_tran.md",
+    "football_tin_tuc": "ket_qua_tran.md",      # 赛果体裁,先用赛果卡
+    "football_chuyen_nhuong": "chuyen_nhuong.md",
+    "football_pre_match": "nhan_dinh_truoc_tran.md",
+    "social_post": "social_post.md",
+}
 
 # 新增体裁对应的 reference 文件(有些新体裁复用已有规范文件)
 GENRE_FILE = {
+    "football_ket_qua": "football_tin_tuc.md",
     "football_pre_match": "football_pre_match.md",
     "football_analysis": "football_analysis.md",
     "social_post": "social_post.md",
@@ -61,7 +73,7 @@ PROFILES = {
     "full": {"global": 18000, "genre": 16000, "examples": 12000, "ex_max_n": 99, "ex_max_chars": 10**9},
 }
 # 这些体裁默认用 lite(上游跨模型报告:full 会放大中端模型虚构)
-LITE_DEFAULT_GENRES = {"social_post", "football_tin_tuc"}
+LITE_DEFAULT_GENRES = {"social_post", "football_tin_tuc", "football_ket_qua"}
 
 FOOTBALL_HINTS = ["bóng đá", "bình luận", "trận đấu", "cầu thủ", "đội bóng",
                   "world cup", "champions league", "v-league", "aff cup",
@@ -72,6 +84,18 @@ FOOTBALL_HINTS = ["bóng đá", "bình luận", "trận đấu", "cầu thủ", 
                   "câu lạc bộ", "giải bóng", "cúp", "sân vận động",
                   "足球", "解说", "比赛", "球队", "世界杯", "转会", "赛前", "前瞻",
                   "签约", "加盟", "前锋"]
+
+# 通用体裁 → 蒸馏范文文件(examples/generic/{cat}_top.jsonl)
+GENERIC_MAP = {
+    "van_hoc": "culture_top.jsonl",
+    "bach_khoa": "encyclopedia_top.jsonl",
+    "doi_song": "general_top.jsonl",
+    "lich_su": "history_policy_top.jsonl",
+    "bao_chi": "news_top.jsonl",
+    "chuyen_mon": "professional_field_top.jsonl",
+    "cong_van": "history_policy_top.jsonl",   # 公文与政策文近亲,复用
+    "mang_xa_hoi": "general_top.jsonl",        # 社交帖短文本,先用 general 池兜底
+}
 
 # 各足球体裁对应的范文主题(可多个)
 THEME_MAP = {
@@ -155,15 +179,19 @@ def pick_examples(genre, budget=None, post_type=None, max_n=None,
         max_chars = 10**9
     if max_n is None:
         max_n = 99
-    dirs = THEME_MAP.get(genre, [])
     chunks, meta, used = [], [], 0
     seen_titles = set()
 
     import datetime
     cutoff_year = datetime.date.today().year - max_age_years
 
-    for d in dirs:
-        fp = EXAMPLES / "football" / f"{d}.jsonl"
+    # 通用体裁:读蒸馏范文池(单文件);足球体裁:读 THEME_MAP 多文件
+    if genre in GENERIC_MAP:
+        sources = [EXAMPLES / "generic" / GENERIC_MAP[genre]]
+    else:
+        sources = [EXAMPLES / "football" / f"{d}.jsonl" for d in THEME_MAP.get(genre, [])]
+
+    for fp in sources:
         if not fp.exists():
             continue
         for line in fp.read_text(encoding="utf-8").splitlines():
@@ -197,7 +225,7 @@ def pick_examples(genre, budget=None, post_type=None, max_n=None,
             seen_titles.add(title)
             chunks.append(block)
             used += len(block)
-            meta.append({"theme": d, "title": title[:80], "type": r.get("type"),
+            meta.append({"theme": fp.stem, "title": title[:80], "type": r.get("type"),
                          "source_url": r.get("source_url"),
                          "content_sha256": (r.get("content_sha256") or "")[:12]})
         if used >= budget or len(chunks) >= max_n:
@@ -289,18 +317,39 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
     resolved_genre = genre
     examples_meta = []
     genre_chars = 0
+    card_used = None
     if resolved_genre and resolved_genre in GENRES:
         fname = GENRE_FILE.get(resolved_genre, f"{resolved_genre}.md")
-        gtxt = load_file(REFERENCES / fname)
-        if gtxt.strip():
-            gtxt, cut = _truncate_semantic(gtxt, budget["genre"])
-            if cut:
-                truncations.append((fname, budget["genre"]))
-            genre_chars = len(gtxt)     # 截断后实际注入长度
-            parts.append(gtxt)
+        card_name = CARD_MAP.get(resolved_genre)
+        card_path = CARDS / card_name if card_name else None
+        has_card = bool(card_path and card_path.exists())
+
+        # lite 档:优先只读卡片(不截断);无卡片则回退读长文件并报告
+        if profile == "lite" and has_card:
+            ctxt = load_file(card_path)
+            genre_chars = len(ctxt)
+            card_used = card_name
+            parts.append(ctxt)
+        else:
+            if profile == "lite" and not has_card:
+                truncations.append((f"card_missing:{resolved_genre}", "读长文件前 N 字符"))
+            gtxt = load_file(REFERENCES / fname)
+            if gtxt.strip():
+                gtxt, cut = _truncate_semantic(gtxt, budget["genre"])
+                if cut:
+                    truncations.append((fname, budget["genre"]))
+                genre_chars = len(gtxt)     # 截断后实际注入长度
+                parts.append(gtxt)
+            # full 档:卡片 + 长文件都注入
+            if profile == "full" and has_card:
+                ctxt = load_file(card_path)
+                genre_chars += len(ctxt)
+                card_used = card_name
+                parts.append(ctxt)
         # 4) few-shot 范文(仅足球/社媒体裁)
         if examples and budget["examples"] > 0 and \
-           (resolved_genre.startswith("football_") or resolved_genre == "social_post"):
+           (resolved_genre.startswith("football_") or resolved_genre == "social_post"
+            or resolved_genre in GENERIC_MAP):
             ex, examples_meta = pick_examples(
                 resolved_genre, budget["examples"], post_type=post_type,
                 max_n=pcfg["ex_max_n"], max_chars=pcfg["ex_max_chars"])
@@ -320,6 +369,7 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
         "examples_chars": examples_chars,
         "n_examples": len(examples_meta),
         "profile": profile,
+        "card": card_used,
     }
     return {
         "system": system,
@@ -415,7 +465,7 @@ def main():
                          profile=args.profile, post_type=args.post_type)
         print(f"任务: {args.task}")
         print(f"体裁: {p['genre'] or '(无 · 最小通用规则)'}")
-        print(f"档位: profile={p['profile']}")
+        print(f"档位: profile={p['profile']}" + (f"  card={p['stats'].get('card')}" if p['stats'].get('card') else ""))
         print(f"提示词总字符: {p['stats']['total_chars']:,}")
         print(f"  核心: {p['stats']['core_chars']:,} 字符")
         print(f"  全局规则: {p['stats']['global_chars']:,} 字符")

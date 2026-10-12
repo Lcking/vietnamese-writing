@@ -1,0 +1,13 @@
+{
+  "competition": "V-League", "round": null, "date": "2026-10-08",
+  "venue": null, "home": "Thể Công", "away": "Hà Tĩnh",
+  "final": [1, 3],
+  "events": [
+    {"minute": 16, "type": "goal", "team": "away", "player": "Luiz Antonio", "detail": "sút xa"},
+    {"minute": 33, "type": "goal", "team": "home", "player": "Khuất Văn Khang", "assist": "Triệu Việt Hưng", "var_checked": true},
+    {"minute": 60, "type": "goal", "team": "away", "player": "Daniel Passira", "detail": "sút xa"},
+    {"minute": 64, "type": "goal", "team": "away", "player": "Daniel Passira"},
+    {"minute": null, "type": "second_yellow", "team": "away", "player": "Quốc Dân"}
+  ],
+  "context": ["Thể Công thắng tân binh Đồng Nai ở trận trước đó"]
+}

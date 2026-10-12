@@ -44,12 +44,15 @@ Khi viết về kết quả, cần nêu rõ tỷ số, diễn biến chính và 
 
 *   **Ví dụ:** Trong tin về Asian Cup 2019, bài viết mô tả: *"Lebanon thắng Triều Tiên 4-1 ở lượt trận cuối vòng bảng nhưng vẫn bị loại khỏi Asian Cup 2019 vì có nhiều hơn tuyển Việt Nam 2 thẻ vàng."* Câu này giải thích rõ tại sao đội thắng lại bị loại, làm nổi bật sự kịch tính và quy tắc của giải đấu.
 
-**6. Phong cách ngôn ngữ: Năng động, hình ảnh hóa**
+**6. Phong cách ngôn ngữ: Trung tính mặc định**
 
-Báo thể thao Việt Nam thường sử dụng các từ ngữ mang tính hình ảnh, cảm xúc.
+Tin tức bóng đá mặc định dùng **giọng trung tính**, chính xác. Từ ngữ hình ảnh/cảm xúc
+("Rực lửa", "nghẹt thở", "vỡ oà", "thăng hoa", "cơn mưa bàn thắng") chỉ dùng khi diễn
+biến thực sự đặc biệt, và **chỉ trong bình luận hoặc bài đăng mạng xã hội — không dùng
+trong bản tin**.
 
-*   **Từ ngữ gợi ý:** "Rực lửa", "nghẹt thở", "vỡ oà", "thăng hoa", "cơn mưa bàn thắng".
-*   **Ví dụ:** Tiêu đề *"Chelsea - Man City: Rực lửa bán kết Wembley"* tạo cảm giác nóng bỏng, căng thẳng. Hoặc mô tả Bồ Đào Nha: *"Ronaldo tỏa sáng – cơn mưa bàn thắng của Bồ Đào Nha!"* sử dụng phép ẩn dụ để diễn tả sức mạnh tấn công.
+*   *Ví dụ trung tính:* "Hà Tĩnh thắng 3-1 trên sân Thể Công sau hai bàn của Passira."
 
 **Lời khuyên cuối cùng:**
-Hãy luôn kiểm tra lại thông tin (tên cầu thủ, tỷ số, ngày giờ) trước khi đăng. Một sai sót nhỏ có thể làm mất uy tín của nhà báo. Hãy viết như thể bạn đang kể lại trận đấu cho một người bạn thân nghe: hào hứng, chân thực và đầy cảm xúc.
+Kiểm tra lại thông tin (tên cầu thủ, tỷ số, ngày giờ) trước khi đăng. Sai sót nhỏ làm mất
+uy tín. Viết **chính xác và trung tính**; không thêm cảm xúc không có trong dữ kiện.
