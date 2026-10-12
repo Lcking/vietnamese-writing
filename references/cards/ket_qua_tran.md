@@ -1,5 +1,8 @@
 # Tin kết quả trận đấu
 
+> ⚠️ Thẻ này do AI soạn, **CHƯA qua biên tập viên bản ngữ审定**. Bảng động từ tỷ số
+> cần biên tập xác nhận trước khi coi là chuẩn. (review_status: unreviewed)
+
 Giọng trung tính. Kể theo dòng thời gian. Đủ dữ kiện thì dừng.
 
 ## Tiêu đề

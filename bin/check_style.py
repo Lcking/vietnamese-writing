@@ -71,7 +71,12 @@ def _scores_in(s):
 
 
 def check(task_text, facts=None):
-    """返回疑点列表。每条: {rule, snippet, msg}。"""
+    """返回疑点列表。每条: {rule, snippet, msg}。
+
+    忽略以 # 或 > 开头的元信息行(来自回归样本的注释/引言),避免被当成标题。
+    """
+    task_text = "\n".join(l for l in task_text.split("\n")
+                          if not l.lstrip().startswith(("#", ">")))
     issues = []
     sents = split_sentences(task_text)
     lines = [l for l in task_text.split("\n") if l.strip()]
@@ -83,6 +88,9 @@ def check(task_text, facts=None):
             from prepare_facts import compute
             result = compute(facts)
             correct_map = {s["score"]: s["verb"] for s in result["score_progression"]}
+            # 可接受替代(如 1-3 处 nhân đôi cách biệt 可替 nâng tỷ số)
+            alt_map = {s["score"]: set(s.get("accept_alt") or [])
+                       for s in result["score_progression"]}
             VERBS = ["nâng tỷ số", "nhân đôi cách biệt", "vượt lên dẫn", "gỡ hòa",
                      "mở tỷ số", "rút ngắn cách biệt"]
             for m in re.finditer(r"(\d)\s*[-–]\s*(\d)", task_text):
@@ -96,15 +104,19 @@ def check(task_text, facts=None):
                 if matched:
                     key = matched
                     correct = correct_map[key]
-                    # 只在比分前 18 字符内找动词(真正的"动词+比分"结构很近)
-                    near = task_text[max(0, m.start() - 18):m.start()].lower()
+                    accepted = {correct} | alt_map.get(key, set())
+                    # 在比分前 32 字符内找动词("...nhân đôi cách biệt lên 3-0" 中动词离比分较远)
+                    near = task_text[max(0, m.start() - 32):m.start()].lower()
                     used = [v for v in VERBS if v in near]
                     # 排除"vượt lên dẫn trước"(短语,非标签)
                     if "vượt lên dẫn trước" in near:
                         used = [v for v in used if v != "vượt lên dẫn"]
-                    if used and correct not in used:
+                    if used and not (set(used) & accepted):
+                        alts = alt_map.get(key, set())
+                        alt_txt = f"(或可接受替代: {', '.join(alts)})" if alts else ""
                         issues.append({"rule": "S1", "snippet": f"{used[0]} ... {key}",
-                                       "msg": f"比分 {key} 应为 '{correct}',用了 '{used[0]}'"})
+                                       "msg": f"比分 {key} 应用 '{correct}'{alt_txt},"
+                                              f"用了 '{used[0]}'"})
         except Exception as e:
             issues.append({"rule": "S1", "snippet": "-", "msg": f"facts 处理失败: {e}"})
 

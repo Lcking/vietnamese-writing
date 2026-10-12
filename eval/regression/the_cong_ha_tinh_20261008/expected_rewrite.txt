@@ -1,3 +1,6 @@
+# [AI 生成,未经编辑审定] 下面的改写由 AI 所写,仅作 check_style.py 的回归样本。
+# 待越南语编辑审定后,用编辑版替换。
+
 Passira lập cú đúp, Hà Tĩnh thắng 3-1 trên sân Thể Công
 
 Daniel Passira ghi hai bàn trong vòng 4 phút đầu hiệp hai, giúp Hà Tĩnh đánh bại Thể Công 3-1 tại V-League ngày 8/10/2026.

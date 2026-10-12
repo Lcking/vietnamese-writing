@@ -46,6 +46,28 @@ class TestCheckStyle(unittest.TestCase):
         got = rules_of(issues)
         self.assertEqual(got, set(), f"参考改写应零命中(除S8),实际 {got}")
 
+    # S1: nâng tỷ số là nhãn chính cho 1-3 → 零命中
+    def test_s1_primary_label_nang_ty_so(self):
+        issues = check("Phút 64, Passira nâng tỷ số lên 1-3 cho Hà Tĩnh.", self.facts)
+        self.assertNotIn("S1", {i["rule"] for i in issues},
+                         "nâng tỷ số 1-3 是主标签,不应报 S1")
+
+    # S1: nhân đôi cách biệt 在领先 1→2 时可接受 → 零命中
+    def test_s1_accepted_alt_nhan_doi(self):
+        issues = check("Phút 64, Passira nhân đôi cách biệt lên 1-3 cho Hà Tĩnh.", self.facts)
+        self.assertNotIn("S1", {i["rule"] for i in issues},
+                         "1-3(领先1→2)用 nhân đôi cách biệt 是可接受替代,不应报 S1")
+
+    # S1: 领先未翻倍却用 nhân đôi → 应报
+    def test_s1_nhan_doi_wrong_when_not_doubling(self):
+        facts3 = {"home": "A", "away": "B", "final": [3, 0], "events": [
+            {"minute": 10, "type": "goal", "team": "home", "player": "P1"},
+            {"minute": 20, "type": "goal", "team": "home", "player": "P2"},
+            {"minute": 30, "type": "goal", "team": "home", "player": "P3"}]}
+        issues = check("Phút 30, P3 nhân đôi cách biệt lên 3-0.", facts3)
+        self.assertIn("S1", {i["rule"] for i in issues},
+                      "2-0→3-0 领先未翻倍,用 nhân đôi cách biệt 应报 S1")
+
     # S2 反例:比分只出现一次(或分处导语和不同事件) → 不算重复
     def test_s2_no_false_positive_single_occurrence(self):
         text = ("Đội A thắng 3-1 trước đội B.\n\n"

@@ -70,10 +70,9 @@ def compute(facts):
             # 同一方继续领先(prev 和 now 都同号),或落后方缩小差距
             same_side_lead = (prev_diff > 0 and now_diff > 0) or (prev_diff < 0 and now_diff < 0)
             if same_side_lead:
-                # 领先方继续进球 → "nâng tỷ số"。
-                # 注:与编辑认可的参考改写对齐(1-2→1-3 用 "nâng tỷ số")。
-                # "nhân đôi cách biệt" 仅在两队实力悬殊、比分碾压(如 1-0→2-0 后继续扩大)
-                # 且编辑明确要求时使用——默认归入 "nâng tỷ số",避免与参考改写冲突。
+                # 领先方继续进球 → 主标签 "nâng tỷ số"。
+                # "nhân đôi cách biệt" 仅在领先从 1 球扩大到 2 球(prev=1, now=2)时
+                # 作为**可接受替代**(不是必须)。两者都不算错。
                 verb = "nâng tỷ số"
             else:
                 verb = "rút ngắn cách biệt"
@@ -82,9 +81,15 @@ def compute(facts):
         tag = verb
         if own:
             tag += " (phản lưới nhà)"
+        # 可接受替代写法(不算错):领先从 1 球扩到 2 球时,"nhân đôi cách biệt" 可替 "nâng tỷ số"
+        alts = []
+        if verb == "nâng tỷ số" and (
+                abs(prev_diff) == 1 and abs(now_diff) == 2 and
+                ((prev_diff > 0 and now_diff > 0) or (prev_diff < 0 and now_diff < 0))):
+            alts.append("nhân đôi cách biệt")
         steps.append({
             "minute": e.get("minute"), "team": ben, "player": player,
-            "score": f"{h}-{a}", "verb": tag,
+            "score": f"{h}-{a}", "verb": tag, "accept_alt": alts,
             "detail": e.get("detail"),
             "assist": e.get("assist"),
             "var_checked": e.get("var_checked"),
