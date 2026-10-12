@@ -1,0 +1,20 @@
+{
+  "competition": "V-League",
+  "competition_type": "league",
+  "round": "Vòng 3",
+  "date": "2026-10-12",
+  "home": "Hà Nội",
+  "away": "Bắc Ninh",
+  "final": [
+    1,
+    0
+  ],
+  "events": [
+    {
+      "minute": 64,
+      "type": "goal",
+      "team": "home",
+      "player": "Phạm Văn D"
+    }
+  ]
+}

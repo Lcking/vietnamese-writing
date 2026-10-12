@@ -1,0 +1,30 @@
+{
+  "competition": "Cúp Quốc gia",
+  "competition_type": "cup",
+  "round": "Vòng loại",
+  "date": "2026-10-12",
+  "home": "Hà Nội",
+  "away": "SHB Đà Nẵng",
+  "final": [
+    1,
+    1
+  ],
+  "penalties": [
+    3,
+    4
+  ],
+  "events": [
+    {
+      "minute": 28,
+      "type": "goal",
+      "team": "home",
+      "player": "Nguyễn Văn E"
+    },
+    {
+      "minute": 72,
+      "type": "goal",
+      "team": "away",
+      "player": "Hoàng Văn F"
+    }
+  ]
+}

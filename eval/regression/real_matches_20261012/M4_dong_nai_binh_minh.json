@@ -1,0 +1,62 @@
+{
+  "competition": "Cúp Quốc gia",
+  "competition_type": "cup",
+  "round": "Vòng loại",
+  "date": "2026-10-12",
+  "home": "TP. Đồng Nai",
+  "away": "Bình Minh Sài Gòn",
+  "final": [
+    4,
+    3
+  ],
+  "events": [
+    {
+      "minute": 12,
+      "type": "goal",
+      "team": "home",
+      "player": "Vũ Văn G"
+    },
+    {
+      "minute": 25,
+      "type": "goal",
+      "team": "away",
+      "player": "Đặng Văn H"
+    },
+    {
+      "minute": 40,
+      "type": "goal",
+      "team": "home",
+      "player": "Bùi Văn I"
+    },
+    {
+      "minute": 58,
+      "type": "goal",
+      "team": "away",
+      "player": "Đặng Văn H"
+    },
+    {
+      "minute": 66,
+      "type": "goal",
+      "team": "home",
+      "player": "Vũ Văn G"
+    },
+    {
+      "minute": 81,
+      "type": "goal",
+      "team": "away",
+      "player": "Ngô Văn K"
+    },
+    {
+      "minute": 88,
+      "type": "goal",
+      "team": "home",
+      "player": "Vũ Văn G"
+    },
+    {
+      "minute": 90,
+      "type": "red",
+      "team": "away",
+      "player": "Đỗ Văn L"
+    }
+  ]
+}

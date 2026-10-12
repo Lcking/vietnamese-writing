@@ -170,5 +170,50 @@ class TestS9OwnGoal(unittest.TestCase):
         self.assertNotIn("S9", rules)
 
 
+class TestRealRunIssues(unittest.TestCase):
+    """v1.4.4 真实生成跑出的错误句(评审 evidence)作为回归用例。"""
+
+    import pathlib as _p2
+
+    def _facts(self, name):
+        import json as _j
+        fp = _pl.Path(__file__).resolve().parent.parent / "eval/regression/real_matches_20261012" / f"{name}.json"
+        return _j.loads(fp.read_text(encoding="utf-8"))
+
+    def test_braga_home_away_reversed(self):
+        f = self._facts("M5_braga_sporting")
+        rules = {i["rule"] for i in check("Sporting đón tiếp Braga tại nhà", f)}
+        self.assertIn("S13", rules)
+
+    def test_red_card_wrong_team(self):
+        f = self._facts("M4_dong_nai_binh_minh")
+        rules = {i["rule"] for i in check("Chiếc thẻ đỏ buộc đội chủ nhà phải chơi thiếu người", f)}
+        self.assertIn("S13", rules)
+
+    def test_time_word_mismatch(self):
+        f = self._facts("M5_braga_sporting")
+        rules = {i["rule"] for i in check("Phút 57, đội khách có bàn gỡ hòa trong phút cuối", f)}
+        self.assertIn("S12", rules)
+
+    def test_han_characters_blocking(self):
+        rules = {i["rule"] for i in check("Anh lập大功 cho đội nhà")}
+        self.assertIn("S10", rules)
+
+    def test_markdown_residue_blocking(self):
+        rules = {i["rule"] for i in check("Anh ghi bàn **vượt lên dẫn** cho đội khách")}
+        self.assertIn("S11", rules)
+
+    def test_fabricated_coach(self):
+        f = self._facts("M5_braga_sporting")
+        rules = {i["rule"] for i in check("HLV Nguyễn Văn Thắng cho biết đội sẽ cố gắng", f)}
+        self.assertIn("S14", rules)
+
+    def test_no_false_positive_cup_quoc_gia(self):
+        """'Cúp Quốc gia' 里的 Quốc 不该被当球员名(评审 M4 误报)。"""
+        f = self._facts("M4_dong_nai_binh_minh")
+        msgs = " ".join(i["msg"] for i in check("TP. Đồng Nai 4-3 Bình Minh Sài Gòn", f))
+        self.assertNotIn("Quốc", msgs)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

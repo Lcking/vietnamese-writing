@@ -35,6 +35,19 @@ def parse_minute(m):
         return None
 
 
+def base_minute(m):
+    """返回加号前的**基础**分钟(用于判定加时)。'90+4' → 90, '120+2' → 120。"""
+    if m is None:
+        return None
+    if isinstance(m, (int, float)):
+        return float(m)
+    s = str(m).strip()
+    mm = re.match(r"^(\d+)", s)
+    if mm:
+        return float(mm.group(1))
+    return parse_minute(m)
+
+
 def parse_score(score):
     """把 [1,3] 或 {'home':1,'away':3} 统一成 (home, away)。"""
     if isinstance(score, list) and len(score) == 2:
@@ -200,7 +213,10 @@ def compute(facts):
         except (ValueError, TypeError):
             pen_warn = "tỷ số luân lưu không hợp lệ"
             pens = None
-    is_knockout = (comp_type == "cup") or (pen_winner is not None)
+    has_extra_time = any(
+        (base_minute(e.get("minute")) is not None and 91 <= base_minute(e.get("minute")) <= 120)
+        for e in events)
+    is_knockout = (comp_type == "cup") or (pen_winner is not None) or has_extra_time
     decider = None
     if winner and order_reliable:
         # 决胜事件 = 胜方**最后一次从平局/落后转为领先**的进球(即最后一次"反超"),
@@ -393,6 +409,16 @@ def format_for_prompt(result, warns):
         return hn if s == "home" else an
 
     lines = ["## Dữ kiện đã chuẩn hoá (dùng đúng các mục này):"]
+    # 首行固定给出主客场与赛果(评审:主客场写反的根因是事实块从不写这两项)
+    res = result.get("final", "")
+    fh, fa = res.split("-") if "-" in res else (None, None)
+    if result.get("final_provided") and fh is not None and int(fh) != int(fa):
+        wname = hn if int(fh) > int(fa) else an
+        lines.append(f"- Chủ nhà: {hn} · Khách: {an} · Chung cuộc: {res} ({wname} thắng)")
+    elif result.get("final_provided"):
+        lines.append(f"- Chủ nhà: {hn} · Khách: {an} · Chung cuộc: {res} (hòa)")
+    else:
+        lines.append(f"- Chủ nhà: {hn} · Khách: {an} · Chung cuộc: (chưa có)")
     if result.get("team_errors"):
         lines.append("- ⚠ Không khớp tên đội ở trường 'team' cho: " +
                      ", ".join(result["team_errors"]) +
@@ -421,7 +447,7 @@ def format_for_prompt(result, warns):
     if result["comeback"]:
         lines.append("- Đây là màn ngược dòng")
     # 加时赛:有 >90 分钟进球时提示
-    if any(parse_minute(s["minute"]) is not None and parse_minute(s["minute"]) > 90
+    if any((base_minute(s["minute"]) is not None and 91 <= base_minute(s["minute"]) <= 120)
            for s in result["score_progression"]):
         lines.append(f"- Trận đấu có hiệp phụ; kết quả ghi theo 'sau 120 phút' "
                      f"({result['final']})")
@@ -447,18 +473,24 @@ def format_for_prompt(result, warns):
             var = " (VAR công nhận)" if s.get("var_checked") else ""
             pen = " (phạt đền)" if s.get("penalty") else ""
             et = ""
-            if parse_minute(s["minute"]) is not None and parse_minute(s["minute"]) > 90:
+            bm = base_minute(s["minute"])
+            if bm is not None and 91 <= bm <= 120:
                 et = " [hiệp phụ]"
             if reliable:
-                lines.append(f"    {mn}: {s['player']} → **{s['verb']}** {s['score']}{pen}{extra}{var}{et}")
+                lines.append(f"    {mn}: {s['player']} → {s['verb']} {s['score']}{pen}{extra}{var}{et}")
             else:
                 # 顺序不可靠:只列球员+球队,不给逐球比分,不放 '?'
-                side = _side(s.get("team"))
-                lines.append(f"    {mn}: {s['player']} ({side}){pen}{extra}{var}{et}")
+                # 注意:乌龙球时 s['team'] 是**受益方**,球员实际属于对方
+                if s.get("own_goal"):
+                    scorer_side = _side("away" if s.get("team") == "home" else "home")
+                    lines.append(f"    {mn}: {s['player']} ({scorer_side}) → "
+                                 f"**phản lưới nhà**, có lợi cho {_side(s.get('team'))}{pen}{extra}{var}{et}")
+                else:
+                    lines.append(f"    {mn}: {s['player']} ({_side(s.get('team'))}){pen}{extra}{var}{et}")
         else:
             mn = f"phút {s['minute']}" if s["minute"] is not None else "(không rõ phút)"
             label = "thẻ vàng thứ hai (bị truất quyền)" if s["kind"] == "second_yellow" else "thẻ đỏ"
-            lines.append(f"    {mn}: {s['player']} ({_side(s['team'])}) → **{label}**")
+            lines.append(f"    {mn}: {s['player']} ({_side(s['team'])}) → {label}")
     if result.get("missed_penalties"):
         lines.append("- Đá hỏng phạt đền: " + ", ".join(
             f"{m['player']}" + (f" (phút {m['minute']})" if m.get("minute") is not None else "")

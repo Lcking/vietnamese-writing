@@ -1,0 +1,32 @@
+{
+  "competition": "V-League",
+  "competition_type": "league",
+  "round": "Vòng 3",
+  "date": "2026-10-12",
+  "home": "Hải Phòng",
+  "away": "Thanh Hóa",
+  "final": [
+    1,
+    2
+  ],
+  "events": [
+    {
+      "minute": 23,
+      "type": "penalty",
+      "team": "home",
+      "player": "Nguyễn Văn A"
+    },
+    {
+      "minute": 55,
+      "type": "goal",
+      "team": "away",
+      "player": "Trần Văn B"
+    },
+    {
+      "minute": 78,
+      "type": "goal",
+      "team": "away",
+      "player": "Lê Văn C"
+    }
+  ]
+}

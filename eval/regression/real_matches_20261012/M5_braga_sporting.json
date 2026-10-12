@@ -1,0 +1,38 @@
+{
+  "competition": "Primeira Liga",
+  "competition_type": "league",
+  "round": "Vòng 8",
+  "date": "2026-10-12",
+  "home": "Braga",
+  "away": "Sporting",
+  "final": [
+    1,
+    3
+  ],
+  "events": [
+    {
+      "minute": null,
+      "type": "own_goal",
+      "team": "home",
+      "player": "Rui Silva"
+    },
+    {
+      "minute": null,
+      "type": "goal",
+      "team": "away",
+      "player": "Bernardo"
+    },
+    {
+      "minute": null,
+      "type": "own_goal",
+      "team": "away",
+      "player": "Zalazar"
+    },
+    {
+      "minute": 70,
+      "type": "goal",
+      "team": "away",
+      "player": "Suárez"
+    }
+  ]
+}

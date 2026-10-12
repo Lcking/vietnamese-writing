@@ -509,7 +509,8 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
         try:
             from check_style import check as style_check
             revise_issues = style_check(text, facts)
-            blocking = [i for i in revise_issues if i["rule"] != "S8" and not i.get("hint_only")]
+            blocking = [i for i in revise_issues
+                        if i.get("blocking") or (i["rule"] != "S8" and not i.get("hint_only"))]
             if blocking:
                 fix_list = "\n".join(f"- [{i['rule']}] {i['msg']} (\"{i['snippet']}\")"
                                      for i in blocking)

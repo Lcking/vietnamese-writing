@@ -270,7 +270,8 @@ def check(task_text, facts=None):
                                    f"'{ben_name}'"})
                 # 标题应含决胜球员名(乌龙球时跳过——主角是受益方,不是乌龙球员)
                 pl = "" if d.get("own_goal") else (d["player"] or "")
-                parts = [x for x in pl.split() if len(x) > 2]
+                STOP2 = {"quốc", "gia", "cúp", "đội", "trận", "bàn", "phút"}
+                parts = [x for x in pl.split() if len(x) > 2 and x.lower() not in STOP2]
                 if parts and not any(x in title for x in parts):
                     issues.append({"rule": "S9", "snippet": title[:50],
                                    "msg": f"Tiêu đề không có cầu thủ ghi bàn quyết định '{pl}'"})
@@ -279,7 +280,10 @@ def check(task_text, facts=None):
                 for s in result["score_progression"]:
                     if s["player"] == pl:
                         continue        # 跳过决胜球员本身
-                    s_parts = [x for x in s["player"].split() if len(x) > 3]
+                    # 过滤:短于 4 字符的 token(如 "Quốc")易与"Cúp Quốc gia"等词撞车
+                    STOP = {"quốc", "gia", "cúp", "đội", "trận", "bàn", "phút"}
+                    s_parts = [x for x in s["player"].split()
+                               if len(x) > 3 and x.lower() not in STOP]
                     if not s_parts:
                         continue
                     if any(x in title for x in s_parts) and (not parts or
@@ -290,6 +294,106 @@ def check(task_text, facts=None):
                                 "rule": "S9", "snippet": title[:50],
                                 "msg": f"Tiêu đề đặt cầu thủ không quyết định '{s['player']}' ngang hàng với cầu thủ quyết định, nên chỉ nêu cầu thủ quyết định"})
                             break
+        except Exception:
+            pass
+
+    # ---- S10 汉字混入(直接阻断级) ----
+    han = re.findall(r"[\u4e00-\u9fff]+", task_text)
+    if han:
+        issues.append({"rule": "S10", "snippet": ", ".join(han[:5]), "blocking": True,
+                       "msg": f"Bài viết lẫn chữ Hán: {', '.join(han[:5])} — phải sửa"})
+
+    # ---- S11 markdown 残留(事实块的 ** 等被抄进正文) ----
+    md = []
+    if "**" in task_text:
+        md.append("**")
+    for pat, label in ((r"^\s*[-•]\s+\S", "gạch đầu dòng"),
+                       (r"^\s*#{1,6}\s", "tiêu đề markdown"),
+                       (r"`[^`]+`", "code")):
+        if re.search(pat, task_text, re.M):
+            md.append(label)
+    if md:
+        issues.append({"rule": "S11", "snippet": ", ".join(md), "blocking": True,
+                       "msg": f"Bài viết còn dấu vết markdown/định dạng nội bộ: {', '.join(md)}"})
+
+    # ---- S12 时间词与分钟矛盾 ----
+    TIME_WORDS = {
+        "phút cuối": (85, 90), "cuối trận": (80, 90), "những phút cuối": (80, 90),
+        "hiệp một": (1, 45), "hiệp 1": (1, 45), "đầu trận": (1, 15),
+        "khung giờ thứ hai": (46, 90), "hiệp hai": (46, 90), "hiệp 2": (46, 90),
+    }
+    for m in re.finditer(r"phút\s+(\d{1,3})(?:\s*\+\s*(\d+))?", task_text, re.I):
+        mn = int(m.group(1))
+        # 该分钟附近(后 40 字符)是否出现时间词
+        ctx = task_text[m.end():m.end() + 60].lower()
+        for w, (lo, hi) in TIME_WORDS.items():
+            if w in ctx and not (lo <= mn <= hi):
+                issues.append({"rule": "S12", "hint_only": True,
+                               "snippet": f"phút {mn} ... {w}",
+                               "msg": f"Phút {mn} không khớp với cụm thời gian '{w}' "
+                                      f"(khoảng {lo}-{hi})"})
+                break
+
+    # ---- S13 主客场方向(需 facts) ----
+    if facts:
+        try:
+            hn = facts.get("home")
+            an = facts.get("away")
+            fin = facts.get("final")
+            if hn and an and fin:
+                fh, fa = int(fin[0]), int(fin[1])
+                home_won = fh > fa
+                away_won = fa > fh
+                wname = hn if home_won else (an if away_won else None)
+                lname = an if home_won else (hn if away_won else None)
+                # "X đón tiếp Y" / "tại nhà" 结构里,接待方应是主队
+                for m in re.finditer(r"([A-ZĐ][\w\sÀ-ỹ]{1,25}?)\s+đón tiếp\s+([A-ZĐ][\w\sÀ-ỹ]{1,25}?)[\s.,]", task_text):
+                    a, b = m.group(1).strip(), m.group(2).strip()
+                    if hn.lower() in b.lower() and an.lower() in a.lower():
+                        issues.append({"rule": "S13", "hint_only": True,
+                                       "snippet": m.group(0)[:60],
+                                       "msg": f"'{a} đón tiếp {b}' nhưng chủ nhà là {hn}"})
+                # lname thắng/nghiêng về chủ nhà 类错误
+                if lname and re.search(re.escape(lname) + r"[^.]{0,25}(thắng|nghiêng về)", task_text, re.I):
+                    if re.search(r"chủ nhà", task_text, re.I):
+                        issues.append({"rule": "S13", "hint_only": True, "snippet": lname,
+                                       "msg": f"Kiểm tra hướng kết quả: {lname} là đội thua"})
+                # "đội chủ nhà chơi thiếu người" 但红牌是客队
+                reds = [e for e in facts.get("events", []) if e.get("type") in ("red", "second_yellow")]
+                if reds and re.search(r"đội chủ nhà[^.]{0,20}thiếu người", task_text, re.I):
+                    red_side = reds[0].get("team")
+                    if red_side == "away":
+                        issues.append({"rule": "S13", "hint_only": True,
+                                       "snippet": "đội chủ nhà ... thiếu người",
+                                       "msg": f"Thẻ phạt thuộc đội khách ({an}), không phải chủ nhà"})
+        except Exception:
+            pass
+
+    # ---- S14 专有名词核对(正文与 facts/任务描述比对) ----
+    if facts:
+        try:
+            import unicodedata as _ud
+            def _bucket(x):
+                return _ud.normalize("NFC", str(x)).casefold()
+            # 允许的专有名词集合:facts 里的名字 + 任务里的名字
+            allowed = set()
+            for v in (facts.get("home"), facts.get("away")):
+                if v:
+                    for tok in str(v).split():
+                        allowed.add(_bucket(tok))
+            for e in facts.get("events", []):
+                for k in ("player", "assist"):
+                    if e.get(k):
+                        for tok in str(e[k]).split():
+                            allowed.add(_bucket(tok))
+            # 正文里的"看起来像教练/官员"的专有名词
+            for m in re.finditer(r"\b(HLV|huấn luyện viên)\s+([A-ZĐ][\wÀ-ỹ]+(?:\s+[A-ZĐ][\wÀ-ỹ]+){1,3})", task_text):
+                name = m.group(2).strip()
+                toks = [_bucket(x) for x in name.split()]
+                if not any(x in allowed for x in toks):
+                    issues.append({"rule": "S14", "hint_only": True,
+                                   "snippet": name[:50],
+                                   "msg": f"Tên riêng '{name}' không có trong dữ kiện → kiểm tra bịa đặt"})
         except Exception:
             pass
 

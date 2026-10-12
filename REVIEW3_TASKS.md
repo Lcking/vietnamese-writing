@@ -60,6 +60,28 @@
 - [x] run_eval 三组对照:raw / skill(规则卡,不注 facts) / full(规则卡+facts)
 - [x] 测试数核对:实测 59 例(35+15+9),此前"50 例"是误报
 
+## 复审第六轮（claude v3，真实生成 15 篇）已修
+
+代码回归（本轮引入）:
+- [x] 90+X 补时被当加时 → 用 base_minute 判 91..120 才算加时;加时进球也计入 is_knockout
+- [x] 缺分钟时乌龙标注丢失/球队写反 → 保留"phản lưới nhà"并标明球员所属队与受益方
+
+事实块(主客场写反的根因):
+- [x] 首行固定写:Chủ nhà / Khách / Chung cuộc(+胜方)
+- [x] 去掉事实块里的 markdown 加粗(模型曾把 **vượt lên dẫn** 抄进正文)
+
+新检查器(评审 15 篇里"一条都没拦住"的错误):
+- [x] S10 汉字混入(blocking,直接阻断)
+- [x] S11 markdown 残留(blocking)
+- [x] S12 时间词与分钟矛盾(phút cuối/cuối trận/hiệp một/khung giờ thứ hai)
+- [x] S13 主客场方向(đón tiếp 结构、thắng/nghiêng về、红牌队别)
+- [x] S14 专有名词核对(HLV 名字不在 facts 里 → 疑编造)
+- [x] S9 误报修:'Cúp Quốc gia' 的 Quốc 不再被当球员名
+
+回归样本:
+- [x] eval/regression/real_matches_20261012/ 存 5 场真实比赛(M1-M5)
+- [x] 评审 8 条实际错句全部作为测试用例
+
 ## 仍需母语编辑（无法自动）
 - [ ] C2 编辑抽检 20 篇
 - [ ] D2 真实编辑改稿记录
