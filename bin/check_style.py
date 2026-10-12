@@ -240,8 +240,12 @@ def check(task_text, facts=None):
             issues.append({"rule": "S7", "snippet": ", ".join(hit[:5]), "hint_only": True,
                            "msg": f"Mật độ từ cảm xúc cao ({len(hit)} từ / {n} ký tự), tin tức nên trung tính"})
 
-    # ---- S8 待审搭配 ----
+    # ---- S8 待审搭配(去重:同一片段只报一次) ----
+    seen_watch = set()
     for w in WATCH:
+        if w in seen_watch:
+            continue
+        seen_watch.add(w)
         if w in task_text.lower():
             issues.append({"rule": "S8", "snippet": w, "hint_only": True,
                            "msg": f"Cụm từ cần biên tập xác nhận '{w}'"})
@@ -253,8 +257,19 @@ def check(task_text, facts=None):
             result = compute(facts)
             d = result.get("decider")
             if d and title:
-                # 标题应含决胜球员名
-                pl = d["player"] or ""
+                # 乌龙球决胜:标题不该把乌龙球员当主角(应聚焦受益方)
+                if d.get("own_goal"):
+                    og_parts = [x for x in (d["player"] or "").split() if len(x) >= 1]
+                    if og_parts and any(x in title for x in og_parts):
+                        ben = d.get("beneficiary")
+                        ben_name = facts.get("home" if ben == "home" else "away", "")
+                        issues.append({
+                            "rule": "S9", "snippet": title[:50],
+                            "msg": f"Tiêu đề lấy cầu thủ đá phản lưới nhà '{d['player']}' "
+                                   f"làm nhân vật chính; nên tập trung vào đội hưởng lợi "
+                                   f"'{ben_name}'"})
+                # 标题应含决胜球员名(乌龙球时跳过——主角是受益方,不是乌龙球员)
+                pl = "" if d.get("own_goal") else (d["player"] or "")
                 parts = [x for x in pl.split() if len(x) > 2]
                 if parts and not any(x in title for x in parts):
                     issues.append({"rule": "S9", "snippet": title[:50],

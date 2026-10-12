@@ -50,22 +50,37 @@ def compute(facts):
     away = facts.get("away", "away")
     events = facts.get("events", [])
 
-    # 修6: team 字段允许直接写队名 → 归一化成 home/away
-    team_err = []          # 无法映射的队名(报错,不静默当客队)
+    # 修6/1: team 字段允许直接写队名 → 归一化成 home/away
+    # 比较前做 NFC + 大小写折叠(保留声调符号,不做去声调)
+    import unicodedata as _ud
+    def _fold(x):
+        return _ud.normalize("NFC", str(x).strip()).casefold()
+    team_err = []
+    _fh, _fa = _fold(home), _fold(away)
+
     def _norm_team(v):
         if v in ("home", "away"):
             return v
         if v is None:
             return None
-        s = str(v).strip()
-        if s == str(home).strip():
+        s = _fold(v)
+        if s == _fh:
             return "home"
-        if s == str(away).strip():
+        if s == _fa:
             return "away"
-        team_err.append(s)
+        team_err.append(str(v))
         return None
+
+    valid_events = []
     for _e in events:
-        _e["team"] = _norm_team(_e.get("team"))
+        raw_team = _e.get("team")
+        nt = _norm_team(raw_team)
+        if nt is None and raw_team is not None:
+            # 映射不上:该事件**不参与**比分计算,只单独报一条警告
+            continue
+        _e["team"] = nt
+        valid_events.append(_e)
+    events = valid_events
     # 按分钟排序(无分钟的放最后,保持相对顺序)
     goals = [e for e in events if e.get("type") in ("goal", "own_goal", "penalty")]
     goals_sorted = sorted([e for e in goals if e.get("minute") is not None],
@@ -73,7 +88,8 @@ def compute(facts):
     goals_nom = [e for e in goals if e.get("minute") is None]
     goals_ordered = goals_sorted + goals_nom
     # 修5: 只要有关键进球缺分钟,顺序不可靠 → 停用顺序依赖的推算
-    order_reliable = (len(goals_nom) == 0) and (len(team_err) == 0)
+    # 顺序可靠性只取决于**有效进球**是否都有分钟(被排除的无效事件不算)
+    order_reliable = (len(goals_nom) == 0)
 
     # 逐球推算比分状态与动词
     h = a = 0
@@ -156,20 +172,35 @@ def compute(facts):
     events_h, events_a = h, a          # 事件推出的比分(停用推导时用)
     # 胜负仅在最终比分可靠时推导(未提供 final 或顺序不可靠 → 不推)
     # 注:final 与事件一致是正常情况,此时同样要推(此处曾误写成 != 才推)
+    # 胜负只需最终比分可靠即可推(不依赖进球顺序);逆转/决胜球才依赖顺序
     winner = None
-    if final_provided and order_reliable and final_h != final_a:
+    if final_provided and not score_mismatch and final_h != final_a:
         winner = "home" if final_h > final_a else "away"
+    # 3) 赛事类型:cup 无积分;加时/点球本身也说明是淘汰赛
+    comp_type = str(facts.get("competition_type") or "").strip().lower()
+
     # 点球大战(杯赛)
     pens = facts.get("penalties")
     pen_winner = None
+    pen_warn = None
     if isinstance(pens, (list, tuple)) and len(pens) == 2:
         try:
-            if int(pens[0]) > int(pens[1]):
-                pen_winner = "home"
-            elif int(pens[1]) > int(pens[0]):
-                pen_winner = "away"
+            p0, p1 = int(pens[0]), int(pens[1])
+            if p0 == p1:
+                # 点球不可能打平(会一直踢到分胜负) → 忽略
+                pen_warn = "tỷ số luân lưu không hợp lệ (hòa)"
+                pens = None
+            elif final_h != final_a:
+                # 常规时间已分胜负 → 点球数据矛盾,忽略
+                pen_warn = ("có loạt luân lưu nhưng tỷ số chung cuộc đã phân định "
+                            "thắng thua → bỏ qua dữ kiện luân lưu")
+                pens = None
+            else:
+                pen_winner = "home" if p0 > p1 else "away"
         except (ValueError, TypeError):
-            pen_winner = None
+            pen_warn = "tỷ số luân lưu không hợp lệ"
+            pens = None
+    is_knockout = (comp_type == "cup") or (pen_winner is not None)
     decider = None
     if winner and order_reliable:
         # 决胜事件 = 胜方**最后一次从平局/落后转为领先**的进球(即最后一次"反超"),
@@ -229,7 +260,8 @@ def compute(facts):
             derivable.append({"fact": "tỷ số hiệp một", "value": first_half[-1]["score"],
                               "note": "có thể suy ra từ bàn thắng, không nên tách thành câu riêng"})
     # 胜负推导仅在 final 与事件一致时给出(不一致说明输入有误)
-    if winner and not score_mismatch:
+    # "3 分"只适用于联赛;杯赛淘汰赛没有积分
+    if winner and not score_mismatch and not is_knockout:
         derivable.append({"fact": "giành trọn 3 điểm",
                           "note": "có thể suy ra từ đội thắng, không nên làm câu kết"})
 
@@ -301,6 +333,9 @@ def compute(facts):
         "final_provided": final_provided,
         "order_reliable": order_reliable,
         "missed_penalties": missed_pens,
+        "competition_type": comp_type or None,
+        "is_knockout": is_knockout,
+        "pen_warning": pen_warn,
         "team_errors": sorted(set(team_err)),
     }
 
@@ -385,6 +420,13 @@ def format_for_prompt(result, warns):
                          f"({d['score']}) → dùng cho tiêu đề")
     if result["comeback"]:
         lines.append("- Đây là màn ngược dòng")
+    # 加时赛:有 >90 分钟进球时提示
+    if any(parse_minute(s["minute"]) is not None and parse_minute(s["minute"]) > 90
+           for s in result["score_progression"]):
+        lines.append(f"- Trận đấu có hiệp phụ; kết quả ghi theo 'sau 120 phút' "
+                     f"({result['final']})")
+    if result.get("pen_warning"):
+        lines.append(f"- ⚠ Dữ kiện luân lưu bị bỏ qua: {result['pen_warning']}")
     if result.get("penalty_winner") and result.get("penalties"):
         pw = result["penalties"]
         sc = f"{pw[0]}-{pw[1]}" if result["penalty_winner"] == "home" else f"{pw[1]}-{pw[0]}"
@@ -397,13 +439,22 @@ def format_for_prompt(result, warns):
     for e in result.get("discipline", []):
         timeline.append((parse_minute(e["minute"]), "disc", e))
     timeline.sort(key=lambda x: (x[0] is None, x[0] if x[0] is not None else 0))
+    reliable = result.get("order_reliable", True)
     for _, kind, s in timeline:
         if kind == "goal":
             mn = f"phút {s['minute']}" if s["minute"] is not None else "(không rõ phút)"
             extra = f", kiến tạo {s['assist']}" if s.get("assist") else ""
             var = " (VAR công nhận)" if s.get("var_checked") else ""
             pen = " (phạt đền)" if s.get("penalty") else ""
-            lines.append(f"    {mn}: {s['player']} → **{s['verb']}** {s['score']}{pen}{extra}{var}")
+            et = ""
+            if parse_minute(s["minute"]) is not None and parse_minute(s["minute"]) > 90:
+                et = " [hiệp phụ]"
+            if reliable:
+                lines.append(f"    {mn}: {s['player']} → **{s['verb']}** {s['score']}{pen}{extra}{var}{et}")
+            else:
+                # 顺序不可靠:只列球员+球队,不给逐球比分,不放 '?'
+                side = _side(s.get("team"))
+                lines.append(f"    {mn}: {s['player']} ({side}){pen}{extra}{var}{et}")
         else:
             mn = f"phút {s['minute']}" if s["minute"] is not None else "(không rõ phút)"
             label = "thẻ vàng thứ hai (bị truất quyền)" if s["kind"] == "second_yellow" else "thẻ đỏ"

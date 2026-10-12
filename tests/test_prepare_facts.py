@@ -326,5 +326,77 @@ class TestPrepareFacts(unittest.TestCase):
         self.assertIn("Đá hỏng phạt đền", format_for_prompt(r, []))
 
 
+    # ---- 评审 v3 第五轮:输入矛盾与杯赛语境 ----
+
+    def test_unknown_team_excluded_from_score(self):
+        """队名映射不上:该事件不参与比分计算,只报一条警告。"""
+        r = compute({"home": "Đội A", "away": "Đội B", "final": [1, 0],
+                     "events": [{"minute": 10, "type": "goal", "team": "Đội C", "player": "P"}]})
+        self.assertEqual(r["score_progression"], [])
+        self.assertIn("Đội C", r["team_errors"])
+        out = format_for_prompt(r, [])
+        self.assertNotIn("thiếu phút", out)     # 不该冒出连锁误报
+
+    def test_team_casefold_match(self):
+        """队名大小写应折叠匹配。"""
+        r = compute({"home": "Đội A", "away": "Đội B", "final": [1, 0],
+                     "events": [{"minute": 10, "type": "goal", "team": "đội a", "player": "P"}]})
+        self.assertEqual(r["team_errors"], [])
+
+    def test_penalties_ignored_when_decided(self):
+        """常规时间已分胜负 → 忽略点球数据并警告。"""
+        r = compute({"home": "Đội A", "away": "Đội B", "final": [2, 1], "penalties": [4, 3],
+                     "events": [{"minute": 10, "type": "goal", "team": "home", "player": "P"},
+                                {"minute": 20, "type": "goal", "team": "away", "player": "Q"},
+                                {"minute": 30, "type": "goal", "team": "home", "player": "Z"}]})
+        self.assertIsNone(r["penalty_winner"])
+        self.assertTrue(r["pen_warning"])
+
+    def test_drawn_penalties_invalid(self):
+        """点球 3-3 不可能 → 忽略并警告。"""
+        r = compute({"home": "A", "away": "B", "final": [1, 1], "penalties": [3, 3], "events": []})
+        self.assertIsNone(r["penalty_winner"])
+        self.assertIn("hợp lệ", r["pen_warning"])
+
+    def test_cup_no_three_points(self):
+        """杯赛/淘汰赛不推 3 分。"""
+        r = compute({"home": "A", "away": "B", "final": [2, 1], "competition_type": "cup",
+                     "events": [{"minute": 20, "type": "goal", "team": "away", "player": "Q"},
+                                {"minute": 30, "type": "goal", "team": "home", "player": "Z"},
+                                {"minute": 100, "type": "goal", "team": "home", "player": "P"}]})
+        self.assertNotIn("3 điểm", " ".join(d["fact"] for d in r["derivable"]))
+
+    def test_extra_time_annotated(self):
+        """加时进球标 hiệp phụ,结果写 sau 120 phút。"""
+        r = compute({"home": "A", "away": "B", "final": [2, 1], "competition_type": "cup",
+                     "events": [{"minute": 20, "type": "goal", "team": "away", "player": "Q"},
+                                {"minute": 100, "type": "goal", "team": "home", "player": "P"}]})
+        out = format_for_prompt(r, [])
+        self.assertIn("hiệp phụ", out)
+        self.assertIn("120", out)
+
+    def test_missing_minute_keeps_winner(self):
+        """缺分钟不影响胜负判断(只影响顺序相关)。"""
+        r = compute({"home": "A", "away": "B", "final": [2, 0],
+                     "events": [{"minute": None, "type": "goal", "team": "home", "player": "X"},
+                                {"minute": 55, "type": "goal", "team": "home", "player": "Y"}]})
+        self.assertFalse(r["order_reliable"])
+        self.assertIsNone(r["decider"])
+        # 胜负仍可推(3 分为联赛默认)
+        self.assertIn("giành trọn 3 điểm", [d["fact"] for d in r["derivable"]])
+
+    def test_missing_minute_no_scoreline_hint(self):
+        """缺分钟时不列逐球比分,也不放 '?'。"""
+        r = compute({"home": "A", "away": "B", "final": [2, 0],
+                     "events": [{"minute": None, "type": "goal", "team": "home", "player": "X"},
+                                {"minute": 55, "type": "goal", "team": "home", "player": "Y"}]})
+        out = format_for_prompt(r, [])
+        self.assertNotIn("**?**", out)
+        # 进程行不含逐球比分
+        for line in out.split("\n"):
+            if "phút 55" in line:
+                self.assertNotIn("1-0", line)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

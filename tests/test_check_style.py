@@ -155,5 +155,20 @@ class TestS6Suffix(unittest.TestCase):
         self.assertTrue(hits and all(i.get("hint_only") for i in hits))
 
 
+class TestS9OwnGoal(unittest.TestCase):
+    """S9 应拦住以乌龙球员为主角的标题。"""
+
+    FACTS = {"home": "Đội A", "away": "Đội B", "final": [0, 1],
+             "events": [{"minute": 10, "type": "own_goal", "team": "home", "player": "Z"}]}
+
+    def test_own_goal_player_as_headline(self):
+        rules = {i["rule"] for i in check("Z tỏa sáng, Đội A thắng 2-1", self.FACTS)}
+        self.assertIn("S9", rules)
+
+    def test_beneficiary_headline_ok(self):
+        rules = {i["rule"] for i in check("Đội B thắng nhờ phản lưới nhà", self.FACTS)}
+        self.assertNotIn("S9", rules)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
