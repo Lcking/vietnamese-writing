@@ -12,6 +12,8 @@
 import json
 import sys
 import unittest
+import re
+import pathlib as _pl
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -102,14 +104,33 @@ class TestCheckStyle(unittest.TestCase):
 
     # S6:纪律术语必报
     def test_s6_discipline(self):
-        issues = check("Cầu thủ nhận 2 thẻ vàng và phải rời sân.")
+        issues = check("Quốc Dân nhận 2 thẻ vàng và bị truất quyền thi đấu.")
         self.assertIn("S6", {i["rule"] for i in issues})
+
+    def test_s6_team_two_yellows_ok(self):
+        """全队两张黄牌是正常写法,不该报 S6。"""
+        issues = check("Hà Tĩnh nhận 2 thẻ vàng trong hiệp một.")
+        self.assertNotIn("S6", {i["rule"] for i in issues})
 
     # S9:标题缺决胜球员 → 报
     def test_s9_missing_decider(self):
         text = "Thể Công thua Hà Tĩnh 1-3\n\nDiễn biến trận đấu..."
         issues = check(text, self.facts)
         self.assertIn("S9", {i["rule"] for i in issues})
+
+
+class TestCards(unittest.TestCase):
+    """A1 验收:每张卡 ≤1500 字符(含标记可略超,但须 <1700)、无汉字。"""
+
+    CARDS_DIR = _pl.Path(__file__).resolve().parent.parent / "references/cards"
+
+    def test_card_length_and_no_han(self):
+        for fp in sorted(self.CARDS_DIR.glob("*.md")):
+            txt = fp.read_text(encoding="utf-8")
+            n = len(txt)
+            self.assertLess(n, 1700, f"{fp.name} 超长({n} 字符)")
+            han = re.findall(r"[\u4e00-\u9fff]+", txt)
+            self.assertEqual(han, [], f"{fp.name} 含汉字: {han}")
 
 
 if __name__ == "__main__":

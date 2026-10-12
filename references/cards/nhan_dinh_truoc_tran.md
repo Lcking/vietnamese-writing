@@ -11,7 +11,7 @@ Giọng phân tích, trung tính. KHÔNG khẳng định kết quả.
 
 ## Bắt buộc
 - Điều kiện trong tiêu đề (nếu có) phải giữ nguyên trong tiêu đề.
-- Đội hình/缺席/chấn thương: **chỉ viết cái đề bài cho**, không tự thêm.
+- Đội hình/vắng mặt/chấn thương: **chỉ viết cái đề bài cho**, không tự thêm.
 - KHÔNG bịa số liệu đối đầu, thứ hạng, phong độ nếu không có dữ kiện.
 
 ## Trình tự & tránh lặp

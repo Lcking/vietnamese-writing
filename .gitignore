@@ -3,3 +3,7 @@ __pycache__/
 config.yaml
 .venv/
 *.log
+
+# 蒸馏中间产物(大文件,不入库)
+distill_work/
+eval/regression/**/out/

@@ -10,7 +10,7 @@ Bóng đá không chỉ là cuộc chơi của 22 cầu thủ trên sân, mà c�
 
 Điểm nổi bật nhất trong văn phong bóng đá Việt Nam là khả năng sử dụng các từ ngữ mang tính biểu cảm mạnh, thường là những động từ mạnh hoặc tính từ mang sắc thái cảm xúc cực đoan, nhằm tái hiện lại khoảnh khắc đỉnh điểm của trận đấu.
 
-Khi bàn thắng hoặc kết quả tích cực xuất hiện, ngôn ngữ thường mang tính "bùng nổ". Ví dụ, trong bài viết về tuyển Việt Nam tại Asian Cup 2019, tác giả không chỉ ghi nhận kết quả mà còn dùng từ ngữ để mô tả trạng thái cảm xúc tập thể: *"Tuyển Việt Nam nghẹt thở qua vòng bảng Asian Cup theo cách chưa từng có trong lịch sử"* hay *"cầu thủ Việt Nam ôm nhau vỡ oà hạnh phúc"*. Cụm từ "nghẹt thở" và "vỡ oà" tạo ra một hình ảnh thị giác và xúc giác rõ nét, giúp người đọc cảm nhận được áp lực trước đó và sự giải tỏa tức thì.
+Khi bàn thắng hoặc kết quả tích cực xuất hiện, ngôn ngữ thường mang tính "bùng nổ". Ví dụ: trong một bài bình luận về một đội tuyển (ghi rõ giải và năm), tác giả không chỉ ghi nhận kết quả mà còn dùng từ ngữ mô tả trạng thái cảm xúc tập thể.
 
 Ngược lại, khi nói về sự thất vọng hoặc áp lực, văn phong trở nên nặng nề hơn. Trong bài về HLV Lê Huỳnh Đức từ chức, tác giả dùng cụm *"nói lời chia tay"* thay vì đơn thuần là "bị sa thải", tạo ra một sắc thái trang trọng và đầy cảm xúc, nhấn mạnh vào yếu tố nhân văn của quyết định đó.
 

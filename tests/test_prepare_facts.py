@@ -125,5 +125,64 @@ class TestPrepareFacts(unittest.TestCase):
         self.assertTrue(any(w["kind"] == "vague" for w in warns))
 
 
+    # ---- 评审 v3 边界场景(修复前全部失败) ----
+
+    def test_trailing_team_scores_shortens(self):
+        """落后方进球 → rút ngắn cách biệt(修复前误报 nâng tỷ số)。"""
+        r = compute({"home": "A", "away": "B", "final": [1, 2], "events": [
+            {"minute": 10, "type": "goal", "team": "away", "player": "X"},
+            {"minute": 20, "type": "goal", "team": "away", "player": "Y"},
+            {"minute": 30, "type": "goal", "team": "home", "player": "Z"}]})
+        self.assertEqual(r["score_progression"][-1]["verb"], "rút ngắn cách biệt")
+
+    def test_decider_1_0(self):
+        """1-0: 决胜球 = 唯一进球(修复前为 None)。"""
+        r = compute({"home": "A", "away": "B", "final": [1, 0], "events": [
+            {"minute": 10, "type": "goal", "team": "home", "player": "P"}]})
+        self.assertIsNotNone(r["decider"])
+        self.assertEqual(r["decider"]["minute"], 10)
+
+    def test_decider_2_0_first_goal(self):
+        """2-0: 决胜球 = 首开纪录(未被扳平)。"""
+        r = compute({"home": "A", "away": "B", "final": [2, 0], "events": [
+            {"minute": 10, "type": "goal", "team": "home", "player": "P"},
+            {"minute": 20, "type": "goal", "team": "home", "player": "Q"}]})
+        self.assertEqual(r["decider"]["minute"], 10)
+        self.assertEqual(r["decider"]["player"], "P")
+
+    def test_decider_repeated_lead_takes_last(self):
+        """反复反超 3-2: 决胜球 = 最后一次反超(修复前取第一次)。"""
+        r = compute({"home": "A", "away": "B", "final": [3, 2], "events": [
+            {"minute": 10, "type": "goal", "team": "home", "player": "P1"},
+            {"minute": 20, "type": "goal", "team": "away", "player": "Q1"},
+            {"minute": 30, "type": "goal", "team": "home", "player": "P2"},
+            {"minute": 40, "type": "goal", "team": "away", "player": "Q2"},
+            {"minute": 50, "type": "goal", "team": "home", "player": "P3"}]})
+        self.assertEqual(r["decider"]["minute"], 50)
+        self.assertEqual(r["decider"]["player"], "P3")
+
+    def test_own_goals_not_double(self):
+        """两个乌龙球不该算同一名球员梅开二度。"""
+        r = compute({"home": "A", "away": "B", "final": [2, 0], "events": [
+            {"minute": 10, "type": "own_goal", "team": "away", "player": "G1"},
+            {"minute": 20, "type": "own_goal", "team": "away", "player": "G2"}]})
+        joined = " ".join(r["title_candidates"])
+        self.assertNotIn("cú đúp", joined)
+
+    def test_stoppage_time_no_crash(self):
+        """补时 45+2 不该崩溃。"""
+        r = compute({"home": "A", "away": "B", "final": [1, 0], "events": [
+            {"minute": "45+2", "type": "goal", "team": "home", "player": "P"}]})
+        self.assertEqual(len(r["score_progression"]), 1)
+
+    def test_decider_regression_still_60(self):
+        """回归样本决胜球仍应为 60' Passira。"""
+        import json as _json, pathlib as _pl
+        fp = _pl.Path(__file__).resolve().parent.parent / "eval/regression/the_cong_ha_tinh_20261008/facts.json"
+        r = compute(_json.loads(fp.read_text(encoding="utf-8")))
+        self.assertEqual(r["decider"]["minute"], 60)
+        self.assertIn("Passira", r["decider"]["player"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

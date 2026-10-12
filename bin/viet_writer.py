@@ -25,6 +25,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
+def strip_card_meta(text):
+    """卡片注入前去掉元信息行(> 开头的说明、审定状态等),只留规则本体。"""
+    keep = []
+    for l in text.split("\n"):
+        if l.lstrip().startswith(">"):
+            continue
+        keep.append(l)
+    return "\n".join(keep).strip()
+
+
 REFERENCES = ROOT / "references"
 CARDS = ROOT / "references" / "cards"   # 可执行规则卡(lite 档专用)
 EXAMPLES = ROOT / "examples"
@@ -79,8 +89,11 @@ LITE_DEFAULT_GENRES = {"social_post", "football_tin_tuc", "football_ket_qua"}
 #   small(本地 27B 等): 卡片 + 预处理 + 1-2 范文;不注全局规则;默认启用风格检查
 #   large(GPT 级): 卡片 + 长文件节选 + 更多范文
 MODEL_TIERS = {
-    "small": {"profile": "lite", "ex_max_n": 2, "global_rules": False},
-    "large": {"profile": "full", "ex_max_n": 8, "global_rules": True},
+    # small: 卡片 + 事实预处理 + **1 条**范文;不注全局规则;建议配合 --revise(风格检查)
+    "small": {"profile": "lite", "ex_max_n": 0, "global_rules": False,
+              "suggest_revise": True, "require_facts": True},
+    # large: 卡片 + 长文件 + 更多范文 + 全局规则
+    "large": {"profile": "full", "ex_max_n": 8, "global_rules": True, "suggest_revise": False},
 }
 
 FOOTBALL_HINTS = ["bóng đá", "bình luận", "trận đấu", "cầu thủ", "đội bóng",
@@ -175,7 +188,8 @@ def _cut_at_sentence(text, limit):
 
 
 def pick_examples(genre, budget=None, post_type=None, max_n=None,
-                  max_chars=None, max_age_years=3, article_type=None):
+                  max_chars=None, max_age_years=3, article_type=None,
+                  strict_reviewed=True):
     """为足球体裁挑选范文。返回 (范文文本, 元数据列表)。
 
     - post_type:社交短帖类型(ket_qua/lich_thi_dau/...),给了就按它筛选
@@ -200,8 +214,10 @@ def pick_examples(genre, budget=None, post_type=None, max_n=None,
     else:
         sources = [EXAMPLES / "football" / f"{d}.jsonl" for d in THEME_MAP.get(genre, [])]
 
+    sources_missing = []
     for fp in sources:
         if not fp.exists():
+            sources_missing.append(fp.name)
             continue
         for line in fp.read_text(encoding="utf-8").splitlines():
             if used >= budget or len(chunks) >= max_n:
@@ -216,10 +232,13 @@ def pick_examples(genre, budget=None, post_type=None, max_n=None,
             # 按 post_type 筛选(仅当该文件有 type 字段且调用方指定了)
             if post_type and r.get("type") and r["type"] != post_type:
                 continue
-            # C1: 按 article_type 筛选(赛果体裁只选 ket_qua 范文)
+            # C1: 只选**人工确认过**的范文(type_reviewed=True)。
+            # 启发式标注不可靠(评审:赛果稿配到转会八卦),未经人工确认的一律不用。
+            if strict_reviewed and not r.get("type_reviewed"):
+                continue
+            # 按 article_type 筛选(赛果体裁只选 ket_qua 范文)
             if article_type:
                 at = r.get("article_type")
-                # 无标注的旧条目按"不匹配"处理(严格);有标注则须相等
                 if at != article_type:
                     continue
             # 排除过旧条目(有日期才判)
@@ -245,7 +264,7 @@ def pick_examples(genre, budget=None, post_type=None, max_n=None,
                          "content_sha256": (r.get("content_sha256") or "")[:12]})
         if used >= budget or len(chunks) >= max_n:
             break
-    return "\n\n---\n\n".join(chunks), meta
+    return "\n\n---\n\n".join(chunks), meta, sources_missing
 
 
 def detect_genre(task):
@@ -357,7 +376,7 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
 
         # lite 档:优先只读卡片(不截断);无卡片则回退读长文件并报告
         if profile == "lite" and has_card:
-            ctxt = load_file(card_path)
+            ctxt = strip_card_meta(load_file(card_path))
             genre_chars = len(ctxt)
             card_used = card_name
             parts.append(ctxt)
@@ -373,7 +392,7 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
                 parts.append(gtxt)
             # full 档:卡片 + 长文件都注入
             if profile == "full" and has_card:
-                ctxt = load_file(card_path)
+                ctxt = strip_card_meta(load_file(card_path))
                 genre_chars += len(ctxt)
                 card_used = card_name
                 parts.append(ctxt)
@@ -383,10 +402,12 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
             or resolved_genre in GENERIC_MAP):
             atype = GENRE_ARTICLE_TYPE.get(resolved_genre)
             ex_max_n = (tier["ex_max_n"] if tier else pcfg["ex_max_n"])
-            ex, examples_meta = pick_examples(
+            ex, examples_meta, ex_missing = pick_examples(
                 resolved_genre, budget["examples"], post_type=post_type,
                 max_n=ex_max_n, max_chars=pcfg["ex_max_chars"],
-                article_type=atype)
+                article_type=atype, strict_reviewed=True)
+            for mf in ex_missing:
+                truncations.append((f"examples_missing:{mf}", "范文文件不存在 → 注入 0 条"))
             if ex:
                 parts.append(EXAMPLE_HEADER + ex)
 
@@ -409,6 +430,8 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
         "system": system,
         "genre": resolved_genre,
         "profile": profile,
+        "model_tier": model_tier,
+        "card_used": card_used,
         "stats": stats,
         "examples_meta": examples_meta,
         "truncations": truncations,
@@ -449,8 +472,13 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
         genre = detect_genre(task)
     prompt = build_prompt(genre, format_contract=format_contract,
                           profile=profile, post_type=post_type, model_tier=model_tier)
-    # B1: 事实预处理 → 注入
+    # B1: 事实预处理 → 注入(small 档视为必需)
     facts_block = ""
+    tier_cfg = MODEL_TIERS.get(model_tier) if model_tier else None
+    if tier_cfg and tier_cfg.get("require_facts") and not facts and \
+       genre in ("football_ket_qua", "football_tin_tuc"):
+        print("[warn] model-tier=small 未提供 --facts:比分动词/决胜事件推算不可用,"
+              "质量会下降。建议传入结构化事实。", file=sys.stderr)
     if facts:
         try:
             from prepare_facts import compute, format_for_prompt, check_input_text
@@ -468,19 +496,25 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
     first_draft = text
     revise_issues = []
 
-    # B3: 可选修订一次
+    # B3: 可选修订一次(仅当存在**实质问题**时;S8 属"请编辑确认",不触发修订)
+    revise_after = []
     if revise:
         try:
             from check_style import check as style_check
             revise_issues = style_check(text, facts)
-            if revise_issues:
+            blocking = [i for i in revise_issues if i["rule"] != "S8"]
+            if blocking:
                 fix_list = "\n".join(f"- [{i['rule']}] {i['msg']} (\"{i['snippet']}\")"
-                                     for i in revise_issues)
+                                     for i in blocking)
                 revise_user = (user + "\n\n## Bản nháp cần sửa:\n" + text +
                                "\n\n## Sửa các vấn đề sau (giữ nguyên dữ kiện):\n" + fix_list +
                                "\n\nTrả về bản viết lại hoàn chỉnh.")
                 r2 = client.chat(prompt["system"], revise_user, **kw)
                 text = r2.text if hasattr(r2, "text") else str(r2)
+                # 修订后再检查一次并保存结果
+                revise_after = style_check(text, facts)
+            else:
+                revise_issues = []      # 只有 S8 → 不修订,也不计为问题
         except Exception as e:
             print(f"[revise] 修订失败: {e}", file=sys.stderr)
 
@@ -491,6 +525,7 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
         "usage": getattr(result, "usage", {}),
         "first_draft": first_draft if revise else None,
         "revise_issues": revise_issues,
+        "revise_after": revise_after,
     })
     return text
 

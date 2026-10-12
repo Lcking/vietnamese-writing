@@ -25,6 +25,21 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "bin"))
 
 # ---- các ca kiểm thử (khớp eval/evalset.md) ----
+# G 组:赛果评测评测用的结构化事实(供 check_style 的 S1/S9 使用)
+_G1_FACTS = {
+    "home": "Thể Công", "away": "Hà Tĩnh", "final": [1, 3],
+    "competition": "V-League", "date": "2026-10-08",
+    "events": [
+        {"minute": 16, "type": "goal", "team": "away", "player": "Luiz Antonio",
+         "detail": "sút xa"},
+        {"minute": 33, "type": "goal", "team": "home", "player": "Khuất Văn Khang",
+         "assist": "Triệu Việt Hưng", "var_checked": True},
+        {"minute": 60, "type": "goal", "team": "away", "player": "Daniel Passira"},
+        {"minute": 64, "type": "goal", "team": "away", "player": "Daniel Passira"},
+        {"minute": None, "type": "second_yellow", "team": "away", "player": "Quốc Dân"},
+    ],
+}
+
 CASES = [
     # (id, nhóm, genre, prompt, bẫy cần kiểm tra tự động)
     ("A1", "news", "football_tin_tuc",
@@ -69,19 +84,31 @@ CASES = [
      "Dùng đúng dữ kiện: Thể Công 1-3 Hà Tĩnh. Phút 16 Luiz Antonio mở tỷ số. "
      "Phút 33 Khuất Văn Khang gỡ hòa 1-1 (VAR). Phút 60 Daniel Passira nâng lên 2-1. "
      "Phút 64 Passira ghi bàn thứ hai. Quốc Dân nhận thẻ vàng thứ hai.",
-     {"forbid": [], "expect": []}),
+     {"forbid": [], "expect": []}, _G1_FACTS),
     ("G2", "ket_qua", "football_ket_qua",
      "Viết bản tin: đội A thắng đội B 2-1 sau khi bị dẫn 0-1 (ngược dòng). "
      "A ghi bàn ở phút 50 và 80; B mở tỷ số phút 20.",
-     {"forbid": [], "expect": []}),
+     {"forbid": [], "expect": []},
+     {"home": "A", "away": "B", "final": [2, 1], "events": [
+         {"minute": 20, "type": "goal", "team": "away", "player": "B1"},
+         {"minute": 50, "type": "goal", "team": "home", "player": "A1"},
+         {"minute": 80, "type": "goal", "team": "home", "player": "A2"}]}),
     ("G3", "ket_qua", "football_ket_qua",
      "Viết bản tin: đội A hòa đội B 2-2. A dẫn 2-0 (phút 10, 30), "
      "B gỡ 2-2 (phút 70, 90).",
-     {"forbid": [], "expect": []}),
+     {"forbid": [], "expect": []},
+     {"home": "A", "away": "B", "final": [2, 2], "events": [
+         {"minute": 10, "type": "goal", "team": "home", "player": "A1"},
+         {"minute": 30, "type": "goal", "team": "home", "player": "A2"},
+         {"minute": 70, "type": "goal", "team": "away", "player": "B1"},
+         {"minute": 90, "type": "goal", "team": "away", "player": "B2"}]}),
     ("G4", "ket_qua", "football_ket_qua",
      "Viết bản tin: đội A thắng 1-0 dù chơi thiếu người từ phút 60 "
      "(cầu thủ X nhận thẻ đỏ). Bàn thắng phút 75.",
-     {"forbid": [], "expect": []}),
+     {"forbid": [], "expect": []},
+     {"home": "A", "away": "B", "final": [1, 0], "events": [
+         {"minute": 60, "type": "red", "team": "home", "player": "X"},
+         {"minute": 75, "type": "goal", "team": "home", "player": "A1"}]}),
     ("F3", "omit_missing", "football_tin_tuc",
      "Viết tin: 'Nếu kịp hoàn tất đăng ký, cầu thủ này có thể đá chính.' "
      "Tiêu đề PHẢI giữ điều kiện 'nếu/có thể'.",
@@ -181,12 +208,13 @@ def main():
                 except Exception as e:
                     fab_violations = [f"[detector error: {e}]"]
 
-            # D1: 风格检查(赛果组用)
+            # D1: 风格检查(赛果组用;传 facts 才能跑 S1/S9)
             style_issues = []
             if group == "ket_qua" and fr != "error":
                 try:
                     from check_style import check as style_check
-                    style_issues = [i["rule"] for i in style_check(text)]
+                    case_facts = case[5] if len(case) > 5 else None
+                    style_issues = [i["rule"] for i in style_check(text, case_facts)]
                 except Exception:
                     pass
 

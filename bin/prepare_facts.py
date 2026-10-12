@@ -19,13 +19,29 @@ import re
 import sys
 
 
+def parse_minute(m):
+    """把分钟解析成可比较的数值。'45+2' -> 45.5(补时), 整数原样。"""
+    if m is None:
+        return None
+    if isinstance(m, (int, float)):
+        return float(m)
+    s = str(m).strip()
+    mm = re.match(r"^(\d+)\s*\+\s*(\d+)$", s)
+    if mm:
+        return int(mm.group(1)) + int(mm.group(2)) / 100.0
+    try:
+        return float(re.sub(r"[^0-9.]", "", s))
+    except ValueError:
+        return None
+
+
 def parse_score(score):
     """把 [1,3] 或 {'home':1,'away':3} 统一成 (home, away)。"""
     if isinstance(score, list) and len(score) == 2:
         return int(score[0]), int(score[1])
     if isinstance(score, dict):
         return int(score.get("home", 0)), int(score.get("away", 0))
-    raise ValueError(f"无法解析比分: {score!r}")
+    raise ValueError(f"Không phân tích được tỷ số: {score!r}")
 
 
 def compute(facts):
@@ -36,7 +52,7 @@ def compute(facts):
     # 按分钟排序(无分钟的放最后,保持相对顺序)
     goals = [e for e in events if e.get("type") in ("goal", "own_goal", "penalty")]
     goals_sorted = sorted([e for e in goals if e.get("minute") is not None],
-                          key=lambda e: e["minute"])
+                          key=lambda e: parse_minute(e["minute"]))
     goals_nom = [e for e in goals if e.get("minute") is None]
     goals_ordered = goals_sorted + goals_nom
 
@@ -56,36 +72,31 @@ def compute(facts):
             h += 1
         else:
             a += 1
-        # 判定动词(按最终比分状态,从具体到一般)
-        prev_diff = prev_h - prev_a     # 正=主队领先
-        now_diff = h - a
+        # 判定动词——按**进球方视角**计算领先差(评审 v3 给的算法):
+        #   lead_before = 进球方在进球前的净领先(正=领先, 负=落后, 0=平)
+        #   lead_after  = lead_before + 1(这球必进)
+        lead_before = (prev_h - prev_a) if ben == "home" else (prev_a - prev_h)
+        lead_after = lead_before + 1
         if prev_h == 0 and prev_a == 0:
-            verb = "mở tỷ số"
-        elif h == a and prev_h != prev_a:
-            verb = "gỡ hòa"
-        elif (prev_diff <= 0 and now_diff > 0) or (prev_diff >= 0 and now_diff < 0):
-            # 从平/落后 → 领先(=反超),或从领先→落后
-            verb = "vượt lên dẫn"
+            verb = "mở tỷ số"                     # 全场首球
+        elif lead_after == 0:
+            verb = "gỡ hòa"                       # 进球后回到平局
+        elif lead_before == 0:
+            verb = "vượt lên dẫn"                 # 从平局取得领先(反超)
+        elif lead_before < 0:
+            verb = "rút ngắn cách biệt"           # 落后方追分,仍落后
         else:
-            # 同一方继续领先(prev 和 now 都同号),或落后方缩小差距
-            same_side_lead = (prev_diff > 0 and now_diff > 0) or (prev_diff < 0 and now_diff < 0)
-            if same_side_lead:
-                # 领先方继续进球 → 主标签 "nâng tỷ số"。
-                # "nhân đôi cách biệt" 仅在领先从 1 球扩大到 2 球(prev=1, now=2)时
-                # 作为**可接受替代**(不是必须)。两者都不算错。
-                verb = "nâng tỷ số"
-            else:
-                verb = "rút ngắn cách biệt"
+            verb = "nâng tỷ số"                   # 领先方扩大(lead_before >= 1)
         player = e.get("player", "")
-        scorer_count[player] = scorer_count.get(player, 0) + 1
+        # 乌龙球不计入射手统计(否则两个不同球员的乌龙会被算成同一人"梅开二度")
+        if not own and player:
+            scorer_count[player] = scorer_count.get(player, 0) + 1
         tag = verb
         if own:
             tag += " (phản lưới nhà)"
         # 可接受替代写法(不算错):领先从 1 球扩到 2 球时,"nhân đôi cách biệt" 可替 "nâng tỷ số"
         alts = []
-        if verb == "nâng tỷ số" and (
-                abs(prev_diff) == 1 and abs(now_diff) == 2 and
-                ((prev_diff > 0 and now_diff > 0) or (prev_diff < 0 and now_diff < 0))):
+        if verb == "nâng tỷ số" and lead_before == 1:
             alts.append("nhân đôi cách biệt")
         steps.append({
             "minute": e.get("minute"), "team": ben, "player": player,
@@ -101,23 +112,39 @@ def compute(facts):
     winner = "home" if final_h > final_a else ("away" if final_a > final_h else None)
     decider = None
     if winner:
-        # 决胜事件 = 胜方**从平局或落后转为领先**的那球(不把 0-0 开纪录算作决胜)。
-        # 遍历,记录"胜方由(平/落后)变为领先"的那次转换。
-        prev_h = prev_a = None
+        # 决胜事件 = 胜方**最后一次从平局/落后转为领先**的进球(即最后一次"反超"),
+        # 且此后未被追平。语义上这是"bàn quyết định"(越南语体育报道用法)。
+        #   - 1-0/2-0 这类全程领先:从未落后 → 取**首开纪录**那球(它没被扳平)。
+        #   - Thể Công 一役:60' 反超 2-1 是决胜球(16' 被扳平的球不算)。
+        # 注意:64' 那种"锁定胜局"球(已领先后再进)不算决胜球。
+        last_lead_idx = None
         for idx, s in enumerate(steps):
             ph, pa = map(int, s["score"].split("-"))
-            if prev_h is not None:
-                prev_leading = (prev_h > prev_a) if winner == "home" else (prev_a > prev_h)
-                now_leading = (ph > pa) if winner == "home" else (pa > ph)
-                # 前提:转换前不是 0-0 开纪录(即之前已有过进球)
-                was_opening = (prev_h == 0 and prev_a == 0)
-                if now_leading and not prev_leading and not was_opening:
-                    decider = {"minute": s["minute"], "player": s["player"],
-                               "team": winner, "score": s["score"], "step_index": idx}
+            w_leading = (ph > pa) if winner == "home" else (pa > ph)
+            if not w_leading:
+                continue
+            # 此后是否被追平/反超
+            later_eq = False
+            for s2 in steps[idx + 1:]:
+                p2h, p2a = map(int, s2["score"].split("-"))
+                w2 = (p2h > p2a) if winner == "home" else (p2a > p2h)
+                if not w2:
+                    later_eq = True
                     break
-            prev_h, prev_a = ph, pa
-        # decider 实际是最后一个使胜方领先的球,但需确认此后未被追平(即最终仍领先)
-        # 已由 winner 判定保证;若胜方曾落后,标注 ngược dòng
+            if later_eq:
+                continue
+            # 这是"未被追平的领先球"。看它是否为本段领先的**起点**
+            # (即前一步胜方不领先或为 0-0) → 反超/首开纪录
+            prev_lead = False
+            if idx > 0:
+                prh, pra = map(int, steps[idx - 1]["score"].split("-"))
+                prev_lead = (prh > pra) if winner == "home" else (pra > prh)
+            if not prev_lead:
+                last_lead_idx = idx          # 保留最后一次"由不领先转为领先"
+        if last_lead_idx is not None:
+            s = steps[last_lead_idx]
+            decider = {"minute": s["minute"], "player": s["player"],
+                       "team": winner, "score": s["score"], "step_index": last_lead_idx}
     comeback = False
     if winner:
         run_h = run_a = 0
@@ -130,13 +157,14 @@ def compute(facts):
     derivable = []
     if steps:
         # 半场比分
-        first_half = [s for s in steps if s["minute"] is not None and s["minute"] <= 45]
+        first_half = [s for s in steps
+                      if parse_minute(s["minute"]) is not None and parse_minute(s["minute"]) <= 45]
         if first_half:
             derivable.append({"fact": "tỷ số hiệp một", "value": first_half[-1]["score"],
-                              "note": "可由进球推算,勿单独成句"})
+                              "note": "có thể suy ra từ bàn thắng, không nên tách thành câu riêng"})
     if winner:
         derivable.append({"fact": "giành trọn 3 điểm",
-                          "note": "可由胜方推算,勿作结尾总结"})
+                          "note": "có thể suy ra từ đội thắng, không nên làm câu kết"})
 
     # 缺项
     absent = []
@@ -186,7 +214,7 @@ def check_input_text(raw_text, result):
     for v in VAGUE:
         if v in low:
             warns.append({"kind": "vague", "text": v,
-                          "msg": f"描述模糊/内部用语 '{v}',应省略或替换为具体信息"})
+                          "msg": f"Cụm mô tả mơ hồ/nội bộ '{v}', nên bỏ hoặc thay bằng thông tin cụ thể"})
     # 比分动词矛盾:输入里的(动词, 比分)对是否与推算矛盾。
     # 推算得到 {比分: 正确动词},输入里若在比分旁用了别的动词 → 警告。
     correct_map = {s["score"]: s["verb"] for s in result["score_progression"]}
@@ -205,7 +233,7 @@ def check_input_text(raw_text, result):
                 warns.append({
                     "kind": "verb_conflict",
                     "text": f"{used[0]} ... {key}",
-                    "msg": f"比分为 {key} 时应用 '{correct}',输入用了 '{used[0]}'"})
+                    "msg": f"Với tỷ số {key} phải dùng '{correct}', nhưng đầu vào dùng '{used[0]}'"})
             break
     # 去重
     seen = set()

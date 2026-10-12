@@ -37,16 +37,22 @@ VAGUE = ["vòng mới nhất", "vòng gần nhất", "mới đây", "gần đây
 EMOTION = ["rực lửa", "nghẹt thở", "vỡ oà", "vỡ òa", "thăng hoa", "cơn mưa bàn thắng",
            "bùng nổ", "nóng bỏng", "kịch tính", "nghẹt thở", "đỉnh cao"]
 # S8 编辑观察表(只提示,不判错)
-WATCH = ["quyết định cục diện", "mạch trận", "tâm điểm", "định đoạt trận đấu"]
-DISCIPLINE_BAD = [r"nhận\s+2\s+thẻ\s+vàng", r"2\s+thẻ\s+vàng",
-                  r"nhận\s+hai\s+thẻ\s+vàng"]
+WATCH = ["quyết định cục diện", "mạch trận", "tâm điểm"]
+# 只针对"同一名球员领到第二张黄牌被罚下"这种不规范表述;
+# "全队 nhận 2 thẻ vàng" 是正常写法,不该报。
+# 用单条正则,避免重叠匹配报两次。
+# 只针对"同一名球员领到第二张黄牌被罚下"的不规范表述;
+# 全队"nhận 2 thẻ vàng"是正常写法,不该报。
+# 判据:用"nhận 2/hai thẻ vàng"表述 且 同句出现需要具体化罚下语境的信号
+#       (bị truất quyền/đuổi/loại/thiếu người) → 提示改为"thẻ vàng thứ hai"
+DISCIPLINE_BAD = [r"nhận\s+(?:2|hai)\s+thẻ\s+vàng"]
 DISCIPLINE_SUGGEST = "nhận thẻ vàng thứ hai"
 
 # 可推导事实(结尾复述用)
 RESTATE = ["giành trọn 3 điểm", "ra về với 3 điểm", "giành trọn ba điểm",
            "có được 3 điểm"]
 # 事件动词(先预告再展开用)
-PREVIEW_VERBS = ["có bàn gỡ", "có bàn thắng", "lên tiếng", "ghi bàn", "có bàn rút ngắn"]
+PREVIEW_VERBS = ["có bàn gỡ", "có bàn thắng", "có bàn rút ngắn", "có bàn nâng tỷ số"]
 # 情绪词
 GOAL_VERBS = ["mở tỷ số", "gỡ hòa", "san bằng", "vượt lên dẫn", "nâng tỷ số",
               "nhân đôi cách biệt", "rút ngắn cách biệt"]
@@ -113,12 +119,12 @@ def check(task_text, facts=None):
                         used = [v for v in used if v != "vượt lên dẫn"]
                     if used and not (set(used) & accepted):
                         alts = alt_map.get(key, set())
-                        alt_txt = f"(或可接受替代: {', '.join(alts)})" if alts else ""
+                        alt_txt = f" (hoặc cách viết thay thế được chấp nhận: {', '.join(alts)})" if alts else ""
                         issues.append({"rule": "S1", "snippet": f"{used[0]} ... {key}",
-                                       "msg": f"比分 {key} 应用 '{correct}'{alt_txt},"
-                                              f"用了 '{used[0]}'"})
+                                       "msg": f"Tỷ số {key} phải dùng '{correct}'{alt_txt}, "
+                                       f"nhưng bài dùng '{used[0]}'"})
         except Exception as e:
-            issues.append({"rule": "S1", "snippet": "-", "msg": f"facts 处理失败: {e}"})
+            issues.append({"rule": "S1", "snippet": "-", "msg": f"Lỗi xử lý facts: {e}"})
 
     # ---- S2 重复比分 ----
     # 规则:同一比分在**相邻两句**里重复出现,且后句是"单独陈述比分"的短句。
@@ -138,7 +144,7 @@ def check(task_text, facts=None):
         dup = {s for s in cur_sc if s in prev_sc}
         for key in dup:
             issues.append({"rule": "S2", "snippet": cur[:50],
-                           "msg": f"比分 {key} 在上一句已出现,此句单独复述(重复)"})
+                           "msg": f"Tỷ số {key} đã xuất hiện ở câu trước, câu này nhắc lại (trùng lặp)"})
 
     # ---- S3 先预告再展开 ----
     # 前句:无分钟、且是"预告式"事件句(有进球/事件动词但无细节)
@@ -151,10 +157,13 @@ def check(task_text, facts=None):
             continue
         if not any(v in cur.lower() for v in PREVIEW_VERBS):
             continue
-        # 前句短、像预告(不含具体球员细节词也可),后句含分钟且是事件句
+        # 前句若已含比分(说明它本身在陈述结果,不是纯预告) → 跳过
+        if _scores_in(cur):
+            continue
+        # 后句含分钟且是事件句
         if _has_minute(nxt) and any(w in nxt.lower() for w in EVENT_WORDS):
             issues.append({"rule": "S3", "snippet": cur[:50],
-                           "msg": "先预告再展开同一事件(前句无分钟预告,后句展开细节)"})
+                           "msg": "Báo trước rồi kể lại cùng một sự kiện (câu trước không có phút, câu sau mới kể chi tiết)"})
 
     # ---- S4 结尾复述 ----
     if sents:
@@ -162,24 +171,36 @@ def check(task_text, facts=None):
         # 末段只含复述,无新实体/数字
         has_restate = any(r in last.lower() for r in RESTATE)
         # 简单判断"无新信息":长度短且含比分或复述词
-        if has_restate or (len(last) < 80 and _scores_in(last) and _has_minute(last) is False):
+        # 规则卡要求结尾写"积分榜后果",这类句不算复述
+        standings = bool(re.search(r"(lên thứ|xếp thứ|vươn lên|bảng xếp hạng|"
+                                   r"thứ \d|giữ ngôi|đội đầu|top \d)", last, re.I))
+        if not standings and (has_restate or
+                              (len(last) < 80 and _scores_in(last) and _has_minute(last) is False)):
             # 排除末句是新事实(含新球员名/新事件)
             fresh = bool(re.search(r"(thay|vào sân|chấn thương|tuyên bố|phát biểu)", last, re.I))
             if not fresh:
                 issues.append({"rule": "S4", "snippet": last[:60],
-                               "msg": "结尾复述赛果/积分,无新信息(建议删或改为体系后果)"})
+                               "msg": "Kết bài nhắc lại kết quả/điểm số, không có thông tin mới (nên bỏ hoặc thay bằng hệ quả bảng xếp hạng)"})
 
     # ---- S5 内部/模糊描述 ----
     for v in VAGUE:
         if v in task_text.lower():
             issues.append({"rule": "S5", "snippet": v,
-                           "msg": f"内部/模糊描述 '{v}',应省略或替换为具体信息"})
+                           "msg": f"Cụm mô tả nội bộ/mơ hồ '{v}', nên bỏ hoặc thay bằng thông tin cụ thể"})
 
     # ---- S6 纪律术语 ----
+    # 只在"同一球员两黄被罚下"语境提示(全队两黄正常)
+    DISCIPLINE_CTX = re.compile(r"(truất quyền|bị đuổi|bị loại|thiếu người|thẻ đỏ|"
+                                r"thẻ vàng thứ hai|hai lần nhận thẻ)", re.I)
     for pat in DISCIPLINE_BAD:
         for m in re.finditer(pat, task_text, re.I):
-            issues.append({"rule": "S6", "snippet": m.group(0),
-                           "msg": f"建议改为 '{DISCIPLINE_SUGGEST}'"})
+            # 取同句上下文
+            s0 = task_text.rfind(".", 0, m.start()) + 1
+            s1 = task_text.find(".", m.end())
+            sent = task_text[s0:(s1 if s1 != -1 else len(task_text))]
+            if DISCIPLINE_CTX.search(sent):
+                issues.append({"rule": "S6", "snippet": m.group(0),
+                               "msg": "Cầu thủ bị hai thẻ vàng, nên viết 'nhận thẻ vàng thứ hai' / 'bị truất quyền thi đấu'"})
 
     # ---- S7 情绪词密度 ----
     n = len(task_text)
@@ -188,13 +209,13 @@ def check(task_text, facts=None):
         per_k = len(hit) / (n / 1000.0)
         if per_k > 3:      # 每千字超 3 个情绪词
             issues.append({"rule": "S7", "snippet": ", ".join(hit[:5]),
-                           "msg": f"情绪词密度偏高({len(hit)} 个 / {n} 字),新闻应偏中性"})
+                           "msg": f"Mật độ từ cảm xúc cao ({len(hit)} từ / {n} ký tự), tin tức nên trung tính"})
 
     # ---- S8 待审搭配 ----
     for w in WATCH:
         if w in task_text.lower():
             issues.append({"rule": "S8", "snippet": w,
-                           "msg": f"待审搭配 '{w}',请编辑确认"})
+                           "msg": f"Cụm từ cần biên tập xác nhận '{w}'"})
 
     # ---- S9 标题决胜事件(需 facts) ----
     if facts:
@@ -208,7 +229,7 @@ def check(task_text, facts=None):
                 parts = [x for x in pl.split() if len(x) > 2]
                 if parts and not any(x in title for x in parts):
                     issues.append({"rule": "S9", "snippet": title[:50],
-                                   "msg": f"标题未含决胜事件球员 '{pl}'"})
+                                   "msg": f"Tiêu đề không có cầu thủ ghi bàn quyết định '{pl}'"})
                 # 反向:标题把"非决胜的进球者"也列为主角(与决胜球员并列)
                 dec_parts = set(parts)
                 for s in result["score_progression"]:
@@ -223,8 +244,7 @@ def check(task_text, facts=None):
                         if any(x in title for x in parts):
                             issues.append({
                                 "rule": "S9", "snippet": title[:50],
-                                "msg": f"标题把非决胜球员 '{s['player']}'(其进球已被扳平/非决定性)"
-                                       f"与决胜球员并列,建议只突出决胜球员"})
+                                "msg": f"Tiêu đề đặt cầu thủ không quyết định '{s['player']}' ngang hàng với cầu thủ quyết định, nên chỉ nêu cầu thủ quyết định"})
                             break
         except Exception:
             pass
