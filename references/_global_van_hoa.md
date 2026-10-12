@@ -1,5 +1,7 @@
 # Sắc thái văn hóa
 
+<!-- review_status: unreviewed | reviewed_by: (chưa có biên tập viên bản ngữ) | date: — -->
+
 **Hướng dẫn viết tiếng Việt chuẩn: Nuôi dưỡng "hồn" văn hóa bản địa**
 
 Khi viết tiếng Việt, đặc biệt là trong văn học, báo chí hoặc nội dung số, việc nắm bắt các yếu tố văn hóa bản địa không chỉ giúp câu văn mượt mà mà còn tạo được sự đồng cảm sâu sắc với độc giả. Dưới đây là bốn trụ cột văn hóa cốt lõi cần lưu ý, kèm ví dụ thực tế để bạn áp dụng ngay.

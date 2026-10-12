@@ -1,5 +1,7 @@
 # Từ Hán-Việt
 
+<!-- review_status: unreviewed | reviewed_by: (chưa có biên tập viên bản ngữ) | date: — -->
+
 # Cân bằng từ Hán-Việt và thuần Việt trong văn viết
 
 Trong tiếng Việt hiện đại, từ Hán-Việt (HV) và từ thuần Việt (TV) không đối lập mà bổ sung cho nhau, tạo nên sự phong phú về sắc thái và độ chính xác. Tuy nhiên, việc lạm dụng từ HV khiến văn bản trở nên khô cứng, học thuật hóa và xa rời người đọc. Ngược lại, việc dùng quá nhiều từ TV có thể làm mất đi sự trang trọng hoặc tính khái quát cần thiết. Dưới đây là nguyên tắc thực tế để cân bằng hai hệ thống từ vựng này.

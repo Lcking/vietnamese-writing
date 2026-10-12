@@ -2,10 +2,13 @@
 
 **Viết bài ngắn cho mạng xã hội về bóng đá (Facebook, X/Twitter, Threads...)**
 
-> **Nguồn ví dụ:** `examples/football/social_post.jsonl` chứa 48 bài NGẮN thật
-> (120–660 ký tự) trích từ ngữ liệu WanJuan. Đã **duyệt thủ công** để loại bài rác,
-> nhưng cột `type` chỉ là **nhãn gợi ý do máy gán**, KHÔNG phải phân loại thể loại
-> đã kiểm định — chỉ dùng để tham khảo cách diễn đạt, không kế thừa dữ kiện.
+> **Nguồn ví dụ — ĐỌC KỸ:** `examples/football/social_post.jsonl` chứa 75 bài NGẮN
+> (60–700 ký tự) trích từ ngữ liệu WanJuan. **Đây thực chất là TIN NGẮN/BẢN TIN
+> (tin ngắn/bản tin), **KHÔNG phải bài đăng mạng xã hội thật** — ngữ liệu công khai không có
+> nguồn social post đáng tin. Vì vậy các ví dụ này **chỉ nên tham khảo độ NGẮN GỌN
+> của câu chữ**, KHÔNG lấy làm chuẩn cho văn phong tương tác.
+> Cột `type` là nhãn máy gán (`type_reviewed=false`), chưa được người kiểm định;
+> không kế thừa dữ kiện (tên, tỷ số, thời gian) từ chúng.
 
 ## Nguyên tắc chung
 

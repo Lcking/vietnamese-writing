@@ -1,5 +1,7 @@
 # Đại từ xưng hô
 
+<!-- review_status: unreviewed | reviewed_by: (chưa có biên tập viên bản ngữ) | date: — -->
+
 # Hướng dẫn sử dụng hệ thống xưng hô trong tiếng Việt
 
 Tiếng Việt không có hệ thống đại từ nhân xưng cố định như tiếng Anh (I, you, he, she). Thay vào đó, nó sử dụng một mạng lưới phức tạp dựa trên **tuổi tác**, **quan hệ huyết thống/xã hội**, và **mức độ thân mật**. Việc chọn sai đại từ có thể gây ra sự hiểu lầm nghiêm trọng về lịch sự hoặc sự thiếu tôn trọng. Dưới đây là hướng dẫn thực tế để bạn sử dụng chúng một cách tự nhiên.

@@ -1,5 +1,7 @@
 # Phương ngữ Bắc - Nam
 
+<!-- review_status: unreviewed | reviewed_by: (chưa có biên tập viên bản ngữ) | date: — -->
+
 # Hướng dẫn thực chiến: Khác biệt từ vựng và cách nói giữa miền Bắc và miền Nam
 
 Khi viết hoặc giao tiếp tiếng Việt, việc nắm bắt sự khác biệt giữa phương ngữ Bắc và Nam không chỉ giúp tránh sai sót ngữ pháp mà còn tạo ra giọng văn tự nhiên, gần gũi với đối tượng độc giả. Dưới đây là những điểm khác biệt cốt lõi, kèm ví dụ đối chiếu cụ thể để bạn áp dụng ngay.

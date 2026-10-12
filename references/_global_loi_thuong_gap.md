@@ -1,5 +1,7 @@
 # Lỗi thường gặp & cách viết chuẩn
 
+<!-- review_status: unreviewed | reviewed_by: (chưa có biên tập viên bản ngữ) | date: — -->
+
 **Hướng dẫn tránh các nhóm lỗi phổ biến khi viết tiếng Việt**
 
 Tài liệu này liệt kê các nhóm lỗi mà người viết (và AI) hay mắc phải khi viết tiếng Việt, kèm cách sửa. Mỗi mục được trình bày theo cấu trúc: **Ngữ cảnh áp dụng → Nguyên tắc ngắn → Ví dụ đúng → Cảnh báo/ngoại lệ**. Chỉ đưa vào những điểm có thể kiểm chứng; không liệt kê "lỗi" mà bản thân ví dụ cũng không xác định được đúng sai.

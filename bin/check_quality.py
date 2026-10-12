@@ -155,6 +155,24 @@ def check_ref_dup_examples():
     print(f"  5) 正反例相同: {issues} 处")
 
 
+def check_no_han():
+    """references/ 与 prompts/ 下不应出现汉字(评审要求,规则文件纯越南语)。"""
+    global checks_run
+    import re as _re
+    han = _re.compile(r"[\u4e00-\u9fff]")
+    issues = 0
+    for base in (REFERENCES, os.path.join(ROOT, "prompts")):
+        for fp in sorted(glob.glob(os.path.join(base, "*.md"))):
+            for i, line in enumerate(open(fp, encoding="utf-8"), 1):
+                m = han.search(line)
+                if m:
+                    issues += 1
+                    problems.append(f"[汉字残留] {os.path.relpath(fp, ROOT)}:{i}: "
+                                    f"...{line.strip()[:60]}")
+    checks_run += 1
+    print(f"  6) 无汉字残留: {issues} 处")
+
+
 def check_budget():
     global checks_run
     sys.path.insert(0, os.path.join(ROOT, "bin"))
@@ -177,7 +195,7 @@ def check_budget():
         except Exception as e:
             problems.append(f"[预算] {g} 构建失败: {e}")
     checks_run += 1
-    print("  6) 提示预算: 见上")
+    print("  7) 提示预算: 见上")
 
 
 def check_routing():
@@ -193,7 +211,7 @@ def check_routing():
         if not os.path.exists(os.path.join(REFERENCES, fn)):
             problems.append(f"[路由] 体裁 {g} 缺规则文件 {fn}")
     # 明确体裁优先
-    print("  7) 体裁路由: 显式体裁优先，缺文件者见上")
+    print("  8) 体裁路由: 显式体裁优先，缺文件者见上")
     checks_run += 1
 
 
@@ -206,6 +224,7 @@ def main():
     check_dedup()
     check_language()
     check_ref_dup_examples()
+    check_no_han()
     check_budget()
     check_routing()
     print("=" * 60)
