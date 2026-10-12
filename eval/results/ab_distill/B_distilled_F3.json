@@ -1,0 +1,18 @@
+{
+  "group": "B_distilled",
+  "id": "F3",
+  "genre": "football_tin_tuc",
+  "chars": 626,
+  "seconds": 14.8,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "fab_violations": [],
+  "examples_used": [
+    "ef31d687d413",
+    "269010c76cbb",
+    "3eef3f533245",
+    "8c85f5e8bd55"
+  ],
+  "output": "Nếu kịp hoàn tất thủ tục đăng ký, tiền đạo này có thể đá chính ngay trận tới.\n\nBan huấn luyện đội bóng đang rất kỳ vọng vào sự bổ sung mới để tăng cường chiều sâu đội hình, đặc biệt là ở vị trí mũi nhọn. Tuy nhiên, mọi thứ đều phụ thuộc vào việc có thể hoàn tất các giấy tờ liên quan đến thủ tục đăng ký trong thời hạn quy định hay không.\n\nNếu mọi diễn biến thuận lợi và hồ sơ được thông qua đúng hạn, cầu thủ này hoàn toàn có thể được điền tên vào danh sách xuất phát ở trận đấu sắp tới. Đây là phương án dự phòng quan trọng mà ban huấn luyện đang cân nhắc nhằm đối phó với những tình huống bất ngờ về nhân sự trong trận đấu."
+}

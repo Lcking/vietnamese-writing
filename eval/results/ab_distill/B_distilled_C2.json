@@ -1,0 +1,15 @@
+{
+  "group": "B_distilled",
+  "id": "C2",
+  "genre": "social_post",
+  "chars": 94,
+  "seconds": 3.6,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [
+    "chưa xác nhận"
+  ],
+  "fab_violations": [],
+  "examples_used": [],
+  "output": "Tin chưa xác nhận: HLV trưởng có thể từ chức. Hiện chưa có thông báo chính thức từ câu lạc bộ."
+}

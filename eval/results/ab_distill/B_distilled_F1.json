@@ -1,0 +1,13 @@
+{
+  "group": "B_distilled",
+  "id": "F1",
+  "genre": "social_post",
+  "chars": 57,
+  "seconds": 3.5,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "fab_violations": [],
+  "examples_used": [],
+  "output": "Việt Nam thắng 2-0 với bàn thắng của Quang Hải ở phút 67."
+}

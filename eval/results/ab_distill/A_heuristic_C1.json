@@ -1,0 +1,18 @@
+{
+  "group": "A_heuristic",
+  "id": "C1",
+  "genre": "social_post",
+  "chars": 42,
+  "seconds": 3.3,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "fab_violations": [],
+  "examples_used": [
+    "9ea096caae75",
+    "37c820fbdbe2",
+    "e1cf923fdce5",
+    "2707e1d3f678"
+  ],
+  "output": "Việt Nam chính thức vào chung kết AFF Cup."
+}

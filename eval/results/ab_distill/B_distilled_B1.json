@@ -1,0 +1,18 @@
+{
+  "group": "B_distilled",
+  "id": "B1",
+  "genre": "football_pre_match",
+  "chars": 1894,
+  "seconds": 33.5,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "fab_violations": [],
+  "examples_used": [
+    "720d6e7815cd",
+    "0364fcd96e83",
+    "fa6b6927b806",
+    "d6143560b26d"
+  ],
+  "output": "Tối mai, trên sân nhà Mỹ Đình, đội tuyển Việt Nam sẽ bước vào cuộc đối đầu then chốt với Indonesia trong khuôn khổ vòng loại thứ hai World Cup 2026. Đây là trận cầu mang tính quyết định, nơi các cầu thủ áo đỏ không còn nhiều quyền lựa chọn nếu muốn nuôi hy vọng tiến vào vòng loại cuối cùng.\n\nTrước thềm trận đấu, tâm điểm chú ý tập trung vào tình trạng lực lượng của Indonesia. Sự vắng mặt của tiền vệ chủ lực Kevin Diks do án treo giò được đánh giá là tổn thất lớn về mặt chiến thuật đối với đội khách. Diks vốn là mắt xích quan trọng trong hệ thống phòng ngự và là nhân tố chủ chốt trong các tình huống chuyển đổi trạng thái từ phòng ngự sang tấn công. Khi thiếu vắng cầu thủ này, khả năng kiểm soát khu vực giữa sân và sự chắc chắn trong hàng phòng ngự của Indonesia có thể bị ảnh hưởng đáng kể.\n\nBên kia chiến tuyến, đội tuyển Việt Nam đang thể hiện sự ổn định nhất định qua các trận đấu gần đây. Việc được thi đấu trên sân nhà Mỹ Đình, dưới sự cổ vũ của hàng vạn cổ động viên, luôn là lợi thế tinh thần không nhỏ cho các cầu thủ áo đỏ. Tuy nhiên, Indonesia dưới sự dẫn dắt của huấn luyện viên Shin Tae-yong vẫn là đối thủ khó chịu. Các học trò của ông Shin thường duy trì cường độ pressing cao và tổ chức phòng ngự phản công một cách bài bản.\n\nTrong lịch sử đối đầu gần đây, hai đội có thành tích tương đối cân bằng, với những trận đấu thường xuyên kết thúc với tỷ số sát nút. Điều này cho thấy đây không phải là cuộc so tài dễ dàng, nơi yếu tố kỹ thuật cá nhân hay sự tập trung trong 90 phút thi đấu chính thức sẽ quyết định kết quả.\n\nVới việc Indonesia mất đi một trụ cột quan trọng, đội tuyển Việt Nam được đánh giá nhỉnh hơn về mặt cơ hội. Tuy nhiên, bóng đá luôn chứa đựng yếu tố bất ngờ, và Indonesia có đủ chất lượng để tạo ra khó khăn nếu họ tận dụng tốt các cơ hội có được. Kịch bản dễ xảy ra nhất là một trận đấu chặt chẽ, nơi đội nào mắc ít sai lầm hơn sẽ là người chiến thắng."
+}

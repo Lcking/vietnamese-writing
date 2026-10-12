@@ -1,0 +1,15 @@
+{
+  "group": "A_heuristic",
+  "id": "A1",
+  "genre": "football_tin_tuc",
+  "chars": 1350,
+  "seconds": 26.3,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [
+    "2-0"
+  ],
+  "fab_violations": [],
+  "examples_used": [],
+  "output": "**U23 Việt Nam vượt U23 Malaysia 2-0, Quang Hải ghi bàn quyết định phút 67**\n\nĐội tuyển U23 Việt Nam đã có một chiến thắng thuyết phục 2-0 trước U23 Malaysia trong khuôn khổ vòng loại U23 châu Á 2020, qua đó giữ vững ngôi đầu bảng K. Tiền đạo Nguyễn Quang Hải là người ghi bàn mở tỷ số ở phút 67, đóng vai trò quyết định giúp đội nhà giành trọn 3 điểm.\n\nBước vào trận đấu trên sân nhà Mỹ Đình, các cầu thủ U23 Việt Nam thể hiện sự tự tin và chủ động kiểm soát thế trận. Tuy nhiên, hàng thủ của U23 Malaysia thi đấu rất tập trung và vững chãi, khiến các pha lên bóng của đội chủ nhà gặp nhiều khó khăn trong suốt hiệp một.\n\nSang hiệp hai, U23 Việt Nam tăng cường sức ép và tạo ra nhiều cơ hội hơn. Phút 67, từ một pha phối hợp nhanh, Nguyễn Quang Hải đã có pha xử lý tinh tế, tung người dứt điểm hiểm hóc mở tỷ số cho U23 Việt Nam. Bàn thắng này đã giải tỏa áp lực cho các học trò của HLV Park Hang-seo, đồng thời tạo đà cho đội chủ nhà chơi cởi mở hơn.\n\nChỉ vài phút sau, U23 Việt Nam có thêm bàn thắng nâng cách biệt lên 2-0, ấn định chiến thắng chung cuộc. Chiến thắng này giúp U23 Việt Nam tiếp tục dẫn đầu bảng K với thành tích bất bại, trong khi U23 Malaysia vẫn còn nhiều lo lắng cho cơ hội đi tiếp.\n\nVới phong độ ổn định và sự tỏa sáng của các trụ cột như Quang Hải, U23 Việt Nam đang thể hiện rõ tham vọng đi tiếp tại giải đấu quan trọng này."
+}

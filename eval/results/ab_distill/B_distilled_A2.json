@@ -1,0 +1,18 @@
+{
+  "group": "B_distilled",
+  "id": "A2",
+  "genre": "football_tin_tuc",
+  "chars": 1354,
+  "seconds": 27.9,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "fab_violations": [],
+  "examples_used": [
+    "ef31d687d413",
+    "269010c76cbb",
+    "3eef3f533245",
+    "8c85f5e8bd55"
+  ],
+  "output": "CLB Hà Nội chính thức thay tướng\n\nChiều 25/6, Ban lãnh đạo CLB Hà Nội đã tiến hành cuộc họp khẩn và ra quyết định thay đổi nhân sự trên băng ghế huấn luyện. Theo đó, vị HLV cũ chính thức chia tay đội bóng sau nhiều năm gắn bó, nhường chỗ cho một chiến lược gia mới nhằm tạo luồng gió mới cho giai đoạn nước rút của mùa giải.\n\nQuyết định này được đưa ra sau một chuỗi thành tích không như kỳ vọng của đội bóng thủ đô trong những vòng đấu gần đây. Dù sở hữu hàng ngũ cầu thủ chất lượng, các trận đấu gần đây của CLB Hà Nội vẫn để lộ những điểm yếu về mặt chiến thuật cũng như khả năng xử lý các tình huống then chốt. Ban huấn luyện mới sẽ có nhiệm vụ khẩn cấp là rà soát lại đội hình, tối ưu hóa đấu pháp và giúp các cầu thủ lấy lại sự tự tin cần thiết.\n\nTheo tiết lộ từ phía câu lạc bộ, chiến lược gia mới là người có nhiều kinh nghiệm tại V.League, am hiểu đặc thù của bóng đá Việt Nam và có phong cách làm việc khoa học. Sự xuất hiện của nhà cầm quân này được kỳ vọng sẽ mang lại những thay đổi tích cực, giúp CLB Hà Nội sớm trở lại quỹ đạo và cạnh tranh sòng phẳng cho những danh hiệu còn lại trong mùa giải.\n\nTrước mắt, đội bóng sẽ có màn ra mắt của tân HLV ngay trong trận đấu sắp tới trên sân nhà. Đây sẽ là phép thử đầu tiên và vô cùng quan trọng để người hâm mộ có thể đánh giá năng lực cũng như sự ăn ý của ban huấn luyện mới với tập thể cầu thủ."
+}

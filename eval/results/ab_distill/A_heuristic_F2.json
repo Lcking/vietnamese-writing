@@ -1,0 +1,16 @@
+{
+  "group": "A_heuristic",
+  "id": "F2",
+  "genre": "football_tin_tuc",
+  "chars": 245,
+  "seconds": 6.8,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "fab_violations": [
+    "do",
+    "vì"
+  ],
+  "examples_used": [],
+  "output": "**Cầu thủ rời sân phút 58 vì chấn thương cổ chân**\n\nĐội bóng đã xác nhận thông tin một cầu thủ của họ phải rời sân ở phút 58 do gặp vấn đề về sức khỏe. Theo thông báo chính thức từ câu lạc bộ, nguyên nhân là do cầu thủ này bị đau ở cổ chân phải."
+}

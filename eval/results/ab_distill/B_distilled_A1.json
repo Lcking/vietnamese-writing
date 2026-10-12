@@ -1,0 +1,20 @@
+{
+  "group": "B_distilled",
+  "id": "A1",
+  "genre": "football_tin_tuc",
+  "chars": 1214,
+  "seconds": 25.3,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [
+    "2-0"
+  ],
+  "fab_violations": [],
+  "examples_used": [
+    "ef31d687d413",
+    "269010c76cbb",
+    "3eef3f533245",
+    "8c85f5e8bd55"
+  ],
+  "output": "**U23 Việt Nam thắng tưng bừng 2-0, Quang Hải ghi bàn quyết định ở phút 67**\n\nĐội tuyển U23 Việt Nam đã có một trận đấu thành công khi đánh bại U23 Malaysia với tỷ số 2-0 trong khuôn khổ vòng loại U23 châu Á. Bàn thắng quyết định của Quang Hải ở phút 67 là điểm nhấn quan trọng, giúp thầy trò HLV Park Hang-seo nắm lợi thế lớn trong cuộc đua giành vé đi tiếp.\n\nTrước đối thủ U23 Malaysia, các cầu thủ U23 Việt Nam nhập cuộc tự tin và kiểm soát tốt thế trận. Dù vậy, phải đến phút 67, \"cơn mưa\" bàn thắng mới chính thức trút xuống. Từ một tình huống phản công nhanh, Quang Hải có mặt đúng lúc để dứt điểm tung lưới đối phương, mở tỷ số trận đấu. Bàn thắng này không chỉ thể hiện đẳng cấp của tiền vệ người Hà Nội mà còn là lời khẳng định về sức mạnh tấn công của đội tuyển Việt Nam.\n\nThắng lợi 2-0 trước U23 Malaysia là kết quả tích cực, giúp U23 Việt Nam củng cố vị thế tại bảng G. Chiến thắng này cho thấy sự ổn định về mặt tâm lý và khả năng thi đấu hiệu quả của các cầu thủ trẻ khi đối đầu với các đối thủ cùng khu vực.\n\nVới 3 điểm trọn vẹn, U23 Việt Nam đang tiến gần hơn đến mục tiêu lọt vào VCK U23 châu Á. Trong khi đó, U23 Malaysia sẽ phải nỗ lực rất nhiều ở những trận đấu còn lại để nuôi hy vọng đi tiếp."
+}

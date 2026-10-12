@@ -1,0 +1,13 @@
+{
+  "group": "B_distilled",
+  "id": "C1",
+  "genre": "social_post",
+  "chars": 48,
+  "seconds": 3.1,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "fab_violations": [],
+  "examples_used": [],
+  "output": "Việt Nam chính thức có vé vào chung kết AFF Cup!"
+}

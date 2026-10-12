@@ -1,0 +1,20 @@
+{
+  "group": "B_distilled",
+  "id": "F2",
+  "genre": "football_tin_tuc",
+  "chars": 294,
+  "seconds": 9.2,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "fab_violations": [
+    "do"
+  ],
+  "examples_used": [
+    "ef31d687d413",
+    "269010c76cbb",
+    "3eef3f533245",
+    "8c85f5e8bd55"
+  ],
+  "output": "Cầu thủ rời sân ở phút 58 do chấn thương cổ chân phải\n\nTheo thông báo chính thức từ câu lạc bộ, cầu thủ đã phải rời sân ở phút 58 của trận đấu do gặp chấn thương. Ban y tế xác nhận tiền vệ này bị đau cổ chân phải, hiện đang được theo dõi sát sao để đánh giá mức độ nghiêm trọng của chấn thương."
+}

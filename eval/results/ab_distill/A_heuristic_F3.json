@@ -1,0 +1,13 @@
+{
+  "group": "A_heuristic",
+  "id": "F3",
+  "genre": "football_tin_tuc",
+  "chars": 61,
+  "seconds": 3.4,
+  "finish_reason": "stop",
+  "forbidden_hit": [],
+  "expected_hit": [],
+  "fab_violations": [],
+  "examples_used": [],
+  "output": "Nếu kịp hoàn tất thủ tục đăng ký, cầu thủ này có thể đá chính"
+}
