@@ -31,13 +31,14 @@ def main():
     for r in rows:
         by_cfg[r["config"]].append(r)
 
-    print("=" * 74)
-    print("TỔNG HỢP ĐÁNH GIÁ — raw vs min vs full")
-    print("=" * 74)
-    hdr = f"{'Cấu hình':<10}{'Số ca':>6}{'Chữ TB':>10}{'Giây TB':>10}{'Vi phạm bẫy':>14}{'Thiếu bắt buộc':>16}"
+    print("=" * 84)
+    print("TỔNG HỢP ĐÁNH GIÁ — raw vs min vs lite vs full")
+    print("=" * 84)
+    hdr = (f"{'Cấu hình':<10}{'Số ca':>6}{'Chữ TB':>10}{'Giây TB':>10}"
+           f"{'Vi phạm bẫy':>13}{'Thiếu bắt buộc':>15}{'Nghi vấn bịa':>14}")
     print(hdr)
-    print("-" * 74)
-    for cfg in ("raw", "min", "full"):
+    print("-" * 84)
+    for cfg in ("raw", "min", "lite", "full"):
         rs = by_cfg.get(cfg)
         if not rs:
             continue
@@ -47,11 +48,13 @@ def main():
         viol = sum(1 for r in rs if r["forbidden_hit"])
         # "thiếu bắt buộc" chỉ tính cho ca CÓ yêu cầu (expect không rỗng trong CASES)
         missing = sum(1 for r in rs if r.get("_has_expect") and not r.get("expected_hit"))
-        print(f"{cfg:<10}{n:>6}{avg_chars:>10.0f}{avg_sec:>10.1f}{viol:>14}{missing:>16}")
+        # "nghi vấn bịa": ca có no_fab và detector tìm thấy vi phạm
+        fab = sum(1 for r in rs if r.get("fabrication_violations"))
+        print(f"{cfg:<10}{n:>6}{avg_chars:>10.0f}{avg_sec:>10.1f}{viol:>13}{missing:>15}{fab:>14}")
 
-    print("-" * 74)
-    # chi tiết vi phạm
-    print("\nChi tiết vi phạm bẫy:")
+    print("-" * 84)
+    # chi tiết vi phạm bẫy (règles)
+    print("\n[1] Chi tiết vi phạm BẪY (từ cấm / thiếu bắt buộc):")
     any_v = False
     for r in rows:
         if r["forbidden_hit"]:
@@ -60,9 +63,22 @@ def main():
     if not any_v:
         print("  (không có)")
 
+    # chi tiết nghi vấn bịa (facts) — tách riêng khỏi vi phạm bẫy
+    print("\n[2] Chi tiết NGHI VẤN DỮ KIỆN BỊA (detector đánh dấu, cần người đối chiếu):")
+    any_f = False
+    for r in rows:
+        fv = r.get("fabrication_violations") or []
+        if fv:
+            any_f = True
+            print(f"  ⚠ {r['id']}/{r['config']}: {', '.join(str(x) for x in fv)}")
+    if not any_f:
+        print("  (không có)")
+
     # dài hơn KHÔNG đồng nghĩa tốt hơn — cảnh báo
     print("\nLưu ý: 'full' viết dài hơn KHÔNG tự động nghĩa là tốt hơn.")
-    print("Cần bước chấm mù bởi người bản ngữ (eval/blind_review.md) mới kết luận được.")
+    print("  - Mục [1] là vi phạm ràng buộc CỨNG (khách quan).")
+    print("  - Mục [2] là ĐÁNH DẤU của detector, KHÔNG phải kết luận (cần người đối chiếu).")
+    print("  - Vẫn cần chấm mù bởi người bản ngữ (eval/blind_review.md) mới kết luận chất lượng.")
 
 
 if __name__ == "__main__":

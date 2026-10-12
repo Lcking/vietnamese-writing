@@ -80,6 +80,9 @@ print(client.chat("Bạn là bình luận viên bóng đá Việt Nam.",
 | `football_chuyen_nhuong` | Tin chuyển nhượng (转会) |
 | `football_doi_tuyen` | Tuyển quốc gia Việt Nam (国家队) |
 | `football_nhan_vat` | Chân dung cầu thủ / HLV (人物) |
+| `football_pre_match` | Nhận định trước trận / soi kèo (赛前前瞻) |
+| `football_analysis` | Phân tích chiến thuật (战术分析) |
+| `social_post` | Bài đăng ngắn mạng xã hội (社交短帖) |
 
 ### Đa thể loại
 | genre | Thể loại |
@@ -116,9 +119,30 @@ Quy tắc viết được trích xuất từ kho ngữ liệu **WanJuan-Vietname
 
 ## Ví dụ mẫu (examples/)
 
-`examples/football/*.jsonl` — 160 bài báo bóng đá thật, 8 chủ đề (tuyển VN, World Cup,
-ngoại hạng Anh, Champions League, chuyển nhượng, V-League, châu Á, phân tích chiến thuật).
-Dùng làm few-shot khi cần giọng văn cụ thể.
+`examples/football/*.jsonl` — 233 bài báo bóng đá thật, 9 file chủ đề (tuyển VN, World Cup,
+ngoại hạng Anh, Champions League, chuyển nhượng, V-League, châu Á, phân tích chiến thuật,
+social_post ngắn). Dùng làm few-shot khi cần giọng văn cụ thể.
+`social_post.jsonl` (75 bài) thực chất là TIN NGẮN, không phải bài social thật — chỉ tham
+khảo độ ngắn gọn, xem ghi chú trong `references/social_post.md`.
+
+## Profile (độ dài prompt)
+
+`--profile min|lite|full` điều chỉnh lượng ngữ cảnh nạp vào:
+
+| profile | Nạp gì | Dùng khi |
+|---------|--------|----------|
+| `min` | chỉ quy tắc cốt lõi + thể loại | model nhỏ, cần tối giản |
+| `lite` | + vài ví dụ ngắn | **mặc định cho `social_post`/`football_tin_tuc`** |
+| `full` | + toàn bộ quy tắc global + nhiều ví dụ | model mạnh, cần ngữ cảnh đầy đủ |
+
+Lý do mặc định `lite`: đánh giá đa model cho thấy prompt dài (`full`) làm model tầm
+trung/nhỏ **bịa thêm dữ kiện**. Production nên dùng `lite` + lớp kiểm tra đầu ra
+(`bin/check_fabrication.py`).
+
+```bash
+python bin/viet_writer.py --genre social_post --profile full --task "..."
+python bin/viet_writer.py --genre social_post --post-type ket_qua --task "..."
+```
 
 ## Cấu trúc
 
@@ -127,13 +151,23 @@ vietnamese-writing/
 ├── SKILL.md
 ├── README.md
 ├── LICENSE
+├── PROVENANCE.md
 ├── config.example.yaml
 ├── requirements.txt
 ├── bin/viet_writer.py            # CLI entry
+├── bin/extract_corpus.py         # (tuỳ chọn) tái tạo corpus
+├── bin/extract_short_posts.py    # trích bài ngắn cho social_post
+├── bin/clean_examples.py         # dọn nhiễu metadata trong examples
+├── bin/check_quality.py          # tự kiểm tra chất lượng
+├── bin/check_fabrication.py      # phát hiện dữ kiện bịa trong đầu ra
+├── bin/corpus_verify.py          # tra tần suất cách nói theo ngữ liệu
+├── bin/run_eval.py, summarize_eval.py   # đánh giá độc lập
 ├── src/llm_client.py             # LLM adapter (OpenAI-compatible)
 ├── prompts/system_vi_writer.md   # core system prompt
 ├── references/*.md               # writing norms by genre (incl. football)
-└── examples/football/*.jsonl     # real Vietnamese football articles
+├── examples/football/*.jsonl     # real Vietnamese football articles
+├── tests/test_check_fabrication.py
+└── eval/                         # evalset, kết quả, mẫu chấm mù
 ```
 
 ## Ghi công (Attribution)
