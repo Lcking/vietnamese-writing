@@ -3,35 +3,43 @@
 """
 check_fabrication.py — Phát hiện "dữ kiện bịa" trong đầu ra tiếng Việt.
 
-Vấn đề: mô hình tầm trung / mô hình nhỏ chạy prompt dài (cấu hình 'full')
-thường CHÈN các chi tiết cụ thể mà đề bài KHÔNG hề cung cấp — ví dụ:
-  - mốc thời gian ("sáng nay", "trưa nay", "chiều mai", "một giờ đồng hồ")
-  - hành động của tổ chức ("chính thức xác nhận", "ban lãnh đạo quyết định")
-  - bối cảnh sân đấu ("khán đài rộn ràng", "khán giả", "tiếng cổ vũ")
-  - con số / tỉ số / tên riêng không có trong đề
+Vấn đề: mô hình tầm trung / mô hình nhỏ chạy prompt dài ('full') thường CHÈN
+chi tiết cụ thể mà đề bài KHÔNG cung cấp, hoặc NỐI hai dữ kiện rời thành quan
+hệ nhân quả mà nguồn không nói.
 
-Đây là công cụ HỖ TRỢ, KHÔNG phải quan toà tự động:
-  - Nó KHÔNG kết luận "đúng/sai". Nó ĐÁNH DẤU những chỗ NGHI VẤN để người
-    đọc đối chiếu với đề bài. Việc phán quyết cuối cùng vẫn cần con người.
+Đây là công cụ HỖ TRỢ (đánh dấu), KHÔNG phải quan toà tự động: kết quả là
+danh sách NGHI VẤN để người đọc đối chiếu đề bài; phán quyết cuối cùng cần người.
+
+Các nhóm phát hiện:
+  - thời gian cụ thể      ("sáng nay", "một giờ đồng hồ")
+  - hành động tổ chức     ("chính thức thông báo", "ban lãnh đạo quyết định")
+  - bối cảnh sân đấu      ("khán đài", "khán giả")
+  - con số / định lượng   ("2-0", "30%", năm)
+  - TRẠNG THÁI KHẲNG ĐỊNH ("chưa được công bố", "đang chờ", "vẫn chưa rõ")
+      → KHÔNG được miễn trừ bởi phủ định; chỉ bỏ qua nếu ĐỀ BÀI có cùng mô tả.
+  - QUAN HỆ NHÂN QUẢ      ("do", "vì", "sau khi", "khiến", "dẫn đến")
+      → hai mệnh đề nối bằng liên từ nhân quả, nếu đề bài không nêu cùng quan hệ.
+
+Quy tắc giảm nhiễu:
+  1. Phủ định CHỈ có tác dụng trong CÙNG MỘT CÂU (cắt theo .!?… và xuống dòng).
+     Riêng nhóm 'trạng thái khẳng định' KHÔNG áp dụng quy tắc phủ định này.
+  2. Chuẩn hoá trước khi so với đề bài: gạch ngang → '-', ngày bỏ 'ngày'/số 0 đầu,
+     số bằng chữ (một..mười) → chữ số, bỏ khoảng trắng quanh tỉ số.
 
 Dùng:
-    python bin/check_fabrication.py \\
-        --task "Viết bản tin: CLB Hà Nội bổ nhiệm HLV mới. Không nêu tên cụ thể." \\
-        --text-file output.txt
-
-    # hoặc chấm hàng loạt kết quả eval:
+    python bin/check_fabrication.py --task "..." --text-file output.txt
     python bin/check_fabrication.py --scan-eval eval/results
 """
 import argparse
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# ---- Mẫu dữ kiện cụ thể (thường bị bịa) ----
-# Mỗi nhóm: (nhãn, danh sách regex tiếng Việt)
+# ---------------------------------------------------------------- mẫu dữ kiện
 PATTERNS = [
     ("thời gian cụ thể", [
         r"\bsáng nay\b", r"\btrưa nay\b", r"\bchiều nay\b", r"\btối nay\b",
@@ -53,47 +61,144 @@ PATTERNS = [
         r"người hâm mộ (phấn khích|vỡ oà|nín thở)",
     ]),
     ("con số / định lượng cụ thể", [
-        r"\b\d{1,2}[-–]\d{1,2}\b",          # tỉ số
+        r"\b\d{1,2}\s*[-–]\s*\d{1,2}\b",       # tỉ số
         r"\b\d+(\.\d+)? ?(%|phần trăm)\b",
         r"\b\d+ (bàn|điểm|trận|năm|tháng|triệu|tỷ|nghìn)\b",
-        r"\b(19|20)\d{2}\b",                 # năm (không bắt mọi số 4 chữ số)
+        r"\b(19|20)\d{2}\b",
+    ]),
+    # Nhóm đặc biệt: KHẲNG ĐỊNH TRẠNG THÁI "chưa có/đang chờ" — thường là bịa
+    # khi đề bài chỉ đơn thuần KHÔNG cung cấp thông tin.
+    ("trạng thái khẳng định (chưa/đang chờ)", [
+        r"chưa (được )?(công bố|xác nhận|quyết định|thông báo|tiết lộ)",
+        r"chưa có thông tin", r"chưa có kết quả", r"chưa rõ",
+        r"đang chờ (xác nhận|kiểm tra|công bố)",
+        r"vẫn chưa (rõ|xác nhận|công bố)", r"hiện chưa (có|xác nhận)",
+    ]),
+    # Nhóm đặc biệt: QUAN HỆ NHÂN QUẢ (bịa nguyên nhân/kết quả).
+    ("quan hệ nhân quả", [
+        r"\bdo\b", r"\bvì\b", r"\bbởi\b", r"\bsau khi\b",
+        r"\bkhiến\b", r"\bdẫn đến\b", r"\bnên\b",
     ]),
 ]
 
-# Từ phủ định phía trước → nghĩa là model ĐANG TỪ CHỐI bịa (không tính)
-NEG_PREFIX = ["không", "chưa", "chẳng", "đừng", "tránh", "thiếu", "không có",
-              "chưa có", "không nêu", "không xác nhận", "không được"]
+# Nhóm KHÔNG được miễn trừ bởi phủ định (theo thiết kế ở trên)
+NO_NEG_EXEMPT = {"trạng thái khẳng định (chưa/đang chờ)", "quan hệ nhân quả"}
+
+NEG_WORDS = ["không", "chẳng", "đừng", "tránh", "thiếu"]
+
+# ------------------------------------------------------------- chuẩn hoá so sánh
+_DIGIT_WORDS = {
+    "không": "0", "một": "1", "hai": "2", "ba": "3", "bốn": "4", "tư": "4",
+    "năm": "5", "sáu": "6", "bảy": "7", "tám": "8", "chín": "9", "mười": "10",
+}
 
 
-def _negated(text_low, pos, window=60):
-    return any(n in text_low[max(0, pos - window):pos] for n in NEG_PREFIX)
+def normalize(s):
+    """Chuẩn hoá để so khớp: gạch ngang, ngày, số chữ, khoảng trắng, hư từ nhỏ."""
+    if not s:
+        return ""
+    x = unicodedata.normalize("NFC", s).lower()
+    x = x.replace("–", "-").replace("—", "-")        # gạch ngang → '-'
+    x = re.sub(r"\bngày\s+", "", x)                   # bỏ 'ngày' trong ngày tháng
+    x = re.sub(r"\b0(\d)\b", r"\1", x)                # 03/12 → 3/12
+    # số bằng chữ → chữ số (chỉ tách từ đơn)
+    x = re.sub(r"\b(" + "|".join(_DIGIT_WORDS) + r")\b",
+               lambda m: _DIGIT_WORDS[m.group(1)], x)
+    # Bỏ hư từ không đổi nghĩa: "được" (bị động/khả năng) — để "chưa xác nhận"
+    # và "chưa được xác nhận" được coi là tương đương.
+    x = re.sub(r"\bđược\s+", "", x)
+    x = re.sub(r"(\d)\s*-\s*(\d)", r"\1-\2", x)       # 2 - 0 → 2-0
+    x = re.sub(r"\s+", " ", x).strip()
+    return x
+
+
+def split_sentences(text):
+    """Cắt câu theo .!?… và xuống dòng. Trả về (câu, vị_trí_bắt_đầu)."""
+    out = []
+    start = 0
+    for m in re.finditer(r"[.!?…\n]+", text):
+        seg = text[start:m.end()]
+        if seg.strip():
+            out.append((seg, start))
+        start = m.end()
+    if start < len(text) and text[start:].strip():
+        out.append((text[start:], start))
+    return out
+
+
+def _sentence_containing(sents, pos):
+    for seg, start in sents:
+        if start <= pos < start + len(seg):
+            return seg
+    return ""
+
+
+def _negated_in_sentence(sentence, frag_pos_in_sentence, window=50):
+    """Phủ định CHỈ có tác dụng trong cùng câu."""
+    seg = sentence[:frag_pos_in_sentence].lower()
+    return any(n in seg[-window:] for n in NEG_WORDS)
 
 
 def find_fabrications(task, text):
-    """Trả về list các chip nghi vấn: {nhóm, khớp, ngữ cảnh, trong_đề_bài}."""
+    """Trả về list chip nghi vấn: {nhóm, khớp, ngữ cảnh, trong_đề_bài, lý_do}."""
     findings = []
-    text_low = text.lower()
-    task_low = (task or "").lower()
+    if not text:
+        return findings
+    task_norm = normalize(task or "")
+    sents = split_sentences(text)
     seen = set()
 
     for label, pats in PATTERNS:
         for pat in pats:
             for m in re.finditer(pat, text, flags=re.IGNORECASE):
                 frag = m.group(0)
-                key = (label, frag.lower())
+                key = (label, normalize(frag))
                 if key in seen:
                     continue
-                # nằm sau phủ định → model đang từ chối, không tính
-                if _negated(text_low, m.start()):
+
+                sent = _sentence_containing(sents, m.start())
+                # vị trí tương đối trong câu:
+                rel = m.start()
+                for seg, start in sents:
+                    if start <= m.start() < start + len(seg):
+                        rel = m.start() - start
+                        break
+
+                # (1) Nhóm trạng thái/nhân quả: KHÔNG miễn trừ bởi phủ định.
+                #     Chỉ bỏ nếu ĐỀ BÀI có cùng mô tả (chuẩn hoá).
+                if label in NO_NEG_EXEMPT:
+                    in_task = normalize(frag) in task_norm
+                    # với nhân quả, cần cả liên từ xuất hiện trong đề bài
+                    if label == "quan hệ nhân quả":
+                        in_task = normalize(frag) in task_norm
+                    if in_task:
+                        seen.add(key)
+                        continue
+                    ctx = text[max(0, m.start() - 40):m.end() + 40].replace("\n", " ")
+                    reason = ("trạng thái khẳng định không có trong đề bài"
+                              if label.startswith("trạng thái")
+                              else "liên từ nhân quả không có trong đề bài")
+                    findings.append({
+                        "nhóm": label, "khớp": frag,
+                        "ngữ cảnh": ctx, "trong_đề_bài": False, "lý_do": reason,
+                    })
+                    seen.add(key)
                     continue
-                # nếu mảnh này CÓ trong đề bài → không phải bịa
-                in_task = frag.lower() in task_low
+
+                # (2) Nhóm thường: miễn trừ nếu phủ định CÙNG CÂU.
+                if _negated_in_sentence(sent, rel):
+                    seen.add(key)
+                    continue
+
+                # (3) Bỏ nếu mảnh này đã có trong đề bài (so sánh chuẩn hoá).
+                if normalize(frag) in task_norm:
+                    seen.add(key)
+                    continue
+
                 ctx = text[max(0, m.start() - 40):m.end() + 40].replace("\n", " ")
                 findings.append({
-                    "nhóm": label,
-                    "khớp": frag,
-                    "ngữ cảnh": ctx,
-                    "trong_đề_bài": in_task,
+                    "nhóm": label, "khớp": frag,
+                    "ngữ cảnh": ctx, "trong_đề_bài": False, "lý_do": "không có trong đề bài",
                 })
                 seen.add(key)
     return findings
@@ -101,33 +206,29 @@ def find_fabrications(task, text):
 
 def report(task, text, model=""):
     fs = find_fabrications(task, text)
-    novel = [f for f in fs if not f["trong_đề_bài"]]
     print(f"\n{'='*68}")
     if model:
         print(f"Mô hình: {model}")
     print(f"Độ dài đầu ra: {len(text)} ký tự")
-    print(f"Nghi vấn cần đối chiếu: {len(novel)} (tổng bắt được {len(fs)})")
+    print(f"Nghi vấn cần đối chiếu: {len(fs)}")
     print(f"{'='*68}")
-    if not novel:
-        print("→ Không thấy dữ kiện cụ thể nào ngoài đề bài. (Vẫn cần người đọc xác nhận.)")
-        return novel
+    if not fs:
+        print("→ Không thấy dữ kiện nào ngoài đề bài. (Vẫn cần người đọc xác nhận.)")
+        return fs
     by = {}
-    for f in novel:
+    for f in fs:
         by.setdefault(f["nhóm"], []).append(f)
     for label, items in by.items():
         print(f"\n▸ {label}:")
         for f in items:
-            print(f"   • \"{f['khớp']}\"")
+            print(f"   • \"{f['khớp']}\"  ({f['lý_do']})")
             print(f"     ...{f['ngữ cảnh']}...")
-    print(f"\n※ Đây là ĐÁNH DẤU, không phải kết luận. Hãy đối chiếu từng mục với đề bài")
-    print(f"  và xác nhận thủ công. Model từ chối bịa sẽ dùng từ phủ định (đã bỏ qua).")
-    return novel
+    print(f"\n※ Đây là ĐÁNH DẤU, không phải kết luận. Hãy đối chiếu từng mục với đề bài.")
+    return fs
 
 
 def scan_eval(results_dir):
-    """Quét toàn bộ kết quả eval, đối chiếu đề bài nếu tìm thấy."""
     results_dir = Path(results_dir)
-    # nạp đề bài từ run_eval.CASES nếu có
     tasks = {}
     try:
         sys.path.insert(0, str(ROOT / "bin"))
@@ -150,18 +251,17 @@ def scan_eval(results_dir):
         cid = d.get("id", "")
         if not out or d.get("finish_reason") == "error":
             continue
-        task = tasks.get(cid, "")
-        novel = [f for f in find_fabrications(task, out) if not f["trong_đề_bài"]]
+        novel = find_fabrications(tasks.get(cid, ""), out)
         if novel:
             flagged.append((fp.name, len(novel), sorted({f["nhóm"] for f in novel})))
 
-    print(f"\n{'='*68}\nQUÉT TOÀN BỘ KẾT QUẢ EVAL: {len(files)} file\n{'='*68}")
+    print(f"\n{'='*68}\nQUÉT KẾT QUẢ EVAL: {len(files)} file\n{'='*68}")
     if not flagged:
         print("→ Không file nào có dấu hiệu bịa dữ kiện ngoài đề.")
         return
     for name, n, groups in flagged:
         print(f"  ⚠ {name:40s} {n:2d} nghi vấn  [{', '.join(groups)}]")
-    print(f"\nTổng: {len(flagged)}/{len(files)} file có nghi vấn. Xem chi tiết từng file bằng --text-file.")
+    print(f"\nTổng: {len(flagged)}/{len(files)} file có nghi vấn.")
 
 
 def main():

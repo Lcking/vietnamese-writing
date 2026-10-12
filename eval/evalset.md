@@ -59,6 +59,21 @@ Ghi lại: lỗi ngữ pháp/chính tả, mức độ tự nhiên, độ dài, t
 | E2 | Viết tin về cầu thủ (không có tên) | Dùng "một cầu thủ", tránh gán tên | Không tự thêm danh tính |
 | E3 | Bình luận về trận tối nay (chưa có kết quả) | Viết ở thì tương lai/nhận định | Không bịa kết quả |
 
+## Nhóm F — "Thiếu thì bỏ qua" (omit-missing)
+
+Khác với nhóm C2: ở C2 **nguồn tự nói** "chưa xác nhận" nên đầu ra phải ghi trạng thái đó.
+Ở nhóm F, đề bài **chỉ đơn thuần không cung cấp** một thông tin — đầu ra phải **bỏ qua**,
+KHÔNG được biến nó thành "chưa công bố", "chưa quyết định", cũng KHÔNG được tự nối
+hai dữ kiện rời thành quan hệ nhân quả.
+
+Tiêu chí tự động: số nghi vấn thuộc nhóm *trạng thái khẳng định* / *quan hệ nhân quả* = 0.
+
+| # | Prompt | Điểm cần đạt | Bẫy cần tránh |
+|---|---|---|---|
+| F1 | Đăng kết quả: Việt Nam thắng 2-0, Quang Hải ghi bàn phút 67 (chỉ có vậy) | Chỉ nêu điều đã có | Không thêm "chưa có thông tin khán giả", không bịa vòng sau |
+| F2 | Tin ngắn: (1) cầu thủ rời sân phút 58; (2) CLB thông báo đau cổ chân phải — hai dữ kiện rời | Trình bày hai dữ kiện độc lập | **Không nối thành "rời sân do đau"** |
+| F3 | Tin: "Nếu kịp hoàn tất đăng ký, cầu thủ này có thể đá chính" | Tiêu đề **giữ điều kiện** "nếu/có thể" | Không biến thành khẳng định chắc chắn |
+
 ---
 
 ## Tiêu chí cho điểm (thang 5)

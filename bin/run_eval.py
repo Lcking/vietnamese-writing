@@ -52,6 +52,21 @@ CASES = [
     ("E1", "low_info", "football_tin_tuc",
      "Viết về một trận bóng đá (không nêu chi tiết gì). KHÔNG bịa đội/tỷ số/thời gian.",
      {"forbid": [], "expect": []}),
+    # --- Nhóm F: "thiếu thì bỏ qua" — KHÔNG được viết thành trạng thái khẳng định.
+    #     Tiêu chí: số nghi vấn 'trạng thái khẳng định' và 'quan hệ nhân quả' = 0.
+    ("F1", "omit_missing", "social_post",
+     "Đăng kết quả: Việt Nam thắng 2-0, Quang Hải ghi bàn phút 67. "
+     "(Chỉ có vậy — không có thông tin khán giả, không có thông tin vòng sau.)",
+     {"forbid": [], "expect": [], "no_fab": ["trạng thái khẳng định (chưa/đang chờ)",
+                                              "quan hệ nhân quả"]}),
+    ("F2", "omit_missing", "football_tin_tuc",
+     "Viết tin ngắn. Dữ kiện: (1) Cầu thủ rời sân ở phút 58. "
+     "(2) CLB thông báo cầu thủ bị đau cổ chân phải. Hai dữ kiện riêng biệt.",
+     {"forbid": [], "expect": [], "no_fab": ["quan hệ nhân quả"]}),
+    ("F3", "omit_missing", "football_tin_tuc",
+     "Viết tin: 'Nếu kịp hoàn tất đăng ký, cầu thủ này có thể đá chính.' "
+     "Tiêu đề PHẢI giữ điều kiện 'nếu/có thể'.",
+     {"forbid": [], "expect": [], "no_fab": ["trạng thái khẳng định (chưa/đang chờ)"]}),
 ]
 
 
@@ -135,12 +150,26 @@ def main():
                 return _re.search(pat, low) is not None
             hit_expect_list = [w for w in rules["expect"] if hit_expect(w)]
 
+            # Gọi bộ phát hiện dữ kiện bịa (nếu ca có 'no_fab'):
+            # đếm nghi vấn thuộc các nhóm bị cấm; >0 nghĩa là KHÔNG đạt.
+            fab_violations = []
+            no_fab = rules.get("no_fab", [])
+            if no_fab and fr != "error":
+                try:
+                    from check_fabrication import find_fabrications
+                    found = find_fabrications(prompt, text)
+                    fab_violations = [f["khớp"] for f in found if f["nhóm"] in no_fab]
+                except Exception as e:
+                    fab_violations = [f"[detector error: {e}]"]
+
             rec = {
                 "id": cid, "group": group, "genre": genre, "config": cfg,
                 "chars": len(text), "seconds": dt, "finish_reason": fr,
                 "usage": usage, "forbidden_hit": hit_forbid,
                 "expected_hit": hit_expect_list, "output": text,
+                "fabrication_violations": fab_violations,
                 "_has_expect": bool(rules["expect"]),
+                "_has_no_fab": bool(no_fab),
             }
             fn = f"{cid}_{cfg}{tag}.json"
             with open(os.path.join(args.out, fn), "w", encoding="utf-8") as f:
