@@ -9,7 +9,7 @@ LLM 适配层:支持任意 OpenAI 兼容端点(GPT / Gemini / Kimi / 本地 Qwen
   - 记录 finish_reason 与输出是否被截断,便于排查"输出不完整"类问题。
   - 设总超时,避免单次调用无限等待。
 """
-import os, json, urllib.request, urllib.error, time
+import os, sys, json, socket, urllib.request, urllib.error, time
 
 DEFAULT_CONFIG = {
     "base_url": os.environ.get("VIET_LLM_BASE_URL", "https://api.openai.com/v1"),
@@ -166,15 +166,27 @@ class LLMClient:
                 elif 400 <= status < 500:
                     # 参数类错误:尝试自动修正一次(推理模型/服务端怪癖)
                     fixed = _autofix_payload(payload, detail)
-                    if fixed and fixed not in learned.values() and attempt + 1 < attempts:
-                        learned.update(fixed)
+                    # 已学过的修正不再重复;检查"键"而非"值"
+                    new_fix = {k: v for k, v in fixed.items() if k not in learned
+                               and payload.get(k) is not None}
+                    if new_fix and attempt + 1 < attempts:
+                        learned.update(new_fix)
                         last_err = LLMError(f"参数错误({status}),已自动修正重试:{detail}",
                                             kind="param", status=status)
                         continue
                     raise LLMError(f"请求参数错误({status}):{detail}", kind="param", status=status)
                 else:
+                    # 5xx:默认最多重试 1 次(attempts 已含);记录每次尝试
                     last_err = LLMError(f"服务端错误({status}):{detail}", kind="server", status=status)
+                    print(f"[llm_client] 服务端错误 {status},第 {attempt+1}/{attempts} 次尝试",
+                          file=sys.stderr)
+            except (TimeoutError, socket.timeout) as e:
+                # 读取阶段超时。请求可能已被服务端处理,重试有重复计费风险 → 默认不重试
+                raise LLMError(f"读取超时:{e}", kind="timeout")
             except urllib.error.URLError as e:
+                # URLError 里包着 socket.timeout 时同样按超时处理
+                if isinstance(getattr(e, "reason", None), (TimeoutError, socket.timeout)):
+                    raise LLMError(f"连接超时:{e.reason}", kind="timeout")
                 last_err = LLMError(f"网络错误:{e.reason}", kind="network")
             except json.JSONDecodeError as e:
                 # 解析失败一般不因重试而好转,但偶发截断可重试一次

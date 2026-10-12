@@ -51,6 +51,18 @@ DEFAULT_BUDGET = {
     "examples": 12000,   # few-shot 范文合计上限
 }
 
+# ── profile:预设的提示词体积档位(2nd review §2.1)──
+#   min : 核心 + 体裁规则,无范文
+#   lite: 核心 + 体裁规则 + 少量范文(默认给社交/快讯类,降低长提示词幻觉)
+#   full: 现有行为(全局规则 + 体裁 + 多范文)
+PROFILES = {
+    "min": {"global": 0,      "genre": 4000,  "examples": 0,    "ex_max_n": 0,  "ex_max_chars": 0},
+    "lite": {"global": 0,    "genre": 2000,  "examples": 1000, "ex_max_n": 3,  "ex_max_chars": 700},
+    "full": {"global": 18000, "genre": 16000, "examples": 12000, "ex_max_n": 99, "ex_max_chars": 10**9},
+}
+# 这些体裁默认用 lite(上游跨模型报告:full 会放大中端模型虚构)
+LITE_DEFAULT_GENRES = {"social_post", "football_tin_tuc"}
+
 FOOTBALL_HINTS = ["bóng đá", "bình luận", "trận đấu", "cầu thủ", "đội bóng",
                   "world cup", "champions league", "v-league", "aff cup",
                   "chuyển nhượng", "chiêu mộ", "ký hợp đồng", "bàn thắng",
@@ -117,19 +129,45 @@ def _is_clean_title(title):
     return True
 
 
-def pick_examples(genre, budget=None):
+def _cut_at_sentence(text, limit):
+    """在句末边界截断到 limit 字符内(不硬切);无合适边界则整条返回。"""
+    if len(text) <= limit:
+        return text
+    cut = text[:limit]
+    for sep in (". ", "! ", "? ", "\n"):
+        idx = cut.rfind(sep)
+        if idx > limit * 0.5:
+            return cut[:idx + 1].rstrip()
+    return cut.rstrip()
+
+
+def pick_examples(genre, budget=None, post_type=None, max_n=None,
+                  max_chars=None, max_age_years=3):
     """为足球体裁挑选范文。返回 (范文文本, 元数据列表)。
-    按配置的预算在"完整语义边界"选取,不做生硬的前 N 条截断。"""
+
+    - post_type:社交短帖类型(ket_qua/lich_thi_dau/...),给了就按它筛选
+    - max_n / max_chars:篇数上限、单条字符上限(来自 profile)
+    - max_age_years:排除 published_at 早于 N 年的条目(降低旧事实污染);
+      无日期字段的条目不受限(全库多数无日期)。
+    """
     budget = budget if budget is not None else DEFAULT_BUDGET["examples"]
+    if max_chars is None:
+        max_chars = 10**9
+    if max_n is None:
+        max_n = 99
     dirs = THEME_MAP.get(genre, [])
     chunks, meta, used = [], [], 0
     seen_titles = set()
+
+    import datetime
+    cutoff_year = datetime.date.today().year - max_age_years
+
     for d in dirs:
         fp = EXAMPLES / "football" / f"{d}.jsonl"
         if not fp.exists():
             continue
         for line in fp.read_text(encoding="utf-8").splitlines():
-            if used >= budget:
+            if used >= budget or len(chunks) >= max_n:
                 break
             try:
                 r = json.loads(line)
@@ -138,19 +176,31 @@ def pick_examples(genre, budget=None):
             title = (r.get("title") or "").strip()
             if title in seen_titles or not _is_clean_title(title):      # 去重 + 噪声过滤
                 continue
+            # 按 post_type 筛选(仅当该文件有 type 字段且调用方指定了)
+            if post_type and r.get("type") and r["type"] != post_type:
+                continue
+            # 排除过旧条目(有日期才判)
+            pub = (r.get("published_at") or "")
+            if pub:
+                import re as _re
+                my = _re.search(r"(19|20)\d{2}", pub)
+                if my and int(my.group(0)) < cutoff_year:
+                    continue
             content = (r.get("content") or "").strip()
             if not content:
                 continue
-            block = f"[{title}]\n{content[:1500]}"
+            # 整条短文,或在句末边界截断(不再 content[:1500] 硬切)
+            body = _cut_at_sentence(content, max_chars)
+            block = f"[Mẫu diễn đạt – không phải dữ kiện] [{title}]\n{body}"
             if used + len(block) > budget:
                 continue
             seen_titles.add(title)
             chunks.append(block)
             used += len(block)
-            meta.append({"theme": d, "title": title[:80],
+            meta.append({"theme": d, "title": title[:80], "type": r.get("type"),
                          "source_url": r.get("source_url"),
                          "content_sha256": (r.get("content_sha256") or "")[:12]})
-        if used >= budget:
+        if used >= budget or len(chunks) >= max_n:
             break
     return "\n\n---\n\n".join(chunks), meta
 
@@ -183,14 +233,27 @@ def detect_genre(task):
     return None    # 无体裁:走最小通用规则
 
 
-def build_prompt(genre=None, budget=None, examples=True, format_contract=None):
+def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
+                 profile=None, post_type=None):
     """
     纯函数:组装提示词,不调用任何模型。
-    返回 dict:
-      { "system": str, "genre": str|None, "stats": {...}, "examples_meta": [...],
-        "truncations": [...], "format_contract": str|None }
+    profile: min / lite / full。None 时按体裁自动(社交/快讯 → lite,其余 → full)。
+    返回 dict: { "system", "genre", "profile", "stats", "examples_meta",
+                 "truncations", "format_contract" }
     """
-    budget = {**DEFAULT_BUDGET, **(budget or {})}
+    # 决定 profile
+    if profile is None:
+        profile = "lite" if (genre in LITE_DEFAULT_GENRES) else "full"
+    if profile not in PROFILES:
+        profile = "full"
+    pcfg = PROFILES[profile]
+
+    # profile 覆盖默认预算(显式 budget 参数优先级最高)
+    base_budget = dict(DEFAULT_BUDGET)
+    base_budget["global"] = pcfg["global"]
+    base_budget["genre"] = pcfg["genre"]
+    base_budget["examples"] = pcfg["examples"]
+    budget = {**base_budget, **(budget or {})}
     truncations = []
     parts = []
 
@@ -202,28 +265,30 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None):
     if core:
         parts.append(core)
 
-    # 2) 全局规则(合计预算)
+    # 2) 全局规则(合计预算)。min profile 下 global=0 → 跳过
     gparts, gused = [], 0
-    for f in sorted(REFERENCES.glob("_global_*.md")):
-        txt = load_file(f)
-        if not txt.strip():
-            continue
-        if gused + len(txt) > budget["global"]:
-            remain = budget["global"] - gused
-            if remain < 1500:      # 剩太少就整块跳过,不塞半截文件进来
-                truncations.append((f.name, "skipped(global budget)"))
+    if budget["global"] > 0:
+        for f in sorted(REFERENCES.glob("_global_*.md")):
+            txt = load_file(f)
+            if not txt.strip():
                 continue
-            txt, cut = _truncate_semantic(txt, remain)
-            if cut:
-                truncations.append((f.name, remain))
-        gparts.append(txt)
-        gused += len(txt)
+            if gused + len(txt) > budget["global"]:
+                remain = budget["global"] - gused
+                if remain < 800:      # 剩太少就整块跳过,不塞半截文件进来
+                    truncations.append((f.name, "skipped(global budget)"))
+                    continue
+                txt, cut = _truncate_semantic(txt, remain)
+                if cut:
+                    truncations.append((f.name, remain))
+            gparts.append(txt)
+            gused += len(txt)
     if gparts:
         parts.append("\n\n---\n\n".join(gparts))
 
     # 3) 场景体裁规则
     resolved_genre = genre
     examples_meta = []
+    genre_chars = 0
     if resolved_genre and resolved_genre in GENRES:
         fname = GENRE_FILE.get(resolved_genre, f"{resolved_genre}.md")
         gtxt = load_file(REFERENCES / fname)
@@ -231,32 +296,35 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None):
             gtxt, cut = _truncate_semantic(gtxt, budget["genre"])
             if cut:
                 truncations.append((fname, budget["genre"]))
+            genre_chars = len(gtxt)     # 截断后实际注入长度
             parts.append(gtxt)
         # 4) few-shot 范文(仅足球/社媒体裁)
-        if examples and (resolved_genre.startswith("football_") or resolved_genre == "social_post"):
-            ex, examples_meta = pick_examples(resolved_genre, budget["examples"])
+        if examples and budget["examples"] > 0 and \
+           (resolved_genre.startswith("football_") or resolved_genre == "social_post"):
+            ex, examples_meta = pick_examples(
+                resolved_genre, budget["examples"], post_type=post_type,
+                max_n=pcfg["ex_max_n"], max_chars=pcfg["ex_max_chars"])
             if ex:
                 parts.append(EXAMPLE_HEADER + ex)
-    else:
-        # 无体裁:最小通用规则(只放核心 + 全局),不加载全部文体规范
-        pass
 
     system = "\n\n---\n\n".join(p for p in parts if p.strip())
-    genre_chars = 0
-    if resolved_genre:
-        gene_file = GENRE_FILE.get(resolved_genre, f"{resolved_genre}.md")
-        genre_chars = len(load_file(REFERENCES / gene_file))
-    examples_chars = 0
+    # 范文注入的实际长度 = 总长 - 各已知部分(EXAMPLE_HEADER 也计入范文块)
+    examples_chars = len(system) - len(core) - gused - genre_chars
+    if examples_chars < 0:
+        examples_chars = 0
     stats = {
         "total_chars": len(system),
         "core_chars": len(core),
         "global_chars": gused,
         "genre_chars": genre_chars,
+        "examples_chars": examples_chars,
         "n_examples": len(examples_meta),
+        "profile": profile,
     }
     return {
         "system": system,
         "genre": resolved_genre,
+        "profile": profile,
         "stats": stats,
         "examples_meta": examples_meta,
         "truncations": truncations,
@@ -280,11 +348,13 @@ def build_user_prompt(task, genre=None, extra="", format_contract=None):
     return "\n".join(lines)
 
 
-def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None):
+def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
+          profile=None, post_type=None):
     """调用模型写作。genre 为 None 时自动识别。生成参数由 gen_kw 显式传入(否则用配置)。"""
     if genre is None:
         genre = detect_genre(task)
-    prompt = build_prompt(genre, format_contract=format_contract)
+    prompt = build_prompt(genre, format_contract=format_contract,
+                          profile=profile, post_type=post_type)
     user = build_user_prompt(task, prompt["genre"], extra, format_contract)
     kw = dict(gen_kw or {})
     result = client.chat(prompt["system"], user, **kw)
@@ -305,6 +375,11 @@ def main():
     ap.add_argument("--extra", "-e", default="", help="额外要求")
     ap.add_argument("--format", "-f", dest="format_contract", default=None,
                     help="输出合同(如 'trả về JSON {...}' 或 'chia 3 đoạn')。默认纯文章。")
+    ap.add_argument("--profile", dest="profile", choices=["min", "lite", "full"], default=None,
+                    help="提示词体积档位。默认:social_post/football_tin_tuc→lite,其余→full")
+    ap.add_argument("--post-type", dest="post_type", default=None,
+                    choices=["ket_qua", "lich_thi_dau", "chua_xac_nhan", "quan_diem", "hoi_dap"],
+                    help="社交短帖类型(仅 social_post 用),按类型筛选范文")
     ap.add_argument("--config", "-c", help="配置文件路径(JSON/YAML)")
     ap.add_argument("--max-tokens", type=int, help="显式覆盖 max_tokens(优先于配置)")
     ap.add_argument("--temperature", type=float, help="显式覆盖 temperature")
@@ -336,17 +411,16 @@ def main():
         if not args.task:
             ap.error("--dump-prompt 需要 --task")
         genre = args.genre or detect_genre(args.task)
-        p = build_prompt(genre, format_contract=args.format_contract)
+        p = build_prompt(genre, format_contract=args.format_contract,
+                         profile=args.profile, post_type=args.post_type)
         print(f"任务: {args.task}")
         print(f"体裁: {p['genre'] or '(无 · 最小通用规则)'}")
+        print(f"档位: profile={p['profile']}")
         print(f"提示词总字符: {p['stats']['total_chars']:,}")
         print(f"  核心: {p['stats']['core_chars']:,} 字符")
         print(f"  全局规则: {p['stats']['global_chars']:,} 字符")
         print(f"  场景规则: {p['stats']['genre_chars']:,} 字符")
-        ex_src_bytes = 0
-        for m in p["examples_meta"]:
-            ex_src_bytes += len(load_file(EXAMPLES / "football" / (m["theme"] + ".jsonl")))
-        print(f"  few-shot: {p['stats']['n_examples']} 篇, {ex_src_bytes:,} 字节源")
+        print(f"  few-shot: {p['stats']['n_examples']} 篇 / {p['stats']['examples_chars']:,} 字符注入")
         if p["examples_meta"]:
             print("入选范文:")
             for m in p["examples_meta"]:
@@ -378,13 +452,15 @@ def main():
             if not task:
                 continue
             print("\n--- 生成中 ---")
-            print(write(client, task, genre, args.extra, args.format_contract, gen_kw))
+            print(write(client, task, genre, args.extra, args.format_contract, gen_kw,
+                        profile=args.profile, post_type=args.post_type))
             meta = getattr(write, "last_meta", {})
             if meta.get("truncated"):
                 print(f"\n[警告] 输出可能被 max_tokens 截断(finish_reason=length)", file=sys.stderr)
         return
 
-    out = write(client, args.task, args.genre, args.extra, args.format_contract, gen_kw)
+    out = write(client, args.task, args.genre, args.extra, args.format_contract, gen_kw,
+                profile=args.profile, post_type=args.post_type)
     print(out)
     meta = getattr(write, "last_meta", {})
     if meta.get("truncated"):
