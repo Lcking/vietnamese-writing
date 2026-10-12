@@ -306,7 +306,7 @@ GENRE_ARTICLE_TYPE = {
 
 
 def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
-                 profile=None, post_type=None, model_tier=None):
+                 profile=None, post_type=None, model_tier=None, allow_unreviewed=False):
     """
     纯函数:组装提示词,不调用任何模型。
     profile: min / lite / full。None 时按体裁自动(社交/快讯 → lite,其余 → full)。
@@ -405,7 +405,7 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
             ex, examples_meta, ex_missing = pick_examples(
                 resolved_genre, budget["examples"], post_type=post_type,
                 max_n=ex_max_n, max_chars=pcfg["ex_max_chars"],
-                article_type=atype, strict_reviewed=True)
+                article_type=atype, strict_reviewed=not allow_unreviewed)
             for mf in ex_missing:
                 truncations.append((f"examples_missing:{mf}", "范文文件不存在 → 注入 0 条"))
             if ex:
@@ -431,6 +431,7 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
         "genre": resolved_genre,
         "profile": profile,
         "model_tier": model_tier,
+        "allow_unreviewed_examples": allow_unreviewed,
         "card_used": card_used,
         "stats": stats,
         "examples_meta": examples_meta,
@@ -490,6 +491,12 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
     user = build_user_prompt(task, prompt["genre"], extra, format_contract, length)
     if facts_block:
         user = user + "\n\n" + facts_block
+    # C3: model-tier=small 自动启用风格检查修订(这才是 small 的真实差别)
+    tier_now = MODEL_TIERS.get(model_tier) if model_tier else None
+    if tier_now and tier_now.get("suggest_revise") and not revise:
+        revise = True
+        print("[tier=small] 自动启用 --revise(风格检查后修订一次)", file=sys.stderr)
+
     kw = dict(gen_kw or {})
     result = client.chat(prompt["system"], user, **kw)
     text = result.text if hasattr(result, "text") else str(result)
@@ -539,6 +546,9 @@ def main():
                     help="输出合同(如 'trả về JSON {...}' 或 'chia 3 đoạn')。默认纯文章。")
     ap.add_argument("--profile", dest="profile", choices=["min", "lite", "full"], default=None,
                     help="提示词体积档位。默认:social_post/football_tin_tuc→lite,其余→full")
+    ap.add_argument("--allow-unreviewed-examples", dest="allow_unreviewed",
+                    action="store_true",
+                    help="允许使用未经人工确认的范文(默认关闭;开启时在元数据记录,便于对照实验)")
     ap.add_argument("--model-tier", dest="model_tier", choices=["small", "large"], default=None,
                     help="模型档次:small(本地小模型,卡片+少量范文)/large(强模型,完整规则)")
     ap.add_argument("--length", dest="length", default=None,
@@ -588,7 +598,8 @@ def main():
         genre = args.genre or detect_genre(args.task)
         p = build_prompt(genre, format_contract=args.format_contract,
                          profile=args.profile, post_type=args.post_type,
-                         model_tier=args.model_tier)
+                         model_tier=args.model_tier,
+                         allow_unreviewed=getattr(args, "allow_unreviewed", False))
         print(f"任务: {args.task}")
         print(f"体裁: {p['genre'] or '(无 · 最小通用规则)'}")
         print(f"档位: profile={p['profile']}" + (f"  tier={args.model_tier}" if args.model_tier else "") + (f"  card={p['stats'].get('card')}" if p['stats'].get('card') else ""))

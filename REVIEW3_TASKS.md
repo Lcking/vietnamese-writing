@@ -31,6 +31,18 @@
 - [x] D2 编辑记录框架（eval/editor_edits/）
 - [x] 工程：distill_work/ 移出仓库（.gitignore）；GENERIC_MAP 缺失范文报告；lich_su.md 保留
 
+## 复审第三轮（claude v3）已修
+- [x] 1 S6 用 facts 判第二黄：句中含 second_yellow 球员名即报（单独句也报），全队两黄不报
+- [x] 2 事实块补全：红黄牌进"比赛进程"（无分钟标 không rõ phút）、标题候选单列、缺项名越南语
+- [x] 3 乌龙球决胜：写成"phản lưới nhà của X → 有利益方"，标题聚焦受益方
+- [x] 4 final 与事件不一致 → 明确警告并停用胜负推导
+- [x] 5 45+2 计入半场比分；点球大战识别胜方
+- [x] 6 run_eval 生成阶段注入事实块；G1 facts 改为读文件
+- [x] 7 model-tier small 真正生效（自动开启风格检查修订）
+- [x] 8 回归样本补齐 input_original.txt + expected_issues.json
+- [ ] 9 git 历史里的 77MB 语料（工作树已移除；如需重写历史另议）
+- C1 补：--allow-unreviewed-examples 显式开关（默认关）+ 人工确认小集（待编辑）
+
 ## 仍需母语编辑（无法自动）
 - [ ] C2 编辑抽检 20 篇
 - [ ] D2 真实编辑改稿记录

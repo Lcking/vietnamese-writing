@@ -189,7 +189,17 @@ def check(task_text, facts=None):
                            "msg": f"Cụm mô tả nội bộ/mơ hồ '{v}', nên bỏ hoặc thay bằng thông tin cụ thể"})
 
     # ---- S6 纪律术语 ----
-    # 只在"同一球员两黄被罚下"语境提示(全队两黄正常)
+    # 判据(优先用 facts):句中出现 facts 的 second_yellow 球员名 + "nhận 2/hai thẻ vàng"
+    #   → 提示改为 "thẻ vàng thứ hai"。全队两张黄牌的写法不报。
+    # 无 facts 时退回语境判据(同句含 罚下/少一人 等信号)。
+    second_yellow_players = []
+    if facts:
+        try:
+            for e in facts.get("events", []):
+                if e.get("type") in ("second_yellow", "red") and e.get("player"):
+                    second_yellow_players.append(e["player"])
+        except Exception:
+            pass
     DISCIPLINE_CTX = re.compile(r"(truất quyền|bị đuổi|bị loại|thiếu người|thẻ đỏ|"
                                 r"thẻ vàng thứ hai|hai lần nhận thẻ)", re.I)
     for pat in DISCIPLINE_BAD:
@@ -198,7 +208,11 @@ def check(task_text, facts=None):
             s0 = task_text.rfind(".", 0, m.start()) + 1
             s1 = task_text.find(".", m.end())
             sent = task_text[s0:(s1 if s1 != -1 else len(task_text))]
-            if DISCIPLINE_CTX.search(sent):
+            # facts 判据:句中含被罚下球员名
+            by_player = any(pl and pl in sent for pl in second_yellow_players)
+            # 语境判据:同句有罚下/少一人信号
+            by_ctx = bool(DISCIPLINE_CTX.search(sent))
+            if by_player or by_ctx:
                 issues.append({"rule": "S6", "snippet": m.group(0),
                                "msg": "Cầu thủ bị hai thẻ vàng, nên viết 'nhận thẻ vàng thứ hai' / 'bị truất quyền thi đấu'"})
 

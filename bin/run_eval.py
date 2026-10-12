@@ -17,7 +17,8 @@ Dùng:
     python bin/run_eval.py --out eval/results --cases A1,B1,C1
     python bin/run_eval.py --out eval/results          # tất cả ca
 """
-import argparse, json, os, sys, time, re
+import argparse
+import re, json, os, sys, time, re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -25,20 +26,16 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "bin"))
 
 # ---- các ca kiểm thử (khớp eval/evalset.md) ----
-# G 组:赛果评测评测用的结构化事实(供 check_style 的 S1/S9 使用)
-_G1_FACTS = {
-    "home": "Thể Công", "away": "Hà Tĩnh", "final": [1, 3],
-    "competition": "V-League", "date": "2026-10-08",
-    "events": [
-        {"minute": 16, "type": "goal", "team": "away", "player": "Luiz Antonio",
-         "detail": "sút xa"},
-        {"minute": 33, "type": "goal", "team": "home", "player": "Khuất Văn Khang",
-         "assist": "Triệu Việt Hưng", "var_checked": True},
-        {"minute": 60, "type": "goal", "team": "away", "player": "Daniel Passira"},
-        {"minute": 64, "type": "goal", "team": "away", "player": "Daniel Passira"},
-        {"minute": None, "type": "second_yellow", "team": "away", "player": "Quốc Dân"},
-    ],
-}
+# G1 结构化事实:直接读回归样本 facts.json(避免手写副本与源文件不一致)
+def _load_g1_facts():
+    import json as _j, pathlib as _pl
+    fp = _pl.Path(__file__).resolve().parent.parent / \
+        "eval/regression/the_cong_ha_tinh_20261008/facts.json"
+    try:
+        return _j.loads(fp.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
 
 CASES = [
     # (id, nhóm, genre, prompt, bẫy cần kiểm tra tự động)
@@ -84,7 +81,7 @@ CASES = [
      "Dùng đúng dữ kiện: Thể Công 1-3 Hà Tĩnh. Phút 16 Luiz Antonio mở tỷ số. "
      "Phút 33 Khuất Văn Khang gỡ hòa 1-1 (VAR). Phút 60 Daniel Passira nâng lên 2-1. "
      "Phút 64 Passira ghi bàn thứ hai. Quốc Dân nhận thẻ vàng thứ hai.",
-     {"forbid": [], "expect": []}, _G1_FACTS),
+     {"forbid": [], "expect": []}, _load_g1_facts()),
     ("G2", "ket_qua", "football_ket_qua",
      "Viết bản tin: đội A thắng đội B 2-1 sau khi bị dẫn 0-1 (ngược dòng). "
      "A ghi bàn ở phút 50 và 80; B mở tỷ số phút 20.",
@@ -150,16 +147,30 @@ def main():
     want = set(args.cases.split(",")) if args.cases else None
     index = []
 
-    for cid, group, genre, prompt, rules in CASES:
+    for case in CASES:
+        cid, group, genre, prompt, rules = case[:5]
+        case_facts = case[5] if len(case) > 5 else None
         if want and cid not in want:
             continue
+        # 生成阶段注入事实块(仅 full,即"用 skill"的档;raw 不进,做对照)
+        user_prompt = prompt
         for cfg in ("raw", "min", "full"):
             system, meta = build_system(cfg, genre, vw)
+            if cfg == "full" and case_facts:
+                try:
+                    from prepare_facts import compute, format_for_prompt, check_input_text
+                    _r = compute(case_facts)
+                    _w = check_input_text(prompt, _r)
+                    user_prompt = prompt + "\n\n" + format_for_prompt(_r, _w)
+                except Exception as e:
+                    user_prompt = prompt + f"\n\n[prepare_facts error: {e}]"
+            else:
+                user_prompt = prompt
             if system is None:
                 system = ""
             t0 = time.time()
             try:
-                res = client.chat(system, prompt, temperature=args.temperature,
+                res = client.chat(system, user_prompt, temperature=args.temperature,
                                   max_tokens=args.max_tokens)
                 text, fr, usage = res.text, res.finish_reason, res.usage
             except Exception as e:
@@ -213,7 +224,6 @@ def main():
             if group == "ket_qua" and fr != "error":
                 try:
                     from check_style import check as style_check
-                    case_facts = case[5] if len(case) > 5 else None
                     style_issues = [i["rule"] for i in style_check(text, case_facts)]
                 except Exception:
                     pass

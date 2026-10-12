@@ -1,0 +1,50 @@
+{
+  "baseline_commit": "72fddeb",
+  "description": "第三轮评审回归样本：该稿的已知问题清单，供 check_style 断言与人工核对。",
+  "issues": [
+    {
+      "id": "E1",
+      "snippet": "Luiz Antonio và Daniel Passira quyết định cục diện",
+      "category": "标题决胜事件错误",
+      "rule": "S9",
+      "note": "Luiz Antonio 的进球已被扳平,不应与决胜球员并列"
+    },
+    {
+      "id": "E2",
+      "snippet": "nâng tỷ số lên 2-1",
+      "category": "比分动词与进程矛盾",
+      "rule": "S1",
+      "note": "1-1 后反超应写 vượt lên dẫn,不是 nâng tỷ số"
+    },
+    {
+      "id": "E3",
+      "snippet": "Thể Công sau đó có bàn gỡ.",
+      "category": "先预告再展开",
+      "rule": "S3"
+    },
+    {
+      "id": "E4",
+      "snippet": "Hiệp một khép lại với tỷ số 1-1.",
+      "category": "重复比分",
+      "rule": "S2"
+    },
+    {
+      "id": "E5",
+      "snippet": "Với kết quả này, Hà Tĩnh giành trọn 3 điểm",
+      "category": "结尾复述赛果",
+      "rule": "S4"
+    },
+    {
+      "id": "E6",
+      "snippet": "vòng mới nhất",
+      "category": "内部/模糊描述进入正文",
+      "rule": "S5"
+    },
+    {
+      "id": "E7",
+      "snippet": "nhận 2 thẻ vàng",
+      "category": "纪律术语不规范",
+      "rule": "S6"
+    }
+  ]
+}

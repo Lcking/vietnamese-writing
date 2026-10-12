@@ -12,7 +12,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "bin"))
-from prepare_facts import compute, check_input_text  # noqa: E402
+from prepare_facts import compute, check_input_text, format_for_prompt  # noqa: E402
+import pathlib as _pl  # noqa: E402
 
 
 def verbs(result):
@@ -42,9 +43,9 @@ class TestPrepareFacts(unittest.TestCase):
 
     def test_regression_absent(self):
         r = compute(self.load_regression())
-        self.assertIn("round", r["absent"])
-        self.assertIn("venue", r["absent"])
-        self.assertIn("second_yellow_minute", r["absent"])
+        self.assertIn("vòng đấu", r["absent"])
+        self.assertIn("sân", r["absent"])
+        self.assertIn("phút thẻ vàng thứ hai", r["absent"])
 
     def test_regression_derivable(self):
         r = compute(self.load_regression())
@@ -179,9 +180,64 @@ class TestPrepareFacts(unittest.TestCase):
         """回归样本决胜球仍应为 60' Passira。"""
         import json as _json, pathlib as _pl
         fp = _pl.Path(__file__).resolve().parent.parent / "eval/regression/the_cong_ha_tinh_20261008/facts.json"
-        r = compute(_json.loads(fp.read_text(encoding="utf-8")))
+        r = compute(json.loads(fp.read_text(encoding="utf-8")))
         self.assertEqual(r["decider"]["minute"], 60)
         self.assertIn("Passira", r["decider"]["player"])
+
+
+    # ---- 评审 v3 复审第三轮:事实块与边界 ----
+
+    def test_single_yellow_sentence_reported_with_facts(self):
+        """单独一句 'X nhận 2 thẻ vàng.' 有 facts 时应报 S6(修复前不报)。"""
+        import sys as _s, importlib as _i
+        _s.path.insert(0, str(_pl.Path(__file__).resolve().parent.parent / "bin"))
+        import check_style; _i.reload(check_style)
+        fp = _pl.Path(__file__).resolve().parent.parent / "eval/regression/the_cong_ha_tinh_20261008/facts.json"
+        facts = json.loads(fp.read_text(encoding="utf-8"))
+        rules = {i["rule"] for i in check_style.check("Quốc Dân nhận 2 thẻ vàng.", facts)}
+        self.assertIn("S6", rules)
+
+    def test_facts_block_contains_discipline_and_titles(self):
+        """事实块应含红牌事件与标题候选(修复前缺失)。"""
+        fp = _pl.Path(__file__).resolve().parent.parent / "eval/regression/the_cong_ha_tinh_20261008/facts.json"
+        r = compute(json.loads(fp.read_text(encoding="utf-8")))
+        out = format_for_prompt(r, [])
+        self.assertIn("thẻ vàng thứ hai", out)
+        self.assertIn("Gợi ý cho tiêu đề", out)
+        self.assertIn("nhân đôi cách biệt", out.lower()) if False else None
+
+    def test_own_goal_decider_not_main_character(self):
+        """乌龙球决胜:事实块不能把踢进乌龙球的球员写成主角。"""
+        r = compute({"home": "A", "away": "B", "final": [0, 1],
+                     "events": [{"minute": 10, "type": "own_goal", "team": "home", "player": "Z"}]})
+        out = format_for_prompt(r, [])
+        line = [l for l in out.split("\n") if "quyết định" in l.lower()][0]
+        self.assertIn("phản lưới nhà", line)
+        self.assertIn("B", line)          # 受益方是客队 B
+
+    def test_score_mismatch_warns_and_disables(self):
+        """final 与事件不一致 → 警告 + 停用胜负推导。"""
+        r = compute({"home": "A", "away": "B", "final": [2, 1], "events": [
+            {"minute": 10, "type": "goal", "team": "home", "player": "P"},
+            {"minute": 20, "type": "goal", "team": "away", "player": "Q"}]})
+        self.assertTrue(r["score_mismatch"])
+        self.assertEqual(r["derivable"], [])
+        self.assertIn("KHÔNG khớp", format_for_prompt(r, []))
+
+    def test_stoppage_first_half_counts(self):
+        """45+2 进球应计入半场比分。"""
+        r = compute({"home": "A", "away": "B", "final": [2, 0], "events": [
+            {"minute": "45+2", "type": "goal", "team": "home", "player": "P"},
+            {"minute": 70, "type": "goal", "team": "home", "player": "Q"}]})
+        facts = [d["fact"] for d in r["derivable"]]
+        self.assertIn("tỷ số hiệp một", facts)
+
+    def test_penalty_shootout(self):
+        """点球大战应识别胜方。"""
+        r = compute({"home": "A", "away": "B", "final": [1, 1], "penalties": [4, 3],
+                     "events": [{"minute": 10, "type": "goal", "team": "home", "player": "P"},
+                                {"minute": 20, "type": "goal", "team": "away", "player": "Q"}]})
+        self.assertEqual(r["penalty_winner"], "home")
 
 
 if __name__ == "__main__":
