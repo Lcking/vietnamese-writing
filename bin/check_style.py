@@ -143,7 +143,7 @@ def check(task_text, facts=None):
                 prev_sc |= {f"{h}-{a}", f"{a}-{h}"}
         dup = {s for s in cur_sc if s in prev_sc}
         for key in dup:
-            issues.append({"rule": "S2", "snippet": cur[:50],
+            issues.append({"rule": "S2", "snippet": cur[:50], "hint_only": True,
                            "msg": f"Tỷ số {key} đã xuất hiện ở câu trước, câu này nhắc lại (trùng lặp)"})
 
     # ---- S3 先预告再展开 ----
@@ -162,7 +162,7 @@ def check(task_text, facts=None):
             continue
         # 后句含分钟且是事件句
         if _has_minute(nxt) and any(w in nxt.lower() for w in EVENT_WORDS):
-            issues.append({"rule": "S3", "snippet": cur[:50],
+            issues.append({"rule": "S3", "snippet": cur[:50], "hint_only": True,
                            "msg": "Báo trước rồi kể lại cùng một sự kiện (câu trước không có phút, câu sau mới kể chi tiết)"})
 
     # ---- S4 结尾复述 ----
@@ -179,7 +179,7 @@ def check(task_text, facts=None):
             # 排除末句是新事实(含新球员名/新事件)
             fresh = bool(re.search(r"(thay|vào sân|chấn thương|tuyên bố|phát biểu)", last, re.I))
             if not fresh:
-                issues.append({"rule": "S4", "snippet": last[:60],
+                issues.append({"rule": "S4", "snippet": last[:60], "hint_only": True,
                                "msg": "Kết bài nhắc lại kết quả/điểm số, không có thông tin mới (nên bỏ hoặc thay bằng hệ quả bảng xếp hạng)"})
 
     # ---- S5 内部/模糊描述 ----
@@ -208,13 +208,28 @@ def check(task_text, facts=None):
             s0 = task_text.rfind(".", 0, m.start()) + 1
             s1 = task_text.find(".", m.end())
             sent = task_text[s0:(s1 if s1 != -1 else len(task_text))]
-            # facts 判据:句中含被罚下球员名
-            by_player = any(pl and pl in sent for pl in second_yellow_players)
+            # facts 判据:句中含被罚下球员名(全名或后缀,越南媒体常只写后两音节)
+            def _name_hit(sentence, full):
+                if not full:
+                    return False
+                if full in sentence:
+                    return True
+                toks = str(full).split()
+                # 依次尝试后缀 2/1 个音节(如 "Nguyễn Quốc Dân" → "Quốc Dân" / "Dân")
+                for k in (2, 1):
+                    if len(toks) > k:
+                        tail = " ".join(toks[-k:])
+                        if len(tail) >= 3 and tail in sentence:
+                            return True
+                return False
+            by_player = any(_name_hit(sent, pl) for pl in second_yellow_players)
             # 语境判据:同句有罚下/少一人信号
             by_ctx = bool(DISCIPLINE_CTX.search(sent))
             if by_player or by_ctx:
-                issues.append({"rule": "S6", "snippet": m.group(0),
-                               "msg": "Cầu thủ bị hai thẻ vàng, nên viết 'nhận thẻ vàng thứ hai' / 'bị truất quyền thi đấu'"})
+                issues.append({"rule": "S6", "snippet": m.group(0), "hint_only": True,
+                               "msg": "Cách viết 'nhận 2 thẻ vàng' là chấp nhận được; "
+                                      "biên tập có thể cân nhắc 'nhận thẻ vàng thứ hai' / "
+                                      "'bị truất quyền thi đấu' nếu muốn trang trọng hơn"})
 
     # ---- S7 情绪词密度 ----
     n = len(task_text)
@@ -222,13 +237,13 @@ def check(task_text, facts=None):
     if n > 0:
         per_k = len(hit) / (n / 1000.0)
         if per_k > 3:      # 每千字超 3 个情绪词
-            issues.append({"rule": "S7", "snippet": ", ".join(hit[:5]),
+            issues.append({"rule": "S7", "snippet": ", ".join(hit[:5]), "hint_only": True,
                            "msg": f"Mật độ từ cảm xúc cao ({len(hit)} từ / {n} ký tự), tin tức nên trung tính"})
 
     # ---- S8 待审搭配 ----
     for w in WATCH:
         if w in task_text.lower():
-            issues.append({"rule": "S8", "snippet": w,
+            issues.append({"rule": "S8", "snippet": w, "hint_only": True,
                            "msg": f"Cụm từ cần biên tập xác nhận '{w}'"})
 
     # ---- S9 标题决胜事件(需 facts) ----

@@ -240,5 +240,91 @@ class TestPrepareFacts(unittest.TestCase):
         self.assertEqual(r["penalty_winner"], "home")
 
 
+    # ---- 评审 v3 第四轮:9 个新边界 ----
+
+    def test_own_goal_title_candidate(self):
+        """乌龙球决胜:标题候选不含乌龙球员,聚焦受益方。"""
+        r = compute({"home": "Đội A", "away": "Đội B", "final": [0, 1],
+                     "events": [{"minute": 10, "type": "own_goal", "team": "home", "player": "Z"}]})
+        joined = " | ".join(r["title_candidates"])
+        self.assertNotIn("Z (bàn quyết định)", joined)
+        self.assertIn("Đội B", joined)
+
+    def test_penalty_shootout_score_in_block(self):
+        """点球大战事实块要有比分 4-3。"""
+        r = compute({"home": "Đội A", "away": "Đội B", "final": [1, 1], "penalties": [4, 3],
+                     "events": [{"minute": 10, "type": "goal", "team": "home", "player": "P"},
+                                {"minute": 20, "type": "goal", "team": "away", "player": "Q"}]})
+        out = format_for_prompt(r, [])
+        self.assertIn("4-3", out)
+        self.assertIn("chấm luân lưu", out)
+
+    def test_no_comeback_when_mismatch(self):
+        """比分不一致时不应输出逆转。"""
+        r = compute({"home": "A", "away": "B", "final": [1, 2], "events": [
+            {"minute": 10, "type": "goal", "team": "away", "player": "Q"},
+            {"minute": 20, "type": "goal", "team": "home", "player": "P"},
+            {"minute": 30, "type": "goal", "team": "home", "player": "P2"}]})
+        self.assertTrue(r["score_mismatch"])
+        self.assertFalse(r["comeback"])
+        self.assertNotIn("ngược dòng", format_for_prompt(r, []))
+
+    def test_no_final_no_inference(self):
+        """未提供最终比分 → 停用胜负推断并提示。"""
+        r = compute({"home": "A", "away": "B", "events": [
+            {"minute": 10, "type": "goal", "team": "home", "player": "P"},
+            {"minute": 20, "type": "goal", "team": "home", "player": "Q"}]})
+        self.assertFalse(r["final_provided"])
+        self.assertEqual(r["derivable"], [])
+        self.assertIn("chung cuộc", format_for_prompt(r, []))
+
+    def test_missing_minute_no_verb(self):
+        """有进球缺分钟 → 不给动词与决胜球,并警告。"""
+        r = compute({"home": "A", "away": "B", "final": [2, 0], "events": [
+            {"minute": None, "type": "goal", "team": "home", "player": "X"},
+            {"minute": 55, "type": "goal", "team": "home", "player": "Y"}]})
+        self.assertFalse(r["order_reliable"])
+        self.assertIsNone(r["decider"])
+        self.assertTrue(all(s["verb"] == "?" for s in r["score_progression"]))
+        self.assertIn("thiếu phút", format_for_prompt(r, []))
+
+    def test_team_name_mapping(self):
+        """team 写成队名应映射到 home/away。"""
+        r = compute({"home": "Đội A", "away": "Đội B", "final": [2, 1], "events": [
+            {"minute": 10, "type": "goal", "team": "Đội A", "player": "P"},
+            {"minute": 20, "type": "goal", "team": "Đội A", "player": "Q"}]})
+        self.assertEqual(r["team_errors"], [])
+        self.assertTrue(all(s["team"] == "home" for s in r["score_progression"]))
+
+    def test_unknown_team_reported(self):
+        """无法映射的队名要报错。"""
+        r = compute({"home": "A", "away": "B", "final": [1, 0], "events": [
+            {"minute": 10, "type": "goal", "team": "Đội C", "player": "P"}]})
+        self.assertIn("Đội C", r["team_errors"])
+
+    def test_two_reds_merged(self):
+        """同一队两张红牌 → 'thiếu 2 người'。"""
+        r = compute({"home": "A", "away": "B", "final": [1, 0], "events": [
+            {"minute": 10, "type": "goal", "team": "home", "player": "P"},
+            {"minute": 30, "type": "red", "team": "away", "player": "R1"},
+            {"minute": 40, "type": "red", "team": "away", "player": "R2"}]})
+        joined = " | ".join(r["title_candidates"])
+        self.assertIn("thiếu 2 người", joined)
+        self.assertEqual(joined.count("chơi thiếu"), 1)
+
+    def test_penalty_goal_annotated(self):
+        """点球进球要有 (phạt đền) 标注。"""
+        r = compute({"home": "A", "away": "B", "final": [1, 0], "events": [
+            {"minute": 10, "type": "penalty", "team": "home", "player": "P"}]})
+        self.assertIn("phạt đền", format_for_prompt(r, []))
+
+    def test_missed_penalty_listed(self):
+        """罚丢点球要列出。"""
+        r = compute({"home": "A", "away": "B", "final": [1, 0], "events": [
+            {"minute": 10, "type": "goal", "team": "home", "player": "P"},
+            {"minute": 50, "type": "missed_penalty", "team": "away", "player": "Q"}]})
+        self.assertIn("Đá hỏng phạt đền", format_for_prompt(r, []))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -114,9 +114,12 @@ CASES = [
 
 
 def build_system(cfg, genre, vw):
-    """cfg: raw | min | full"""
+    """cfg: raw | skill | min | full (skill=规则卡默认档,不注入 facts)"""
     if cfg == "raw":
         return "", None
+    if cfg == "skill":
+        p = vw.build_prompt(genre=genre)
+        return p["system"], p
     p = vw.build_prompt(genre=genre)
     if cfg == "min":
         # chỉ nạp quy tắc tối thiểu: 1 file core, KHÔNG ví dụ, KHÔNG genre file
@@ -154,9 +157,13 @@ def main():
             continue
         # 生成阶段注入事实块(仅 full,即"用 skill"的档;raw 不进,做对照)
         user_prompt = prompt
-        for cfg in ("raw", "min", "full"):
+        # 三组对照:raw(无 skill) / skill(规则卡,不注入 facts) / full(规则卡 + facts)
+        for cfg in ("raw", "skill", "full"):
             system, meta = build_system(cfg, genre, vw)
-            if cfg == "full" and case_facts:
+            if cfg == "skill":
+                # 规则卡(默认档位)但不注入事实块 → 分离"规则卡"与"事实预处理"的贡献
+                pass
+            elif cfg == "full" and case_facts:
                 try:
                     from prepare_facts import compute, format_for_prompt, check_input_text
                     _r = compute(case_facts)

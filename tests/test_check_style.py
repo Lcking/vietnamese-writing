@@ -133,5 +133,27 @@ class TestCards(unittest.TestCase):
             self.assertEqual(han, [], f"{fp.name} 含汉字: {han}")
 
 
+class TestS6Suffix(unittest.TestCase):
+    """S6 按名字后缀匹配(越南媒体常只写后两音节)。"""
+
+    def test_s6_suffix_match(self):
+        facts = {"home": "A", "away": "B", "final": [1, 0], "events": [
+            {"minute": 10, "type": "goal", "team": "home", "player": "P"},
+            {"minute": 30, "type": "second_yellow", "team": "away",
+             "player": "Nguyễn Quốc Dân"}]}
+        for s in ("Nguyễn Quốc Dân nhận 2 thẻ vàng.", "Quốc Dân nhận 2 thẻ vàng."):
+            rules = {i["rule"] for i in check(s, facts)}
+            self.assertIn("S6", rules, f"'{s}' 应命中 S6")
+
+    def test_s6_is_hint_only(self):
+        """S6 是提示级(hint_only),不触发自动修订。"""
+        facts = {"home": "A", "away": "B", "final": [1, 0], "events": [
+            {"minute": 10, "type": "goal", "team": "home", "player": "P"},
+            {"minute": 30, "type": "second_yellow", "team": "away",
+             "player": "Nguyễn Quốc Dân"}]}
+        hits = [i for i in check("Quốc Dân nhận 2 thẻ vàng.", facts) if i["rule"] == "S6"]
+        self.assertTrue(hits and all(i.get("hint_only") for i in hits))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

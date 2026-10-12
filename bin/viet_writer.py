@@ -509,7 +509,7 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
         try:
             from check_style import check as style_check
             revise_issues = style_check(text, facts)
-            blocking = [i for i in revise_issues if i["rule"] != "S8"]
+            blocking = [i for i in revise_issues if i["rule"] != "S8" and not i.get("hint_only")]
             if blocking:
                 fix_list = "\n".join(f"- [{i['rule']}] {i['msg']} (\"{i['snippet']}\")"
                                      for i in blocking)
@@ -608,6 +608,8 @@ def main():
         print(f"  全局规则: {p['stats']['global_chars']:,} 字符")
         print(f"  场景规则: {p['stats']['genre_chars']:,} 字符")
         print(f"  few-shot: {p['stats']['n_examples']} 篇 / {p['stats']['examples_chars']:,} 字符注入")
+        if p.get("allow_unreviewed_examples") and p["examples_meta"]:
+            print("⚠ đang dùng ví dụ CHƯA duyệt (chỉ dùng cho thí nghiệm đối chứng)")
         if p["examples_meta"]:
             print("入选范文:")
             for m in p["examples_meta"]:
