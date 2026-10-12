@@ -1,0 +1,11 @@
+{
+  "id": "edit_001",
+  "genre": "football_ket_qua",
+  "model": "qwen-3.8-27b-awq",
+  "profile": "lite",
+  "input": "(原始输入事实)",
+  "draft": "(模型首稿)",
+  "edited": "(编辑改后的可发布稿)",
+  "editor_notes": "(编辑改了什么、为什么)",
+  "date": "2026-10-12"
+}

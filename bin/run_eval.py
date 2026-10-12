@@ -63,6 +63,25 @@ CASES = [
      "Viết tin ngắn. Dữ kiện: (1) Cầu thủ rời sân ở phút 58. "
      "(2) CLB thông báo cầu thủ bị đau cổ chân phải. Hai dữ kiện riêng biệt.",
      {"forbid": [], "expect": [], "no_fab": ["quan hệ nhân quả"]}),
+    # --- Nhóm G: bản tin kết quả (dùng facts.json + check_style) ---
+    ("G1", "ket_qua", "football_ket_qua",
+     "Viết bản tin kết quả trận Thể Công - Hà Tĩnh (V-League, 8/10/2026). "
+     "Dùng đúng dữ kiện: Thể Công 1-3 Hà Tĩnh. Phút 16 Luiz Antonio mở tỷ số. "
+     "Phút 33 Khuất Văn Khang gỡ hòa 1-1 (VAR). Phút 60 Daniel Passira nâng lên 2-1. "
+     "Phút 64 Passira ghi bàn thứ hai. Quốc Dân nhận thẻ vàng thứ hai.",
+     {"forbid": [], "expect": []}),
+    ("G2", "ket_qua", "football_ket_qua",
+     "Viết bản tin: đội A thắng đội B 2-1 sau khi bị dẫn 0-1 (ngược dòng). "
+     "A ghi bàn ở phút 50 và 80; B mở tỷ số phút 20.",
+     {"forbid": [], "expect": []}),
+    ("G3", "ket_qua", "football_ket_qua",
+     "Viết bản tin: đội A hòa đội B 2-2. A dẫn 2-0 (phút 10, 30), "
+     "B gỡ 2-2 (phút 70, 90).",
+     {"forbid": [], "expect": []}),
+    ("G4", "ket_qua", "football_ket_qua",
+     "Viết bản tin: đội A thắng 1-0 dù chơi thiếu người từ phút 60 "
+     "(cầu thủ X nhận thẻ đỏ). Bàn thắng phút 75.",
+     {"forbid": [], "expect": []}),
     ("F3", "omit_missing", "football_tin_tuc",
      "Viết tin: 'Nếu kịp hoàn tất đăng ký, cầu thủ này có thể đá chính.' "
      "Tiêu đề PHẢI giữ điều kiện 'nếu/có thể'.",
@@ -162,11 +181,21 @@ def main():
                 except Exception as e:
                     fab_violations = [f"[detector error: {e}]"]
 
+            # D1: 风格检查(赛果组用)
+            style_issues = []
+            if group == "ket_qua" and fr != "error":
+                try:
+                    from check_style import check as style_check
+                    style_issues = [i["rule"] for i in style_check(text)]
+                except Exception:
+                    pass
+
             rec = {
                 "id": cid, "group": group, "genre": genre, "config": cfg,
                 "chars": len(text), "seconds": dt, "finish_reason": fr,
                 "usage": usage, "forbidden_hit": hit_forbid,
                 "expected_hit": hit_expect_list, "output": text,
+                "style_issues": style_issues,
                 "fabrication_violations": fab_violations,
                 "_has_expect": bool(rules["expect"]),
                 "_has_no_fab": bool(no_fab),

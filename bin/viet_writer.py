@@ -75,6 +75,14 @@ PROFILES = {
 # 这些体裁默认用 lite(上游跨模型报告:full 会放大中端模型虚构)
 LITE_DEFAULT_GENRES = {"social_post", "football_tin_tuc", "football_ket_qua"}
 
+# C3: 模型档次 → profile 与范文策略
+#   small(本地 27B 等): 卡片 + 预处理 + 1-2 范文;不注全局规则;默认启用风格检查
+#   large(GPT 级): 卡片 + 长文件节选 + 更多范文
+MODEL_TIERS = {
+    "small": {"profile": "lite", "ex_max_n": 2, "global_rules": False},
+    "large": {"profile": "full", "ex_max_n": 8, "global_rules": True},
+}
+
 FOOTBALL_HINTS = ["bóng đá", "bình luận", "trận đấu", "cầu thủ", "đội bóng",
                   "world cup", "champions league", "v-league", "aff cup",
                   "chuyển nhượng", "chiêu mộ", "ký hợp đồng", "bàn thắng",
@@ -101,6 +109,7 @@ GENERIC_MAP = {
 THEME_MAP = {
     "football_binh_luan": ["doi_tuyen_vn", "world_cup", "phan_tich_chien_thuat"],
     "football_tin_tuc": ["world_cup", "ngoai_hang", "champions_league"],
+    "football_ket_qua": ["world_cup", "ngoai_hang", "champions_league", "v_league", "chau_a"],
     "football_chuyen_nhuong": ["chuyen_nhuong"],
     "football_doi_tuyen": ["doi_tuyen_vn", "chau_a"],
     "football_nhan_vat": ["ngoai_hang", "world_cup", "doi_tuyen_vn"],
@@ -166,7 +175,7 @@ def _cut_at_sentence(text, limit):
 
 
 def pick_examples(genre, budget=None, post_type=None, max_n=None,
-                  max_chars=None, max_age_years=3):
+                  max_chars=None, max_age_years=3, article_type=None):
     """为足球体裁挑选范文。返回 (范文文本, 元数据列表)。
 
     - post_type:社交短帖类型(ket_qua/lich_thi_dau/...),给了就按它筛选
@@ -207,6 +216,12 @@ def pick_examples(genre, budget=None, post_type=None, max_n=None,
             # 按 post_type 筛选(仅当该文件有 type 字段且调用方指定了)
             if post_type and r.get("type") and r["type"] != post_type:
                 continue
+            # C1: 按 article_type 筛选(赛果体裁只选 ket_qua 范文)
+            if article_type:
+                at = r.get("article_type")
+                # 无标注的旧条目按"不匹配"处理(严格);有标注则须相等
+                if at != article_type:
+                    continue
             # 排除过旧条目(有日期才判)
             pub = (r.get("published_at") or "")
             if pub:
@@ -261,17 +276,31 @@ def detect_genre(task):
     return None    # 无体裁:走最小通用规则
 
 
+# 体裁 → 默认 article_type(用于范文匹配)
+GENRE_ARTICLE_TYPE = {
+    "football_ket_qua": "ket_qua",
+    "football_tin_tuc": "ket_qua",
+    "football_chuyen_nhuong": "chuyen_nhuong",
+    "football_pre_match": "nhan_dinh",
+    "football_nhan_vat": "nhan_vat",
+}
+
+
 def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
-                 profile=None, post_type=None):
+                 profile=None, post_type=None, model_tier=None):
     """
     纯函数:组装提示词,不调用任何模型。
     profile: min / lite / full。None 时按体裁自动(社交/快讯 → lite,其余 → full)。
     返回 dict: { "system", "genre", "profile", "stats", "examples_meta",
                  "truncations", "format_contract" }
     """
-    # 决定 profile
+    # 决定 profile(显式 profile > model_tier > 体裁默认)
+    tier = MODEL_TIERS.get(model_tier) if model_tier else None
     if profile is None:
-        profile = "lite" if (genre in LITE_DEFAULT_GENRES) else "full"
+        if tier:
+            profile = tier["profile"]
+        else:
+            profile = "lite" if (genre in LITE_DEFAULT_GENRES) else "full"
     if profile not in PROFILES:
         profile = "full"
     pcfg = PROFILES[profile]
@@ -293,9 +322,11 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
     if core:
         parts.append(core)
 
-    # 2) 全局规则(合计预算)。min profile 下 global=0 → 跳过
+    # 2) 全局规则(合计预算)。min profile 下 global=0 → 跳过;
+    #    small 模型档也不注全局规则(避免长 prompt 放大幻觉)
     gparts, gused = [], 0
-    if budget["global"] > 0:
+    skip_global = bool(tier and not tier["global_rules"])
+    if budget["global"] > 0 and not skip_global:
         for f in sorted(REFERENCES.glob("_global_*.md")):
             txt = load_file(f)
             if not txt.strip():
@@ -350,9 +381,12 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
         if examples and budget["examples"] > 0 and \
            (resolved_genre.startswith("football_") or resolved_genre == "social_post"
             or resolved_genre in GENERIC_MAP):
+            atype = GENRE_ARTICLE_TYPE.get(resolved_genre)
+            ex_max_n = (tier["ex_max_n"] if tier else pcfg["ex_max_n"])
             ex, examples_meta = pick_examples(
                 resolved_genre, budget["examples"], post_type=post_type,
-                max_n=pcfg["ex_max_n"], max_chars=pcfg["ex_max_chars"])
+                max_n=ex_max_n, max_chars=pcfg["ex_max_chars"],
+                article_type=atype)
             if ex:
                 parts.append(EXAMPLE_HEADER + ex)
 
@@ -382,12 +416,16 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
     }
 
 
-def build_user_prompt(task, genre=None, extra="", format_contract=None):
+def build_user_prompt(task, genre=None, extra="", format_contract=None, length=None):
     lines = ["Yêu cầu viết:", task, ""]
     if genre:
         lines.append(f"Nhóm văn bản: {genre}")
     if extra:
         lines.append(extra)
+    # B4: 篇幅合同
+    if length:
+        lines.append(f"Độ dài mục tiêu: {length} ký tự. "
+                     "Viết hết dữ kiện thì dừng; không độn chữ, không nhắc lại thông tin đã nêu.")
     lines.append("")
     if format_contract:
         lines.append("Định dạng đầu ra do hệ thống gọi yêu cầu:")
@@ -399,21 +437,60 @@ def build_user_prompt(task, genre=None, extra="", format_contract=None):
 
 
 def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
-          profile=None, post_type=None):
-    """调用模型写作。genre 为 None 时自动识别。生成参数由 gen_kw 显式传入(否则用配置)。"""
+          profile=None, post_type=None, length=None, facts=None, revise=False,
+          model_tier=None):
+    """调用模型写作。genre 为 None 时自动识别。生成参数由 gen_kw 显式传入(否则用配置)。
+
+    length: 篇幅合同(如 "500-900")
+    facts: 结构化事实 dict → 先跑 prepare_facts 预处理,结果注入用户提示
+    revise: 首稿经 check_style 检查,有疑点时再修订一次(最多一次)
+    """
     if genre is None:
         genre = detect_genre(task)
     prompt = build_prompt(genre, format_contract=format_contract,
-                          profile=profile, post_type=post_type)
-    user = build_user_prompt(task, prompt["genre"], extra, format_contract)
+                          profile=profile, post_type=post_type, model_tier=model_tier)
+    # B1: 事实预处理 → 注入
+    facts_block = ""
+    if facts:
+        try:
+            from prepare_facts import compute, format_for_prompt, check_input_text
+            result = compute(facts)
+            warns = check_input_text(task, result)
+            facts_block = format_for_prompt(result, warns)
+        except Exception as e:
+            facts_block = f"(prepare_facts 失败: {e})"
+    user = build_user_prompt(task, prompt["genre"], extra, format_contract, length)
+    if facts_block:
+        user = user + "\n\n" + facts_block
     kw = dict(gen_kw or {})
     result = client.chat(prompt["system"], user, **kw)
     text = result.text if hasattr(result, "text") else str(result)
+    first_draft = text
+    revise_issues = []
+
+    # B3: 可选修订一次
+    if revise:
+        try:
+            from check_style import check as style_check
+            revise_issues = style_check(text, facts)
+            if revise_issues:
+                fix_list = "\n".join(f"- [{i['rule']}] {i['msg']} (\"{i['snippet']}\")"
+                                     for i in revise_issues)
+                revise_user = (user + "\n\n## Bản nháp cần sửa:\n" + text +
+                               "\n\n## Sửa các vấn đề sau (giữ nguyên dữ kiện):\n" + fix_list +
+                               "\n\nTrả về bản viết lại hoàn chỉnh.")
+                r2 = client.chat(prompt["system"], revise_user, **kw)
+                text = r2.text if hasattr(r2, "text") else str(r2)
+        except Exception as e:
+            print(f"[revise] 修订失败: {e}", file=sys.stderr)
+
     setattr(write, "last_meta", {
         "genre": prompt["genre"],
         "finish_reason": getattr(result, "finish_reason", None),
         "truncated": getattr(result, "truncated", False),
         "usage": getattr(result, "usage", {}),
+        "first_draft": first_draft if revise else None,
+        "revise_issues": revise_issues,
     })
     return text
 
@@ -427,6 +504,14 @@ def main():
                     help="输出合同(如 'trả về JSON {...}' 或 'chia 3 đoạn')。默认纯文章。")
     ap.add_argument("--profile", dest="profile", choices=["min", "lite", "full"], default=None,
                     help="提示词体积档位。默认:social_post/football_tin_tuc→lite,其余→full")
+    ap.add_argument("--model-tier", dest="model_tier", choices=["small", "large"], default=None,
+                    help="模型档次:small(本地小模型,卡片+少量范文)/large(强模型,完整规则)")
+    ap.add_argument("--length", dest="length", default=None,
+                    help="篇幅合同,如 '500-900'(字符)。替代'至少N字'")
+    ap.add_argument("--facts", dest="facts_file", default=None,
+                    help="结构化事实 JSON(prepare_facts 预处理后注入)")
+    ap.add_argument("--revise", action="store_true",
+                    help="首稿经风格检查后有疑点时修订一次(会增加一次调用)")
     ap.add_argument("--post-type", dest="post_type", default=None,
                     choices=["ket_qua", "lich_thi_dau", "chua_xac_nhan", "quan_diem", "hoi_dap"],
                     help="社交短帖类型(仅 social_post 用),按类型筛选范文")
@@ -456,16 +541,22 @@ def main():
     if args.temperature is not None:
         gen_kw["temperature"] = args.temperature
 
+    # 读 facts(如果给了)
+    facts = None
+    if getattr(args, "facts_file", None):
+        facts = json.loads(Path(args.facts_file).read_text(encoding="utf-8"))
+
     # dump-prompt 模式:不需要 API Key
     if args.dump_prompt or args.dry_run:
         if not args.task:
             ap.error("--dump-prompt 需要 --task")
         genre = args.genre or detect_genre(args.task)
         p = build_prompt(genre, format_contract=args.format_contract,
-                         profile=args.profile, post_type=args.post_type)
+                         profile=args.profile, post_type=args.post_type,
+                         model_tier=args.model_tier)
         print(f"任务: {args.task}")
         print(f"体裁: {p['genre'] or '(无 · 最小通用规则)'}")
-        print(f"档位: profile={p['profile']}" + (f"  card={p['stats'].get('card')}" if p['stats'].get('card') else ""))
+        print(f"档位: profile={p['profile']}" + (f"  tier={args.model_tier}" if args.model_tier else "") + (f"  card={p['stats'].get('card')}" if p['stats'].get('card') else ""))
         print(f"提示词总字符: {p['stats']['total_chars']:,}")
         print(f"  核心: {p['stats']['core_chars']:,} 字符")
         print(f"  全局规则: {p['stats']['global_chars']:,} 字符")
@@ -503,14 +594,18 @@ def main():
                 continue
             print("\n--- 生成中 ---")
             print(write(client, task, genre, args.extra, args.format_contract, gen_kw,
-                        profile=args.profile, post_type=args.post_type))
+                        profile=args.profile, post_type=args.post_type,
+                        length=args.length, facts=facts, revise=args.revise,
+                        model_tier=args.model_tier))
             meta = getattr(write, "last_meta", {})
             if meta.get("truncated"):
                 print(f"\n[警告] 输出可能被 max_tokens 截断(finish_reason=length)", file=sys.stderr)
         return
 
     out = write(client, args.task, args.genre, args.extra, args.format_contract, gen_kw,
-                profile=args.profile, post_type=args.post_type)
+                profile=args.profile, post_type=args.post_type,
+                length=args.length, facts=facts, revise=args.revise,
+                model_tier=args.model_tier)
     print(out)
     meta = getattr(write, "last_meta", {})
     if meta.get("truncated"):
