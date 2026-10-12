@@ -26,6 +26,17 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "bin"))
 
 # ---- các ca kiểm thử (khớp eval/evalset.md) ----
+# 真实比赛 facts(5 场)
+def _load_real(name):
+    import json as _j, pathlib as _pl
+    fp = _pl.Path(__file__).resolve().parent.parent / \
+        "eval/regression/real_matches_20261012" / f"{name}.json"
+    try:
+        return _j.loads(fp.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
 # G1 结构化事实:直接读回归样本 facts.json(避免手写副本与源文件不一致)
 def _load_g1_facts():
     import json as _j, pathlib as _pl
@@ -106,6 +117,22 @@ CASES = [
      {"home": "A", "away": "B", "final": [1, 0], "events": [
          {"minute": 60, "type": "red", "team": "home", "player": "X"},
          {"minute": 75, "type": "goal", "team": "home", "player": "A1"}]}),
+    # --- Nhóm G5-G9: 5 trận thật (E1) ---
+    ("G5", "ket_qua", "football_ket_qua",
+     "Hải Phòng tiếp Thanh Hóa ở vòng 3 V-League, ngày 12/10/2026. Viết bản tin kết quả.",
+     {"forbid": [], "expect": []}, _load_real("M1_hai_phong_thanh_hoa")),
+    ("G6", "ket_qua", "football_ket_qua",
+     "Hà Nội tiếp Bắc Ninh ở vòng 3 V-League, ngày 12/10/2026. Viết bản tin kết quả.",
+     {"forbid": [], "expect": []}, _load_real("M2_ha_noi_bac_ninh")),
+    ("G7", "ket_qua", "football_ket_qua",
+     "Hà Nội gặp SHB Đà Nẵng ở vòng loại Cúp Quốc gia, ngày 12/10/2026. Viết bản tin kết quả.",
+     {"forbid": [], "expect": []}, _load_real("M3_ha_noi_da_nang_pen")),
+    ("G8", "ket_qua", "football_ket_qua",
+     "TP. Đồng Nai gặp Bình Minh Sài Gòn ở vòng loại Cúp Quốc gia, ngày 12/10/2026. Viết bản tin kết quả.",
+     {"forbid": [], "expect": []}, _load_real("M4_dong_nai_binh_minh")),
+    ("G9", "ket_qua", "football_ket_qua",
+     "Braga tiếp Sporting ở vòng 8 Primeira Liga, ngày 12/10/2026. Viết bản tin kết quả.",
+     {"forbid": [], "expect": []}, _load_real("M5_braga_sporting")),
     ("F3", "omit_missing", "football_tin_tuc",
      "Viết tin: 'Nếu kịp hoàn tất đăng ký, cầu thủ này có thể đá chính.' "
      "Tiêu đề PHẢI giữ điều kiện 'nếu/có thể'.",
@@ -138,6 +165,8 @@ def main():
     ap.add_argument("--temperature", type=float, default=0.8)
     ap.add_argument("--max-tokens", type=int, default=3000)
     ap.add_argument("--tag", default="", help="nhãn mô hình (để so sánh nhiều model)")
+    ap.add_argument("--tier", default="large", choices=["small", "large"],
+                    help="model-tier cho nhóm full (mặc định large)")
     args = ap.parse_args()
 
     import llm_client
@@ -176,12 +205,28 @@ def main():
             if system is None:
                 system = ""
             t0 = time.time()
-            try:
-                res = client.chat(system, user_prompt, temperature=args.temperature,
-                                  max_tokens=args.max_tokens)
-                text, fr, usage = res.text, res.finish_reason, res.usage
-            except Exception as e:
-                text, fr, usage = f"[ERROR] {e}", "error", None
+            # E2: full 组走 viet_writer.write(含 tier/修订/normalize 的完整路径);
+            #     raw/skill 直接调模型
+            revise_info = []
+            if cfg == "full" and case_facts:
+                try:
+                    text = vw.write(client, prompt, genre=genre,
+                                    facts=case_facts, model_tier=args.tier,
+                                    gen_kw=dict(temperature=args.temperature,
+                                                max_tokens=args.max_tokens))
+                    meta_w = getattr(vw.write, "last_meta", {}) or {}
+                    usage = meta_w.get("usage")
+                    fr = meta_w.get("finish_reason") or "stop"
+                    revise_info = [i["rule"] for i in (meta_w.get("revise_issues") or [])]
+                except Exception as e:
+                    text, fr, usage = f"[ERROR] {e}", "error", None
+            else:
+                try:
+                    res = client.chat(system, user_prompt, temperature=args.temperature,
+                                      max_tokens=args.max_tokens)
+                    text, fr, usage = res.text, res.finish_reason, res.usage
+                except Exception as e:
+                    text, fr, usage = f"[ERROR] {e}", "error", None
             dt = round(time.time() - t0, 1)
 
             # kiểm tra bẫy tự động (có nhận biết phủ định để tránh dương tính giả)
@@ -231,7 +276,7 @@ def main():
             if group == "ket_qua" and fr != "error":
                 try:
                     from check_style import check as style_check
-                    style_issues = [i["rule"] for i in style_check(text, case_facts)]
+                    style_issues = [i["rule"] for i in style_check(text, case_facts, prompt)]
                 except Exception:
                     pass
 
@@ -241,6 +286,8 @@ def main():
                 "usage": usage, "forbidden_hit": hit_forbid,
                 "expected_hit": hit_expect_list, "output": text,
                 "style_issues": style_issues,
+                "system_chars": len(system) if system else 0,
+                "revise_triggered": revise_info,
                 "fabrication_violations": fab_violations,
                 "_has_expect": bool(rules["expect"]),
                 "_has_no_fab": bool(no_fab),

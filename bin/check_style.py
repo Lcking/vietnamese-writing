@@ -76,13 +76,36 @@ def _scores_in(s):
     return out
 
 
-def check(task_text, facts=None):
+def normalize_output(text):
+    """C1:清理模型输出里的表层 markdown(首行标题的 ** 或 #),不调用模型。
+
+    在 check() 之前、生成之后执行。清理后仍有 markdown 才判 S11。
+    """
+    lines = text.split("\n")
+    # 找到第一个非空行(标题)
+    for i, l in enumerate(lines):
+        if l.strip():
+            s = l.strip()
+            # 去掉整体包裹的 **...** 或 # 前缀
+            s2 = s
+            if s2.startswith("**") and s2.endswith("**") and len(s2) > 4:
+                s2 = s2[2:-2].strip()
+            if s2.startswith("#"):
+                s2 = s2.lstrip("#").strip()
+            lines[i] = s2
+            break
+    return "\n".join(lines).strip()
+
+
+def check(task_text, facts=None, task=None):
     """返回疑点列表。每条: {rule, snippet, msg}。
 
     忽略以 # 或 > 开头的元信息行(来自回归样本的注释/引言),避免被当成标题。
     """
+    # 先删注释/引言行(回归样本的元信息),再 normalize(避免 # 被 normalize 吃掉后漏删)
     task_text = "\n".join(l for l in task_text.split("\n")
                           if not l.lstrip().startswith(("#", ">")))
+    task_text = normalize_output(task_text)
     issues = []
     sents = split_sentences(task_text)
     lines = [l for l in task_text.split("\n") if l.strip()]
@@ -93,7 +116,18 @@ def check(task_text, facts=None):
         try:
             from prepare_facts import compute
             result = compute(facts)
-            correct_map = {s["score"]: s["verb"] for s in result["score_progression"]}
+            # C2:顺序不可靠时,只核对单独一条带分钟的进球;
+            #    且期望动词不含 '?'(缺分钟时不推断动词)
+            _reliable = result.get("order_reliable", True)
+            _skip_s1 = False
+            if not _reliable:
+                _with_min = [s for s in result["score_progression"] if s["minute"] is not None]
+                if len(_with_min) != 1 or any(s["verb"] == "?" for s in _with_min):
+                    # 无法可靠核对 → 跳过 S1(置空 map)
+                    _skip_s1 = True
+            correct_map = ({} if _skip_s1 else
+                           {s["score"]: s["verb"]
+                            for s in result["score_progression"] if s["verb"] != "?"})
             # 可接受替代(如 1-3 处 nhân đôi cách biệt 可替 nâng tỷ số)
             alt_map = {s["score"]: set(s.get("accept_alt") or [])
                        for s in result["score_progression"]}
@@ -316,22 +350,29 @@ def check(task_text, facts=None):
         issues.append({"rule": "S11", "snippet": ", ".join(md), "blocking": True,
                        "msg": f"Bài viết còn dấu vết markdown/định dạng nội bộ: {', '.join(md)}"})
 
-    # ---- S12 时间词与分钟矛盾 ----
+    # ---- S12 时间词与分钟矛盾(按句判断,C4) ----
     TIME_WORDS = {
         "phút cuối": (85, 90), "cuối trận": (80, 90), "những phút cuối": (80, 90),
+        "giai đoạn cuối trận": (80, 90), "thời khắc cuối trận": (80, 90),
+        "phút cuối chung cuộc": (85, 90),
         "hiệp một": (1, 45), "hiệp 1": (1, 45), "đầu trận": (1, 15),
         "khung giờ thứ hai": (46, 90), "hiệp hai": (46, 90), "hiệp 2": (46, 90),
     }
-    for m in re.finditer(r"phút\s+(\d{1,3})(?:\s*\+\s*(\d+))?", task_text, re.I):
-        mn = int(m.group(1))
-        # 该分钟附近(后 40 字符)是否出现时间词
-        ctx = task_text[m.end():m.end() + 60].lower()
+    # 先按句切分;同一句里同时有时间词与分钟,且所有分钟都不在范围内 → 报
+    for sent in split_sentences(task_text):
+        low = sent.lower()
+        mins = []
+        for m in re.finditer(r"phút\s+(\d{1,3})(?:\s*\+\s*(\d+))?", low):
+            mins.append(int(m.group(1)))
+        if not mins:
+            continue
         for w, (lo, hi) in TIME_WORDS.items():
-            if w in ctx and not (lo <= mn <= hi):
-                issues.append({"rule": "S12", "hint_only": True,
-                               "snippet": f"phút {mn} ... {w}",
-                               "msg": f"Phút {mn} không khớp với cụm thời gian '{w}' "
-                                      f"(khoảng {lo}-{hi})"})
+            if w in low:
+                if not any(lo <= x <= hi for x in mins):
+                    issues.append({"rule": "S12", "hint_only": True,
+                                   "snippet": f"phút {mins[0]} ... {w}",
+                                   "msg": f"Các phút {mins} trong câu không khớp với "
+                                          f"cụm thời gian '{w}' (khoảng {lo}-{hi})"})
                 break
 
     # ---- S13 主客场方向(需 facts) ----
@@ -370,13 +411,18 @@ def check(task_text, facts=None):
             pass
 
     # ---- S14 专有名词核对(正文与 facts/任务描述比对) ----
-    if facts:
+    if facts or task:
         try:
             import unicodedata as _ud
             def _bucket(x):
                 return _ud.normalize("NFC", str(x)).casefold()
-            # 允许的专有名词集合:facts 里的名字 + 任务里的名字
+            # 允许的专有名词集合:facts 名字 + facts["context"] + 任务文本大写词串(C3)
             allowed = set()
+            facts = facts or {}
+            if task:
+                for m in re.finditer(r"\b[A-ZĐ][\wÀ-ỹ]+(?:\s+[A-ZĐ][\wÀ-ỹ]+)*", task):
+                    for tok in m.group(0).split():
+                        allowed.add(_bucket(tok))
             for v in (facts.get("home"), facts.get("away")):
                 if v:
                     for tok in str(v).split():
@@ -386,18 +432,159 @@ def check(task_text, facts=None):
                     if e.get(k):
                         for tok in str(e[k]).split():
                             allowed.add(_bucket(tok))
+            ctx = facts.get("context")
+            if ctx:
+                for tok in str(ctx).split():
+                    allowed.add(_bucket(tok))
             # 正文里的"看起来像教练/官员"的专有名词
-            for m in re.finditer(r"\b(HLV|huấn luyện viên)\s+([A-ZĐ][\wÀ-ỹ]+(?:\s+[A-ZĐ][\wÀ-ỹ]+){1,3})", task_text):
+            # 允许集合里存的是"整名"(去变音小写),按整名或≥2 token 匹配
+            full_names = set()
+            for v in (facts.get("home"), facts.get("away")):
+                if v:
+                    full_names.add(_bucket(v))
+            for e in facts.get("events", []):
+                for k in ("player", "assist"):
+                    if e.get(k):
+                        full_names.add(_bucket(e[k]))
+            if task:
+                # 从 task 里提取"HLV/Huấn luyện viên + 名字"以及连续大写词串
+                for m in re.finditer(r"\b(?:HLV|huấn luyện viên)\s+([A-ZĐ][\wÀ-ỹ]*(?:\s+[A-ZĐ][\wÀ-ỹ]*){1,3})", task):
+                    full_names.add(_bucket(m.group(1)))
+                for m in re.finditer(r"\b[A-ZĐ][\wÀ-ỹ]+(?:\s+[A-ZĐ][\wÀ-ỹ]+)+", task):
+                    full_names.add(_bucket(m.group(0)))
+            for m in re.finditer(r"\b(HLV|huấn luyện viên)\s+([A-ZĐ][\wÀ-ỹ]*(?:\s+[A-ZĐ][\wÀ-ỹ]*){1,3})", task_text):
                 name = m.group(2).strip()
-                toks = [_bucket(x) for x in name.split()]
-                if not any(x in allowed for x in toks):
+                nb = _bucket(name)
+                # 整名匹配,或该名是 facts 里某个整名的前缀(名字可能被截断/带更多成分)
+                matched = nb in full_names or any(
+                    fn.startswith(nb) or nb.startswith(fn) for fn in full_names if len(fn) >= 5)
+                if not matched:
                     issues.append({"rule": "S14", "hint_only": True,
                                    "snippet": name[:50],
                                    "msg": f"Tên riêng '{name}' không có trong dữ kiện → kiểm tra bịa đặt"})
         except Exception:
             pass
 
-    return issues
+    import unicodedata as _ud2
+    def _strip(x):
+        return "".join(c for c in _ud2.normalize("NFD", str(x))
+                       if _ud2.category(c) != "Mn").lower()
+
+    # ---- S15 赛果方向(需 facts) ----
+    if facts:
+        try:
+            fin = facts.get("final")
+            hn2, an2 = facts.get("home"), facts.get("away")
+            if fin and hn2 and an2:
+                fh2, fa2 = int(fin[0]), int(fin[1])
+                is_draw = (fh2 == fa2)
+                # ① 非平局却写"trận hòa / hòa nhau"
+                if not is_draw and re.search(r"trận hòa|hòa nhau|chia điểm", task_text, re.I):
+                    issues.append({"rule": "S15", "blocking": True,
+                                   "snippet": "trận hòa", "msg": "Trận đấu không hòa — không viết 'trận hòa'"})
+                # ② nghiêng về chủ nhà/đội khách 与赛果矛盾
+                if not is_draw:
+                    if fh2 < fa2 and re.search(r"nghiêng về\s+(phía\s+)?chủ nhà", task_text, re.I):
+                        issues.append({"rule": "S15", "blocking": True,
+                                       "snippet": "nghiêng về chủ nhà",
+                                       "msg": f"Đội khách ({an2}) thắng, không phải chủ nhà"})
+                    if fh2 > fa2 and re.search(r"nghiêng về\s+(phía\s+)?đội khách", task_text, re.I):
+                        issues.append({"rule": "S15", "blocking": True,
+                                       "snippet": "nghiêng về đội khách",
+                                       "msg": f"Đội chủ nhà ({hn2}) thắng, không phải đội khách"})
+                # ③ 胜者作主语后 30 字符内出现小比分在前的比分
+                for m in re.finditer(r"(thắng|đánh bại|hạ)\s+[^.]{0,30}?\b(\d)-(\d)\b", task_text, re.I):
+                    a2, b2 = int(m.group(2)), int(m.group(3))
+                    if a2 < b2:
+                        issues.append({"rule": "S15", "blocking": True,
+                                       "snippet": m.group(0)[:50],
+                                       "msg": "Đội thắng làm chủ ngữ phải ghi tỷ số lớn trước"})
+        except Exception:
+            pass
+
+    # ---- S16 进球数(需 facts) ----
+    if facts:
+        try:
+            cnt = {}
+            for e in facts.get("events", []):
+                if e.get("type") in ("goal", "penalty") and e.get("player"):
+                    cnt[e["player"]] = cnt.get(e["player"], 0) + 1
+            import unicodedata as _ud2
+            def _strip(x):
+                return "".join(c for c in _ud2.normalize("NFD", str(x))
+                               if _ud2.category(c) != "Mn").lower()
+            for pl, c in cnt.items():
+                if c == 1:
+                    for m in re.finditer(r"cú đúp|hat-?trick|lập công hai lần|hai bàn", task_text, re.I):
+                        seg = _strip(task_text[max(0, m.start() - 40):m.end() + 40])
+                        toks = [_strip(x) for x in pl.split() if len(_strip(x)) > 2]
+                        if any(x in seg for x in toks):
+                            issues.append({"rule": "S16", "blocking": True,
+                                           "snippet": seg[:50],
+                                           "msg": f"{pl} chỉ ghi 1 bàn — không dùng 'cú đúp/hat-trick'"})
+        except Exception:
+            pass
+
+    # ---- S17 决胜球归属(需 facts) ----
+    if facts:
+        try:
+            from prepare_facts import compute as _compute
+            r17 = _compute(facts)
+            d17 = r17.get("decider")
+            for m in re.finditer(r"bàn\s+(thắng\s+)?quyết định", task_text, re.I):
+                if not r17.get("order_reliable"):
+                    issues.append({"rule": "S17", "hint_only": True, "snippet": m.group(0),
+                                   "msg": "Thiếu phút để xác định bàn quyết định — kiểm tra lại"})
+                    continue
+                if d17 and d17.get("player"):
+                    seg = _strip(task_text[max(0, m.start() - 60):m.end() + 60])
+                    toks = [_strip(x) for x in d17["player"].split() if len(_strip(x)) > 2]
+                    if toks and not any(x in seg for x in toks):
+                        issues.append({"rule": "S17", "blocking": True,
+                                       "snippet": seg[:50],
+                                       "msg": f"Bàn quyết định thuộc {d17['player']}, không phải nhân vật trong câu"})
+        except Exception:
+            pass
+
+    # ---- S18 元说明(向读者解释规则/数据) ----
+    META_PATTERNS = [
+        r"không phải tỷ số", r"là kết quả (của )?loạt luân lưu", r"trước loạt luân lưu",
+        r"cũng là bàn quyết định", r"theo dữ kiện", r"dữ liệu được cung cấp",
+    ]
+    for pat in META_PATTERNS:
+        for m in re.finditer(pat, task_text, re.I):
+            issues.append({"rule": "S18", "blocking": True, "snippet": m.group(0),
+                           "msg": f"Không giải thích quy tắc/dữ liệu cho người đọc ('{m.group(0)}')"})
+
+    # ---- S19 重复(提示) ----
+    ev_seen = {}
+    for m in re.finditer(r"(\d{1,3})'", task_text):
+        mn = m.group(1)
+        seg = task_text[m.start():m.start() + 60]
+        key = (mn, seg[:30].strip())
+        ev_seen[key] = ev_seen.get(key, 0) + 1
+    for (mn, _), n in ev_seen.items():
+        if n >= 3:
+            issues.append({"rule": "S19", "hint_only": True, "snippet": f"{mn}'",
+                           "msg": f"Sự kiện phút {mn}' được nhắc {n} lần — kiểm tra trùng lặp"})
+
+    # ---- S20 动词主语(提示) ----
+    for m in re.finditer(r"([A-ZĐ][\wÀ-ỹ]+(?:\s+[A-ZĐ][\wÀ-ỹ]+)*)\s+"
+                         r"(vượt lên dẫn|gỡ hòa|nâng tỷ số|rút ngắn cách biệt)", task_text):
+        ctx = task_text[max(0, m.start() - 30):m.start()]
+        if not re.search(r"đưa|giúp|mang về|ghi bàn", ctx, re.I):
+            issues.append({"rule": "S20", "hint_only": True, "snippet": m.group(0)[:50],
+                           "msg": f"'{m.group(1)}' không nên làm chủ ngữ trực tiếp — "
+                                  f"nên viết 'đưa/giúp {m.group(1)} …'"})
+
+    # 去重
+    seen_i, uniq_i = set(), []
+    for i in issues:
+        k = (i["rule"], i["snippet"])
+        if k not in seen_i:
+            seen_i.add(k)
+            uniq_i.append(i)
+    return uniq_i
 
 
 def main():

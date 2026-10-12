@@ -1,5 +1,50 @@
 # Changelog
 
+## v1.4.6 (2026-10-13) — 第四轮方案(A/B/C/D/E)
+
+### A. large 档瘦身(P0)
+- large 档提示从 24,499 → **4,184 字符**(目标 ≤8,000 ✓)
+- large 档不再注入全局语言规则(17,813 字符)与长体裁文件;改用专用精简卡
+  `references/cards/ket_qua_large.md`(2,133 字符)
+- small 档保持卡片方案(3,432 字符),两档明确不同
+- 新增规则 A2 不向读者解释规则/数据;A3 比分动词主语(球队,或"球员+đưa/giúp+队");
+  A4 胜者在前的大比分写法
+
+### B. 事实块纯数据化(P0)
+- 去掉指令性标签(`→`、`dùng cho`、`dùng đúng`、加粗)
+- 首行:`Chủ nhà · Khách` + `Kết quả`(两种写法都给出)
+- 进球过程以**球队**作主语,比分按该队视角
+- 写作提示单独成段并标注 `(KHÔNG đưa vào bài)`
+- 缺分钟时只列"球员 + 球队",不写逐球比分,不放 `?`
+
+### C. 检查器误报修复(P0)
+- C1 `normalize_output()`:清理首行标题的 `**`/`#`(不调用模型);清理后仍有才判 S11
+- C2 S1:顺序不可靠时只核对带分钟的进球,期望动词不含 `?`
+- C3 S14 接收 task 文本;允许集合 = facts 名 + facts["context"] + task 里的大写词串
+- C4 S12 改为按句判断(修跨句误报;补 `giai đoạn cuối trận` 等词)
+
+### D. 检查器补漏(P1)
+- S15 赛果方向(非平局写"hòa";nghiêng về 方向;胜者主语后小比分在前)——阻断
+- S16 进球数(单球球员被写 cú đúp/hat-trick)——阻断
+- S17 决胜球归属——阻断;顺序不可靠时仅提示
+- S18 元说明(向读者解释规则/数据)——阻断
+- S19 重复事件——提示
+- S20 动词主语(球员名直连动词)——提示
+
+### E. 评测
+- E1 run_eval 新增 G5-G9(5 场真实比赛)
+- E2 full 组走 `viet_writer.write` 真实路径(含 tier/修订/normalize)
+- E3 新增 `--tier`;结果记录 system_chars / revise_triggered
+- E4 回归表转为内置测试(TestE4RegressionTable)
+- 事实块快照存 `eval/regression/real_matches_20261012/snapshots/`
+
+### 验收
+- 82 例测试全过(43+30+9);check_quality 17 项 0 问题
+- 参考改写零命中;5 场事实块无 `**`/`→`/`dùng cho`/`dùng đúng`
+
+---
+
+
 Mọi thay đổi đáng chú ý của skill này được ghi ở đây.
 Định dạng theo [Keep a Changelog](https://keepachangelog.com/); đánh số [SemVer](https://semver.org/).
 

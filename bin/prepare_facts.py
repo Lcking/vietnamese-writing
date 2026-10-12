@@ -401,113 +401,143 @@ def check_input_text(raw_text, result):
 
 
 def format_for_prompt(result, warns):
-    """把预处理结果格式化成注入用户提示的文本。"""
+    """把预处理结果格式化成注入的**纯数据**文本(B1-B4)。
+
+    要求:不含 ** / → / "dùng cho" / "dùng đúng" 等指令性标记;
+    进球过程以**球队**作主语;写作提示单独成段并标注不得进入正文。
+    """
     hn = result.get("home_name", "đội nhà")
     an = result.get("away_name", "đội khách")
 
     def _side(s):
         return hn if s == "home" else an
 
-    lines = ["## Dữ kiện đã chuẩn hoá (dùng đúng các mục này):"]
-    # 首行固定给出主客场与赛果(评审:主客场写反的根因是事实块从不写这两项)
     res = result.get("final", "")
-    fh, fa = res.split("-") if "-" in res else (None, None)
-    if result.get("final_provided") and fh is not None and int(fh) != int(fa):
-        wname = hn if int(fh) > int(fa) else an
-        lines.append(f"- Chủ nhà: {hn} · Khách: {an} · Chung cuộc: {res} ({wname} thắng)")
-    elif result.get("final_provided"):
-        lines.append(f"- Chủ nhà: {hn} · Khách: {an} · Chung cuộc: {res} (hòa)")
+    fh, fa = (res.split("-") if "-" in res else (None, None))
+    out = []
+
+    # ---- B1 赛果 ----
+    out.append(f"Chủ nhà: {hn} · Khách: {an}")
+    if not result.get("final_provided") or fh is None:
+        out.append("Kết quả: (chưa có tỷ số chung cuộc)")
     else:
-        lines.append(f"- Chủ nhà: {hn} · Khách: {an} · Chung cuộc: (chưa có)")
-    if result.get("team_errors"):
-        lines.append("- ⚠ Không khớp tên đội ở trường 'team' cho: " +
-                     ", ".join(result["team_errors"]) +
-                     ". Chỉ dùng '" + hn + "'/'home' và '" + an + "'/'away'.")
-    if not result.get("order_reliable"):
-        lines.append("- ⚠ Có bàn thắng thiếu phút → KHÔNG suy đoán thứ tự bàn thắng / "
-                     "bàn quyết định. Chỉ liệt kê sự kiện kèm phút nếu có.")
-    if not result.get("final_provided"):
-        lines.append("- ⚠ Không có tỷ số chung cuộc → KHÔNG suy đoán thắng/thua, "
-                     "KHÔNG viết về bảng xếp hạng.")
-    if result.get("score_mismatch"):
-        lines.append(f"- ⚠ Tỷ số công bố ({result['final']}) KHÔNG khớp với diễn biến "
-                     f"suy ra từ bàn thắng ({result['events_score']}). "
-                     f"Kiểm tra lại dữ kiện trước khi viết; KHÔNG dùng các suy luận "
-                     f"về thắng/thua/bảng xếp hạng.")
-    d = result.get("decider")
-    if d:
-        if d.get("own_goal"):
-            lines.append(f"- Bàn quyết định: phút {d['minute']}, phản lưới nhà của "
-                         f"{d['player']} → có lợi cho {_side(d.get('beneficiary'))}. "
-                         f"Tiêu đề nên tập trung vào đội hưởng lợi, không lấy tên người đá phản làm nhân vật chính.")
+        ih, ia = int(fh), int(fa)
+        pw = result.get("penalty_winner")
+        pens = result.get("penalties")
+        if ih == ia:
+            base = "Hai đội hòa " + res
+            if pw and pens:
+                psc = f"{pens[0]}-{pens[1]}" if pw == "home" else f"{pens[1]}-{pens[0]}"
+                base += f" sau 90 phút; {_side(pw)} thắng {psc} trên chấm luân lưu"
+            out.append("Kết quả: " + base)
         else:
-            mn = f"phút {d['minute']}" if d["minute"] is not None else "(không rõ phút)"
-            lines.append(f"- Bàn quyết định: {mn}, {d['player']} "
-                         f"({d['score']}) → dùng cho tiêu đề")
-    if result["comeback"]:
-        lines.append("- Đây là màn ngược dòng")
-    # 加时赛:有 >90 分钟进球时提示
-    if any((base_minute(s["minute"]) is not None and 91 <= base_minute(s["minute"]) <= 120)
-           for s in result["score_progression"]):
-        lines.append(f"- Trận đấu có hiệp phụ; kết quả ghi theo 'sau 120 phút' "
-                     f"({result['final']})")
-    if result.get("pen_warning"):
-        lines.append(f"- ⚠ Dữ kiện luân lưu bị bỏ qua: {result['pen_warning']}")
-    if result.get("penalty_winner") and result.get("penalties"):
-        pw = result["penalties"]
-        sc = f"{pw[0]}-{pw[1]}" if result["penalty_winner"] == "home" else f"{pw[1]}-{pw[0]}"
-        lines.append(f"- Loạt luân lưu: {_side(result['penalty_winner'])} thắng {sc}")
-    lines.append("- Diễn biến (dùng đúng động từ, theo trình tự thời gian):")
-    # 把纪律事件与进球按时间合并排序
+            wname = hn if ih > ia else an
+            # 赢者在前(大比分在前) + 按场地写法(主队在前)
+            wbig = f"{max(ih, ia)}-{min(ih, ia)}"
+            out.append(f"Kết quả: {wname} thắng {wbig} "
+                       f"(viết theo sân: {hn} {ih}-{ia} {an})")
+
+    # ---- B2 进球过程(球队作主语) ----
+    reliable = result.get("order_reliable", True)
+    header = "Diễn biến:" if reliable else "Sự kiện (không đủ phút để xếp thứ tự):"
+    out.append(header)
     timeline = []
     for s in result["score_progression"]:
         timeline.append((parse_minute(s["minute"]), "goal", s))
     for e in result.get("discipline", []):
         timeline.append((parse_minute(e["minute"]), "disc", e))
     timeline.sort(key=lambda x: (x[0] is None, x[0] if x[0] is not None else 0))
-    reliable = result.get("order_reliable", True)
+
     for _, kind, s in timeline:
+        mn = f"{s['minute']}'" if s["minute"] is not None else "(?)"
         if kind == "goal":
-            mn = f"phút {s['minute']}" if s["minute"] is not None else "(không rõ phút)"
-            extra = f", kiến tạo {s['assist']}" if s.get("assist") else ""
-            var = " (VAR công nhận)" if s.get("var_checked") else ""
-            pen = " (phạt đền)" if s.get("penalty") else ""
-            et = ""
-            bm = base_minute(s["minute"])
-            if bm is not None and 91 <= bm <= 120:
-                et = " [hiệp phụ]"
+            team = _side(s.get("team"))
+            tail = []
+            if s.get("penalty"):
+                tail.append("phạt đền")
+            if s.get("assist"):
+                tail.append(f"kiến tạo: {s['assist']}")
+            extra = f" ({'; '.join(tail)})" if tail else ""
             if reliable:
-                lines.append(f"    {mn}: {s['player']} → {s['verb']} {s['score']}{pen}{extra}{var}{et}")
-            else:
-                # 顺序不可靠:只列球员+球队,不给逐球比分,不放 '?'
-                # 注意:乌龙球时 s['team'] 是**受益方**,球员实际属于对方
+                sh, sa = map(int, s["score"].split("-"))
+                tsc = f"{sh}-{sa}" if s.get("team") == "home" else f"{sa}-{sh}"
                 if s.get("own_goal"):
                     scorer_side = _side("away" if s.get("team") == "home" else "home")
-                    lines.append(f"    {mn}: {s['player']} ({scorer_side}) → "
-                                 f"**phản lưới nhà**, có lợi cho {_side(s.get('team'))}{pen}{extra}{var}{et}")
+                    out.append(f"- {mn}: {team} {s['verb']} {tsc} — "
+                               f"{s['player']} ({scorer_side}) phản lưới nhà{extra}")
                 else:
-                    lines.append(f"    {mn}: {s['player']} ({_side(s.get('team'))}){pen}{extra}{var}{et}")
+                    who = f" — {s['player']}" if s.get("player") else ""
+                    out.append(f"- {mn}: {team} {s['verb']} {tsc}{who}{extra}")
+            else:
+                # 缺分钟:只列"球员 + 球队",不写球队作主语的动词短语(B4)
+                if s.get("own_goal"):
+                    scorer_side = _side("away" if s.get("team") == "home" else "home")
+                    out.append(f"- {mn}: {s['player']} ({scorer_side}) phản lưới nhà, "
+                               f"có lợi cho {team}{extra}")
+                else:
+                    out.append(f"- {mn}: {s.get('player','')} ({team}){extra}")
         else:
-            mn = f"phút {s['minute']}" if s["minute"] is not None else "(không rõ phút)"
+            team = _side(s.get("team"))
             label = "thẻ vàng thứ hai (bị truất quyền)" if s["kind"] == "second_yellow" else "thẻ đỏ"
-            lines.append(f"    {mn}: {s['player']} ({_side(s['team'])}) → {label}")
+            out.append(f"- {mn}: {team} — {s['player']} ({label})")
+
     if result.get("missed_penalties"):
-        lines.append("- Đá hỏng phạt đền: " + ", ".join(
-            f"{m['player']}" + (f" (phút {m['minute']})" if m.get("minute") is not None else "")
+        out.append("Đá hỏng phạt đền: " + ", ".join(
+            f"{m['player']}" + (f" ({m['minute']}')" if m.get("minute") is not None else "")
             for m in result["missed_penalties"]))
+
+    # ---- B3 写作提示(单独成段,标注不得进入正文) ----
+    notes = []
+    d = result.get("decider")
+    if d:
+        if d.get("own_goal"):
+            notes.append(f"Bàn quyết định: {d['minute']}' — phản lưới nhà của "
+                         f"{d['player']} ({_side('away' if d.get('beneficiary') == 'home' else 'home')}), "
+                         f"có lợi cho {_side(d.get('beneficiary'))}")
+        else:
+            mn = f"{d['minute']}'" if d["minute"] is not None else "(không rõ phút)"
+            notes.append(f"Bàn quyết định: {mn} {d['player']}")
+    if result.get("comeback"):
+        notes.append("Tình huống: ngược dòng")
+    if any((base_minute(s["minute"]) is not None and 91 <= base_minute(s["minute"]) <= 120)
+           for s in result["score_progression"]):
+        notes.append(f"Trận có hiệp phụ (ghi kết quả theo 'sau 120 phút': {res})")
+    if result.get("pen_warning"):
+        notes.append(f"Bỏ qua dữ kiện luân lưu: {result['pen_warning']}")
+    if result.get("team_errors"):
+        notes.append("Bỏ qua sự kiện có tên đội không khớp: " + ", ".join(result["team_errors"]))
+    if not result.get("final_provided"):
+        notes.append("Không suy đoán thắng/thua hay bảng xếp hạng (thiếu tỷ số chung cuộc)")
+    if result.get("score_mismatch"):
+        notes.append(f"Tỷ số công bố ({result.get('final')}) không khớp diễn biến "
+                     f"({result.get('events_score')}) — không suy luận thắng/thua")
+    if not reliable:
+        notes.append("Không suy đoán thứ tự bàn thắng/bàn quyết định (thiếu phút)")
+    known = [x for x in ["tỷ số hiệp một"] if any(dd.get("fact") == "tỷ số hiệp một"
+                                                 for dd in result.get("derivable", []))]
+    if known:
+        notes.append("Đã suy ra, không viết thành câu riêng: " + ", ".join(known))
+    if not result.get("is_knockout") and result.get("derivable"):
+        if any(dd.get("fact") == "giành trọn 3 điểm" for dd in result["derivable"]):
+            notes.append("Đã suy ra, không viết thành câu riêng: giành trọn 3 điểm")
+    absent = [a for a in result.get("absent", []) if a != "tỷ số chung cuộc"]
+    if absent:
+        notes.append("Không có dữ kiện (bỏ qua, không nhắc tới): " + ", ".join(absent))
     if result.get("title_candidates"):
-        lines.append("- Gợi ý cho tiêu đề: " + " / ".join(result["title_candidates"]))
-    if result["derivable"]:
-        lines.append("- KHÔNG viết riêng (đã suy ra được): " +
-                     ", ".join(d["fact"] for d in result["derivable"]))
-    if result["absent"]:
-        lines.append("- Thiếu dữ kiện (bỏ qua, không thay bằng cụm mơ hồ): " +
-                     ", ".join(result["absent"]))
+        notes.append("Gợi ý tiêu đề: " + " / ".join(result["title_candidates"]))
+    if notes:
+        out.append("")
+        out.append("Ghi chú cho người viết (KHÔNG đưa vào bài):")
+        for n in notes:
+            out.append("- " + n)
+
     if warns:
-        lines.append("- ⚠ Cảnh báo từ dữ kiện gốc:")
+        out.append("")
+        out.append("Cảnh báo dữ kiện gốc:")
         for w in warns:
-            lines.append(f"    • {w['msg']}")
-    return "\n".join(lines)
+            out.append("- " + w["msg"])
+
+    return "\n".join(out)
 
 
 def main():

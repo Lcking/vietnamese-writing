@@ -48,6 +48,13 @@ GENRES = ["van_hoc", "bao_chi", "bach_khoa", "cong_van",
           "football_pre_match", "football_analysis", "social_post",
           "football_ket_qua"]
 
+# large 档专用卡片(线上强模型;更全的写作规则,仍是精简版)
+LARGE_CARD_MAP = {
+    "football_ket_qua": "ket_qua_large.md",
+    "football_tin_tuc": "ket_qua_large.md",
+}
+
+
 # 卡片映射:体裁 → references/cards/<file>(lite 档只读卡片)
 CARD_MAP = {
     "football_ket_qua": "ket_qua_tran.md",
@@ -92,8 +99,9 @@ MODEL_TIERS = {
     # small: 卡片 + 事实预处理 + **1 条**范文;不注全局规则;建议配合 --revise(风格检查)
     "small": {"profile": "lite", "ex_max_n": 0, "global_rules": False,
               "suggest_revise": True, "require_facts": True},
-    # large: 卡片 + 长文件 + 更多范文 + 全局规则
-    "large": {"profile": "full", "ex_max_n": 8, "global_rules": True, "suggest_revise": False},
+    # A1:large 档=卡片(不注长文件/全局规则),目标 ≤8000 字符(线上强模型)
+    "large": {"profile": "lite", "ex_max_n": 0, "global_rules": False,
+              "suggest_revise": False, "use_card_only": True},
 }
 
 FOOTBALL_HINTS = ["bóng đá", "bình luận", "trận đấu", "cầu thủ", "đội bóng",
@@ -342,9 +350,10 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
         parts.append(core)
 
     # 2) 全局规则(合计预算)。min profile 下 global=0 → 跳过;
-    #    small 模型档也不注全局规则(避免长 prompt 放大幻觉)
+    #    small/large 模型档都不注全局规则(A1:large 档目标 ≤8000 字符,
+    #    全局语言细节规范移出提示词,留在 references/ 供人查阅)
     gparts, gused = [], 0
-    skip_global = bool(tier and not tier["global_rules"])
+    skip_global = bool(tier and not tier.get("global_rules", False))
     if budget["global"] > 0 and not skip_global:
         for f in sorted(REFERENCES.glob("_global_*.md")):
             txt = load_file(f)
@@ -370,7 +379,11 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
     card_used = None
     if resolved_genre and resolved_genre in GENRES:
         fname = GENRE_FILE.get(resolved_genre, f"{resolved_genre}.md")
-        card_name = CARD_MAP.get(resolved_genre)
+        # large 档优先用 large 专用卡
+        if model_tier == "large" and resolved_genre in LARGE_CARD_MAP:
+            card_name = LARGE_CARD_MAP[resolved_genre]
+        else:
+            card_name = CARD_MAP.get(resolved_genre)
         card_path = CARDS / card_name if card_name else None
         has_card = bool(card_path and card_path.exists())
 
@@ -508,7 +521,7 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
     if revise:
         try:
             from check_style import check as style_check
-            revise_issues = style_check(text, facts)
+            revise_issues = style_check(text, facts, task)
             blocking = [i for i in revise_issues
                         if i.get("blocking") or (i["rule"] != "S8" and not i.get("hint_only"))]
             if blocking:
@@ -520,7 +533,7 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
                 r2 = client.chat(prompt["system"], revise_user, **kw)
                 text = r2.text if hasattr(r2, "text") else str(r2)
                 # 修订后再检查一次并保存结果
-                revise_after = style_check(text, facts)
+                revise_after = style_check(text, facts, task)
             else:
                 revise_issues = []      # 只有 S8 → 不修订,也不计为问题
         except Exception as e:

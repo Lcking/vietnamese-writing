@@ -203,7 +203,7 @@ class TestPrepareFacts(unittest.TestCase):
         r = compute(json.loads(fp.read_text(encoding="utf-8")))
         out = format_for_prompt(r, [])
         self.assertIn("thẻ vàng thứ hai", out)
-        self.assertIn("Gợi ý cho tiêu đề", out)
+        self.assertIn("Gợi ý tiêu đề", out)
         self.assertIn("nhân đôi cách biệt", out.lower()) if False else None
 
     def test_own_goal_decider_not_main_character(self):
@@ -222,7 +222,7 @@ class TestPrepareFacts(unittest.TestCase):
             {"minute": 20, "type": "goal", "team": "away", "player": "Q"}]})
         self.assertTrue(r["score_mismatch"])
         self.assertEqual(r["derivable"], [])
-        self.assertIn("KHÔNG khớp", format_for_prompt(r, []))
+        self.assertIn("không khớp", format_for_prompt(r, []))
 
     def test_stoppage_first_half_counts(self):
         """45+2 进球应计入半场比分。"""

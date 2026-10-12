@@ -128,7 +128,9 @@ class TestCards(unittest.TestCase):
         for fp in sorted(self.CARDS_DIR.glob("*.md")):
             txt = fp.read_text(encoding="utf-8")
             n = len(txt)
-            self.assertLess(n, 1700, f"{fp.name} 超长({n} 字符)")
+            # lite 卡 ≤1700;large 专用卡(线上模型,内容更全)≤3000
+            limit = 3000 if fp.name.endswith("_large.md") else 1700
+            self.assertLess(n, limit, f"{fp.name} 超长({n} 字符 > {limit})")
             han = re.findall(r"[\u4e00-\u9fff]+", txt)
             self.assertEqual(han, [], f"{fp.name} 含汉字: {han}")
 
@@ -213,6 +215,57 @@ class TestRealRunIssues(unittest.TestCase):
         f = self._facts("M4_dong_nai_binh_minh")
         msgs = " ".join(i["msg"] for i in check("TP. Đồng Nai 4-3 Bình Minh Sài Gòn", f))
         self.assertNotIn("Quốc", msgs)
+
+
+class TestE4RegressionTable(unittest.TestCase):
+    """E4 回归表:评审 evidence 里的真实错误句 → 必须报/不能报。"""
+
+    import pathlib as _p3
+
+    def _f(self, name):
+        import json as _j
+        fp = _pl.Path(__file__).resolve().parent.parent /             "eval/regression/real_matches_20261012" / f"{name}.json"
+        return _j.loads(fp.read_text(encoding="utf-8"))
+
+    def test_qwen_M1_rules_text_must_report(self):
+        f = self._f("M1_hai_phong_thanh_hoa")
+        rules = {i["rule"] for i in check("HLV Nguyễn Văn Thắng nói đội sẽ cố gắng.", f)}
+        self.assertIn("S14", rules)
+
+    def test_qwen_M1_factblock_must_report(self):
+        f = self._f("M1_hai_phong_thanh_hoa")
+        txt = "Phút 57, đội khách gỡ hòa trong những phút cuối trận. Thanh Hóa thắng với tỷ số 1-2."
+        rules = {i["rule"] for i in check(txt, f)}
+        self.assertIn("S12", rules)
+        self.assertIn("S15", rules)
+
+    def test_qwen_M4_rules_text_must_report(self):
+        f = self._f("M4_dong_nai_binh_minh")
+        rules = {i["rule"] for i in check("Phút 64 mở tỷ số ngay trong hiệp một, anh lập大功.", f)}
+        self.assertIn("S10", rules)
+        self.assertIn("S12", rules)
+
+    def test_qwen_M5_rules_text_must_report(self):
+        f = self._f("M5_braga_sporting")
+        txt = ("Trận hòa giữa Braga và Sporting, 1-3 nghiêng về phía chủ nhà. "
+               "cú đúp của Luis Suarez. Rodrigo Zalazar lập bàn thắng quyết định.")
+        rules = {i["rule"] for i in check(txt, f)}
+        for r in ("S15", "S16", "S17"):
+            self.assertIn(r, rules)
+
+    def test_grok_M5_factblock_clean(self):
+        """grok M5 事实块组:同样的正确稿不该报 S1(顺序不可靠时跳过)。"""
+        f = self._f("M5_braga_sporting")
+        clean = ("Sporting thắng Braga 3-1. Bernardo mở tỷ số cho Sporting, "
+                 "Rui Silva phản lưới nhà giúp Sporting, Zalazar phản lưới nhà giúp Braga, "
+                 "Suárez ấn định tỷ số.")
+        rules = {i["rule"] for i in check(clean, f)}
+        self.assertNotIn("S1", rules)
+
+    def test_grok_M3_meta_sentence(self):
+        f = self._f("M3_ha_noi_da_nang_pen")
+        rules = {i["rule"] for i in check("Tỷ số 4-3 là kết quả loạt luân lưu, không phải tỷ số trong 90 phút.", f)}
+        self.assertIn("S18", rules)
 
 
 if __name__ == "__main__":
