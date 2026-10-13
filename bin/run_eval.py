@@ -26,15 +26,22 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "bin"))
 
 # ---- các ca kiểm thử (khớp eval/evalset.md) ----
-# 真实比赛 facts(5 场)
+# 真实比赛 facts(5 场,已对照越南媒体,见各文件 _sources)
+REAL_DIR = ROOT / "eval/regression/real_matches_20261013"
+
+
 def _load_real(name):
-    import json as _j, pathlib as _pl
-    fp = _pl.Path(__file__).resolve().parent.parent / \
-        "eval/regression/placeholder_matches_20261013" / f"{name}.json"
     try:
-        return _j.loads(fp.read_text(encoding="utf-8"))
+        return json.loads((REAL_DIR / f"{name}.json").read_text(encoding="utf-8"))
     except Exception:
         return None
+
+
+def _real_task(gid):
+    try:
+        return json.loads((REAL_DIR / "_eval_map.json").read_text(encoding="utf-8"))[gid][0]
+    except Exception:
+        return ""
 
 
 # G1 结构化事实:直接读回归样本 facts.json(避免手写副本与源文件不一致)
@@ -117,21 +124,21 @@ CASES = [
      {"home": "A", "away": "B", "final": [1, 0], "events": [
          {"minute": 60, "type": "red", "team": "home", "player": "X"},
          {"minute": 75, "type": "goal", "team": "home", "player": "A1"}]}),
-    # --- Nhóm G5-G9: 5 trận MẪU (placeholder — cần thay bằng matches.py đã kiểm chứng) ---
+    # --- Nhóm G5-G9: 5 trận thật (eval/regression/real_matches_20261013) ---
     ("G5", "ket_qua", "football_ket_qua",
-     "Hải Phòng tiếp Thanh Hóa ở vòng 3 V-League, ngày 12/10/2026. Viết bản tin kết quả.",
+     _real_task("G5"),
      {"forbid": [], "expect": []}, _load_real("M1_hai_phong_thanh_hoa")),
     ("G6", "ket_qua", "football_ket_qua",
-     "Hà Nội tiếp Bắc Ninh ở vòng 3 V-League, ngày 12/10/2026. Viết bản tin kết quả.",
+     _real_task("G6"),
      {"forbid": [], "expect": []}, _load_real("M2_ha_noi_bac_ninh")),
     ("G7", "ket_qua", "football_ket_qua",
-     "Hà Nội gặp SHB Đà Nẵng ở vòng loại Cúp Quốc gia, ngày 12/10/2026. Viết bản tin kết quả.",
+     _real_task("G7"),
      {"forbid": [], "expect": []}, _load_real("M3_ha_noi_da_nang_pen")),
     ("G8", "ket_qua", "football_ket_qua",
-     "TP. Đồng Nai gặp Bình Minh Sài Gòn ở vòng loại Cúp Quốc gia, ngày 12/10/2026. Viết bản tin kết quả.",
+     _real_task("G8"),
      {"forbid": [], "expect": []}, _load_real("M4_dong_nai_binh_minh")),
     ("G9", "ket_qua", "football_ket_qua",
-     "Braga tiếp Sporting ở vòng 8 Primeira Liga, ngày 12/10/2026. Viết bản tin kết quả.",
+     _real_task("G9"),
      {"forbid": [], "expect": []}, _load_real("M5_braga_sporting")),
     ("F3", "omit_missing", "football_tin_tuc",
      "Viết tin: 'Nếu kịp hoàn tất đăng ký, cầu thủ này có thể đá chính.' "

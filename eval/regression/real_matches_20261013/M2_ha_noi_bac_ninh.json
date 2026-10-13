@@ -1,0 +1,32 @@
+{
+  "competition": "V.League 2026/27",
+  "competition_type": "league",
+  "round": 3,
+  "date": null,
+  "venue": null,
+  "home": "Hà Nội",
+  "away": "Bắc Ninh",
+  "final": [
+    1,
+    0
+  ],
+  "events": [
+    {
+      "minute": 78,
+      "type": "goal",
+      "team": "home",
+      "player": "Andrew Jung",
+      "assist": "Hai Long"
+    }
+  ],
+  "context": [
+    "3 điểm đầu tiên của Hà Nội FC mùa này, HLV Harry Kewell",
+    "Bắc Ninh là tân binh"
+  ],
+  "_verified": true,
+  "_sources": [
+    "thethaovietnamplus.vn",
+    "vpf.vn 11/10/2026"
+  ],
+  "_note": "Đối chiếu với báo Việt Nam (xem _sources). Trường null = chưa xác minh được, để trống có chủ đích."
+}
