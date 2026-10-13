@@ -446,7 +446,7 @@ def check(task_text, facts=None, task=None):
                 for m in re.finditer(r"\b[A-ZĐ][\wÀ-ỹ]+(?:\s+[A-ZĐ][\wÀ-ỹ]+)*", task):
                     for tok in m.group(0).split():
                         allowed.add(_bucket(tok))
-            for v in (facts.get("home"), facts.get("away")):
+            for v in (facts.get("home"), facts.get("away"), facts.get("venue")):
                 if v:
                     for tok in str(v).split():
                         allowed.add(_bucket(tok))
@@ -462,7 +462,7 @@ def check(task_text, facts=None, task=None):
             # 正文里的"看起来像教练/官员"的专有名词
             # 允许集合里存的是"整名"(去变音小写),按整名或≥2 token 匹配
             full_names = set()
-            for v in (facts.get("home"), facts.get("away")):
+            for v in (facts.get("home"), facts.get("away"), facts.get("venue")):
                 if v:
                     full_names.add(_bucket(v))
             for e in facts.get("events", []):
@@ -485,8 +485,12 @@ def check(task_text, facts=None, task=None):
                                    "snippet": name[:50],
                                    "msg": f"Tên riêng '{name}' không có trong dữ kiện → kiểm tra bịa đặt"})
             # 扩展: "sân + 专名"、"người + 国籍"、"bảng + 字母"
+            # 排除普通词:sân nhà / sân khách / sân đối phương(非专名)
+            COMMON_SAN = {"nhà", "khách", "đối phương", "trung lập", "chính"}
             for m in re.finditer(r"\bsân\s+([A-ZĐ][\wÀ-ỹ]+(?:[ \t]+[A-ZĐ][\wÀ-ỹ]+)*)", task_text):
                 nm = m.group(1).strip()
+                if nm.split()[0].lower() in COMMON_SAN:
+                    continue
                 # 队名可作球场名("sân Thể Công"); 只要 token 命中允许集合就不报
                 ntoks = [_bucket(x) for x in nm.split()]
                 if not any(tk in " ".join(full_names) for tk in ntoks) and _bucket(nm) not in full_names:
