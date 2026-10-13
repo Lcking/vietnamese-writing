@@ -100,8 +100,11 @@ MODEL_TIERS = {
     "small": {"profile": "lite", "ex_max_n": 0, "global_rules": False,
               "suggest_revise": True, "require_facts": True},
     # A1:large 档=卡片(不注长文件/全局规则),目标 ≤8000 字符(线上强模型)
-    "large": {"profile": "lite", "ex_max_n": 0, "global_rules": False,
-              "suggest_revise": False, "use_card_only": True},
+    # 范文位:最多 2 条、每条 ≤1200 字符;**默认关闭**,仅 allow_unreviewed=True 时注入
+    # (用于对照实验;线上默认仍是 0 条范文)
+    "large": {"profile": "lite", "ex_max_n": 2, "ex_max_chars": 1200,
+              "global_rules": False, "suggest_revise": False,
+              "use_card_only": True, "examples_default_off": True},
 }
 
 FOOTBALL_HINTS = ["bóng đá", "bình luận", "trận đấu", "cầu thủ", "đội bóng",
@@ -417,9 +420,14 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
             or resolved_genre in GENERIC_MAP):
             atype = GENRE_ARTICLE_TYPE.get(resolved_genre)
             ex_max_n = (tier["ex_max_n"] if tier else pcfg["ex_max_n"])
+            # large 档范文位默认关闭:仅 allow_unreviewed=True 时才启用
+            if tier and tier.get("examples_default_off") and not allow_unreviewed:
+                ex_max_n = 0
+            ex_max_chars = (tier.get("ex_max_chars") if tier and allow_unreviewed
+                            else pcfg["ex_max_chars"])
             ex, examples_meta, ex_missing = pick_examples(
                 resolved_genre, budget["examples"], post_type=post_type,
-                max_n=ex_max_n, max_chars=pcfg["ex_max_chars"],
+                max_n=ex_max_n, max_chars=ex_max_chars,
                 article_type=atype, strict_reviewed=not allow_unreviewed)
             for mf in ex_missing:
                 truncations.append((f"examples_missing:{mf}", "范文文件不存在 → 注入 0 条"))

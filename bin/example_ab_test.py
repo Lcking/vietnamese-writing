@@ -35,7 +35,7 @@ def load_cases():
     return [c for c in m.CASES if c[1] == "ket_qua"]
 
 
-def main():
+def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="eval/results/ab_examples")
     ap.add_argument("--tier", default="large", choices=["small", "large"])
@@ -44,19 +44,34 @@ def main():
     ap.add_argument("--max-tokens", type=int, default=1500)
     ap.add_argument("--temperature", type=float, default=0.7)
     ap.add_argument("--pairs", type=int, default=2, help="B 组注入范文条数(1-2)")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
+
+    import viet_writer as vw
+
+    cases = load_cases()
+    if args.limit:
+        cases = cases[:args.limit]
+
+    # 断言(在初始化 LLM 客户端之前):B 组必须真能注入范文,
+    # 否则 A/B 两组提示完全相同,实验等于自己和自己比
+    if not cases:
+        print("ERROR: 没有可用的赛果用例。", file=sys.stderr)
+        return 2
+    _probe = vw.build_prompt(cases[0][2], profile="full", model_tier=args.tier,
+                             allow_unreviewed=True)
+    _n_b = _probe["stats"].get("n_examples", 0)
+    if _n_b == 0:
+        print(f"ERROR: B 组注入范文数为 0(tier={args.tier})——A/B 两组将完全相同,"
+              f"实验无效。请检查档位是否支持范文注入。", file=sys.stderr)
+        return 2
+    print(f"预检通过: B 组可注入 {_n_b} 条范文(tier={args.tier})")
 
     import llm_client
-    import viet_writer as vw
     from check_style import check as style_check
 
     client = llm_client.LLMClient(None)
     outdir = ROOT / args.out
     outdir.mkdir(parents=True, exist_ok=True)
-
-    cases = load_cases()
-    if args.limit:
-        cases = cases[:args.limit]
 
     # 两组同档位:都用 full(才有范文预算),唯一差别是 allow_unreviewed 开关
     # 说明:lite 范文预算为 0,A/B 无法在同档位下区分"有/无范文",故用 full。
@@ -65,6 +80,7 @@ def main():
     for case in cases:
         cid, genre, task = case[0], case[2], case[3]
         facts = case[5] if len(case) > 5 else None
+
 
         for rep in range(args.repeat):
             for arm, allow_unrev in (("A_no_examples", False), ("B_with_examples", True)):

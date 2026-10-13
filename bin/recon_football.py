@@ -84,12 +84,38 @@ def shingles(t, k=6):
     return frozenset(" ".join(toks[i:i + k]) for i in range(len(toks) - k + 1))
 
 
+# 赛事名后面跟的年份是"赛事届次",不是发布时间 → 先剔除
+TOURNAMENT_RE = re.compile(
+    r"\b(?:World Cup|Euro|Asian Cup|AFF Cup|AFF Suzuki Cup|SEA Games|Olympic|"
+    r"U-?\d{2}|U\d{2}|Copa America|Confederation|Nations League|Vòng loại)"
+    r"[\s\w]*?(19[89]\d|20[0-2]\d)\b", re.I)
+FULL_DATE_RE = re.compile(r"\bngày\s+(\d{1,2})[/.-](\d{1,2})[/.-](19[89]\d|20[0-2]\d)\b", re.I)
+SEASON_RE = re.compile(r"\b(19[89]\d|20[0-2]\d)\s*/\s*\d{2}\b")
+
+
 def extract_year(t):
-    """提取年份;限定 1990-2026(排除比分/编号误提取,如 2050/2098)。"""
-    ys = re.findall(r"\b(19[89]\d|20[0-2]\d)\b", t)
-    seasons = re.findall(r"\b(19[89]\d|20[0-2]\d)\s*/\s*\d{2}\b", t)
-    cand = [int(y) for y in ys + seasons if 1990 <= int(y) <= 2026]
-    return max(cand) if cand else None
+    """提取"可能代表发布年份"的年份。
+
+    优先级:完整日期 > 赛季写法 > 孤立年份。
+    先剔除赛事名后的年份(World Cup 2026 之类),避免误判发布年份。
+    """
+    # 剔掉赛事名年份(用占位替换,保留其余文本)
+    cleaned = TOURNAMENT_RE.sub(" ", t)
+    # 1) 完整日期
+    fd = FULL_DATE_RE.findall(cleaned)
+    if fd:
+        ys = [int(y) for _, _, y in fd if 1990 <= int(y) <= 2026]
+        if ys:
+            return max(ys)
+    # 2) 赛季写法(2023/24)
+    seasons = [int(m.group(1)) for m in SEASON_RE.finditer(cleaned)
+               if 1990 <= int(m.group(1)) <= 2026]
+    if seasons:
+        return max(seasons)
+    # 3) 孤立年份
+    ys = [int(y) for y in re.findall(r"\b(19[89]\d|20[0-2]\d)\b", cleaned)
+          if 1990 <= int(y) <= 2026]
+    return max(ys) if ys else None
 
 
 def main():
@@ -179,7 +205,9 @@ def main():
     # 估算全量:全库约 253 万条(早前扫描所得),按抽样比例外推
     est_total = 2_530_000
     est_fb = int(est_total * ratio)
-    est_ketqua = int(est_fb * (stats["cls"]["ket_qua"] / max(1, fb)))
+    # 赛果估算:分别给"去重前"和"去重后"两个口径(评审指出后者更可信)
+    est_ketqua_raw = int(est_fb * (stats["cls"]["ket_qua"] / max(1, fb)))
+    est_ketqua = int(est_fb * (stats["cls_nodup"]["ket_qua"] / max(1, fb)))
 
     lines = ["# WanJuan 越南语语料 —— 足球内容摸底", "",
              f"- 抽样文件: {len(pick)} 个 / 全库 {len(all_files)} 个",
@@ -192,7 +220,8 @@ def main():
     for g in ["ket_qua", "truoc_tran", "chuyen_nhuong", "nhan_vat", "social_short", "betting"]:
         lines.append(f'| {g} | {stats["cls"][g]:,} | {stats["cls_nodup"][g]:,} |')
     lines += ["",
-              f"- 估算赛果稿: 约 {est_ketqua:,} 条(去重前口径)",
+              f"- 估算赛果稿: 约 {est_ketqua:,} 条(**去重后口径**,更可信)",
+             f"- 　　　　　　: 约 {est_ketqua_raw:,} 条(去重前口径)",
               "",
               "## 年份分布(正文提取)", "",
               "| 年份 | 条数 |", "|---|---|"]
@@ -224,6 +253,7 @@ def main():
     (outdir / "recon.json").write_text(json.dumps({
         "files": len(pick), "lines": total, "football": fb, "ratio": ratio,
         "est_total_football": est_fb, "est_ket_qua": est_ketqua,
+        "est_ket_qua_raw": est_ketqua_raw,
         "cls": dict(stats["cls"]), "cls_nodup": dict(stats["cls_nodup"]),
         "years": dict(stats["years"]), "vn_vs_eu": dict(stats["vn_vs_eu"]),
         "mt_or_copy": stats["mt_or_copy"], "clickbait": stats["clickbait"],
@@ -234,7 +264,7 @@ def main():
 
     # 停止条件检查
     print("\n## 停止条件检查")
-    print(f"1. 去重后赛果稿 < 1000? 估算 {est_ketqua:,} → "
+    print(f"1. 去重后赛果稿 < 1000? 估算(去重后) {est_ketqua:,} → "
           f"{'触发!' if est_ketqua < 1000 else '未触发'}")
     mt_ratio = stats["mt_or_copy"] / max(1, fb)
     print(f"2. 机翻/拼接 > 50%? 实测 {mt_ratio*100:.0f}% → "
