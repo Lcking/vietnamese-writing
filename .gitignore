@@ -15,3 +15,4 @@ distill_report/entity_names_generic.tsv
 
 # 足球摸底:样本含正文,不入库(版权);报告与统计入
 distill_report/football_recon/samples.jsonl
+distill_football/
