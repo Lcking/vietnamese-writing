@@ -319,7 +319,8 @@ GENRE_ARTICLE_TYPE = {
 
 
 def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
-                 profile=None, post_type=None, model_tier=None, allow_unreviewed=False):
+                 profile=None, post_type=None, model_tier=None, allow_unreviewed=False,
+                 use_examples=False):
     """
     纯函数:组装提示词,不调用任何模型。
     profile: min / lite / full。None 时按体裁自动(社交/快讯 → lite,其余 → full)。
@@ -420,10 +421,12 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
             or resolved_genre in GENERIC_MAP):
             atype = GENRE_ARTICLE_TYPE.get(resolved_genre)
             ex_max_n = (tier["ex_max_n"] if tier else pcfg["ex_max_n"])
-            # large 档范文位默认关闭:仅 allow_unreviewed=True 时才启用
-            if tier and tier.get("examples_default_off") and not allow_unreviewed:
+            # large 档范文位:由 use_examples 单独控制(与放宽确认互不影响)
+            # 默认关闭;use_examples=True 时才启用(对照实验用)
+            if tier and tier.get("examples_default_off") and not use_examples:
                 ex_max_n = 0
-            ex_max_chars = (tier.get("ex_max_chars") if tier and allow_unreviewed
+            ex_max_chars = (tier.get("ex_max_chars")
+                            if tier and use_examples and tier.get("ex_max_chars")
                             else pcfg["ex_max_chars"])
             ex, examples_meta, ex_missing = pick_examples(
                 resolved_genre, budget["examples"], post_type=post_type,
@@ -455,6 +458,7 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
         "profile": profile,
         "model_tier": model_tier,
         "allow_unreviewed_examples": allow_unreviewed,
+        "use_examples": use_examples,
         "card_used": card_used,
         "stats": stats,
         "examples_meta": examples_meta,
@@ -485,7 +489,7 @@ def build_user_prompt(task, genre=None, extra="", format_contract=None, length=N
 
 def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
           profile=None, post_type=None, length=None, facts=None, revise=False,
-          model_tier=None, allow_unreviewed=False):
+          model_tier=None, allow_unreviewed=False, use_examples=False):
     """调用模型写作。genre 为 None 时自动识别。生成参数由 gen_kw 显式传入(否则用配置)。
 
     length: 篇幅合同(如 "500-900")
@@ -494,7 +498,7 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
     """
     if genre is None:
         genre = detect_genre(task)
-    prompt = build_prompt(genre, format_contract=format_contract,
+    prompt = build_prompt(genre, format_contract=format_contract, use_examples=use_examples,
                           profile=profile, post_type=post_type, model_tier=model_tier,
                           allow_unreviewed=allow_unreviewed)
     # B1: 事实预处理 → 注入(small 档视为必需)

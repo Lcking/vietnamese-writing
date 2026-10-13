@@ -39,6 +39,10 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="eval/results/ab_examples")
     ap.add_argument("--tier", default="large", choices=["small", "large"])
+    ap.add_argument("--use-examples", action="store_true",
+                    help="打开 large 档范文位(B 组注入范文)")
+    ap.add_argument("--allow-unreviewed", action="store_true",
+                    help="放宽'必须人工确认'筛选(结果无效,仅调试用)")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--repeat", type=int, default=3, help="每用例重复次数(默认 3)")
     ap.add_argument("--max-tokens", type=int, default=1500)
@@ -58,13 +62,26 @@ def main(argv=None):
         print("ERROR: 没有可用的赛果用例。", file=sys.stderr)
         return 2
     _probe = vw.build_prompt(cases[0][2], profile="full", model_tier=args.tier,
-                             allow_unreviewed=True)
+                             use_examples=args.use_examples,
+                             allow_unreviewed=args.allow_unreviewed)
     _n_b = _probe["stats"].get("n_examples", 0)
+    _metas = _probe.get("examples_meta", [])
     if _n_b == 0:
-        print(f"ERROR: B 组注入范文数为 0(tier={args.tier})——A/B 两组将完全相同,"
-              f"实验无效。请检查档位是否支持范文注入。", file=sys.stderr)
+        print(f"ERROR: B 组注入范文数为 0(tier={args.tier}, "
+              f"use_examples={args.use_examples})——A/B 两组将完全相同,实验无效。"
+              f"需先有确认过的范文(--use-examples)或显式放宽(--allow-unreviewed)。",
+              file=sys.stderr)
         return 2
-    print(f"预检通过: B 组可注入 {_n_b} 条范文(tier={args.tier})")
+    if not args.allow_unreviewed:
+        _unrev = [m for m in _metas if not m.get("type_reviewed")]
+        if _unrev:
+            print(f"ERROR: B 组注入的 {len(_unrev)}/{_n_b} 条范文 type_reviewed != True"
+                  f"——真正对照实验只允许人工确认过的范文。"
+                  f"如确要用未确认范文,请显式加 --allow-unreviewed(结果无效)。",
+                  file=sys.stderr)
+            return 2
+    _warn = "  ⚠ 范文未经确认,结果无效" if args.allow_unreviewed else ""
+    print(f"预检通过: B 组可注入 {_n_b} 条范文(tier={args.tier}){_warn}")
 
     import llm_client
     from check_style import check as style_check
@@ -125,7 +142,11 @@ def main(argv=None):
     b_ex = len(b[0]["examples"]) if b and b[0]["examples"] else 0
     a_types = sorted({m.get("article_type") for r in a for m in r["examples"]})
     b_types = sorted({m.get("article_type") for r in b for m in r["examples"]})
-    lines = ["# 第 9 条 范文池对照实验", "",
+    lines = ["# 第 9 条 范文池对照实验", ""]
+    if args.allow_unreviewed:
+        lines += ["> ⚠⚠ **范文未经人工确认,本次结果无效。** "
+                  "本报告仅用于调试,不得据以判定范文是否有用。", ""]
+    lines += [
              f"- 档位: {TIER}(两组相同)",
              f"- 用例: {len(set(r['case'] for r in a))} 个 × 2 组 × {args.repeat} 次",
              f"- A 组范文: {a_ex} 条 (article_type={a_types})",
