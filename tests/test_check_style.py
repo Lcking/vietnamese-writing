@@ -299,15 +299,49 @@ class TestV147Fixes(unittest.TestCase):
         self.assertNotIn("S12", {i["rule"] for i in check(txt, f)})
 
     def test_s21_leaked_scoreline(self):
-        f = self._f("M4_dong_nai_binh_minh")
+        f = self._f("M1_hai_phong_thanh_hoa")
         for txt in ("Trận đấu kết thúc.\nHải Phòng 1-2 Thanh Hóa.",
-                    "Kết quả: A 2-1 B"):
+                    "Kết quả: Hải Phòng 1-2 Thanh Hóa"):
             self.assertIn("S21", {i["rule"] for i in check(txt, f)}, f"未拦: {txt}")
 
     def test_s22_causal_hint(self):
         f = self._f("M3_ha_noi_da_nang_pen")
         txt = "Hà Nội và SHB Đà Nẵng hòa 1-1 sau 90 phút vì giải đấu không đá hiệp phụ."
         self.assertIn("S22", {i["rule"] for i in check(txt, f, "Viết bản tin.")})
+
+
+class TestS21ScorelineLeak(unittest.TestCase):
+    """S21:比分行泄漏(段中夹也要拦;正常导语不拦)。"""
+
+    DP = _pl.Path(__file__).resolve().parent.parent / "eval/regression/placeholder_matches_20261013"
+
+    def _f(self, name):
+        import json as _j
+        return _j.loads((self.DP / f"{name}.json").read_text(encoding="utf-8"))
+
+    def test_mid_paragraph_scoreline(self):
+        f = self._f("M1_hai_phong_thanh_hoa")
+        txt = ("Đội nhà vượt lên dẫn 2-1. Hải Phòng 1-2 Thanh Hóa. Sau trận, HLV phát biểu.")
+        self.assertIn("S21", {i["rule"] for i in check(txt, f)})
+
+    def test_ket_qua_anywhere(self):
+        f = self._f("M4_dong_nai_binh_minh")
+        self.assertIn("S21", {i["rule"] for i in check("Kết quả: A 2-1 B.", f)})
+
+    def test_ket_qua_mid_paragraph(self):
+        f = self._f("M4_dong_nai_binh_minh")
+        txt = "Trận đấu khép lại. Kết quả: TP. Đồng Nai 4-3 Bình Minh Sài Gòn. Tan trận."
+        self.assertIn("S21", {i["rule"] for i in check(txt, f)})
+
+    def test_normal_lead_not_flagged(self):
+        """正常导语(队名+比分+赛事说明)不该拦。"""
+        f = self._f("M5_braga_sporting")
+        txt = "Braga 1-3 Sporting ở vòng 8 giải VĐQG, Suárez lập công."
+        self.assertNotIn("S21", {i["rule"] for i in check(txt, f)})
+
+    def test_team_name_with_abbrev(self):
+        f = self._f("M4_dong_nai_binh_minh")
+        self.assertIn("S21", {i["rule"] for i in check("TP. Đồng Nai 4-3 Bình Minh Sài Gòn.", f)})
 
 
 if __name__ == "__main__":

@@ -58,10 +58,27 @@ GOAL_VERBS = ["mở tỷ số", "gỡ hòa", "san bằng", "vượt lên dẫn",
               "nhân đôi cách biệt", "rút ngắn cách biệt"]
 
 
+# 常见缩写(句点不作为句末):TP., HLV., P., T., Q., KS., Th.S, v.v.
+_ABBREV = re.compile(r"\b(?:TP|HLV|P|T|Q|KS|Th|GS|TS|NXB|CLB|VĐV|TTXVN)\.$", re.I)
+
+
 def split_sentences(text):
-    """按 .!?… 和换行切句;返回句子列表(去空)。"""
+    """按 .!?… 和换行切句;避开常见缩写(TP./HLV. 等)。返回句子列表(去空)。"""
     raw = re.split(r"(?<=[.!?…])\s+|\n+", text)
-    return [s.strip() for s in raw if s.strip()]
+    out, buf = [], ""
+    for s in raw:
+        s = s.strip()
+        if not s:
+            continue
+        buf = (buf + " " + s).strip() if buf else s
+        # 若这一段以缩写结尾,则不视为句末,与下一段合并
+        if _ABBREV.search(buf):
+            continue
+        out.append(buf)
+        buf = ""
+    if buf:
+        out.append(buf)
+    return out
 
 
 def _has_minute(s):
@@ -492,18 +509,26 @@ def check(task_text, facts=None, task=None):
                        if _ud2.category(c) != "Mn").lower()
 
     # ---- S21 数据行泄漏(阻断) ----
-    for ln in task_text.split("\n"):
-        s = ln.strip()
+    # 按句判断(段中夹的比分行也要拦);只用 facts 的两个队名做精确匹配
+    hn21 = (facts or {}).get("home") if facts else None
+    an21 = (facts or {}).get("away") if facts else None
+    for sent in split_sentences(task_text):
+        s = sent.strip()
         if not s:
             continue
+        # ① 'Kết quả:' 开头,不论位置
         if re.match(r"^Kết quả\s*:", s, re.I):
             issues.append({"rule": "S21", "blocking": True, "snippet": s[:50],
                            "msg": "Dòng dữ liệu lọt vào bài ('Kết quả: …')"})
             continue
-        # 整句只有 队名 比分 队名(允许结尾句点)
-        if re.fullmatch(r"[A-ZĐ][\wÀ-ỹ .]*\s+\d+\s*-\s*\d+\s+[A-ZĐ][\wÀ-ỹ .]*\.?", s):
-            issues.append({"rule": "S21", "blocking": True, "snippet": s[:50],
-                           "msg": "Dòng chỉ có 'đội - tỷ số - đội' (lọt từ dữ liệu)"})
+        # ② 整句只有 '队A 比分 队B'(队名取自 facts,精确)
+        if hn21 and an21:
+            pat = (r"^(?:" + re.escape(hn21) + r"|" + re.escape(an21) + r")\s+"
+                   r"\d+\s*-\s*\d+\s+"
+                   r"(?:" + re.escape(hn21) + r"|" + re.escape(an21) + r")\.?$")
+            if re.match(pat, s):
+                issues.append({"rule": "S21", "blocking": True, "snippet": s[:50],
+                               "msg": "Câu chỉ có 'đội - tỷ số - đội' (lọt từ dữ liệu)"})
 
     # ---- S15 赛果方向(需 facts) ----
     if facts:
