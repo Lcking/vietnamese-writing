@@ -7,3 +7,8 @@ config.yaml
 # 蒸馏中间产物(大文件,不入库)
 distill_work/
 eval/regression/**/out/
+# 蒸馏后处理产物:含正文的不入库(版权);统计报告可入库
+distill_report/source_*.jsonl
+distill_report/*_suspect.txt
+distill_report/ngram_ket_qua.tsv
+distill_report/entity_names.tsv
