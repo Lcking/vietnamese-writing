@@ -1,5 +1,33 @@
 # Changelog
 
+## v1.5.1 (2026-10-13) — 修复 regression_check 崩溃
+
+### 崩溃修复(P0)
+- `bin/regression_check.py` 调用了未定义的 `_load_task` → `NameError`;
+  98 项测试无一覆盖其主函数,故未被发现
+- 补 `_load_task` / `_load_facts`:`_eval_map.json` 是 `{gid: [task, stem]}`,
+  需**按文件名反查**(评审指出的方向)
+- `REAL` 从 `placeholder_matches_20261013` 改回 `real_matches_20261013`
+  (此前 facts 会取到占位数据)
+
+### 稿件路径改到仓库内
+- `TABLE` 原先指向 FootballDesk 证据目录,上游永远不存在 → 每次"跳过"
+- 改为 `eval/regression/realrun_smoke/` 内 3 篇(从盲审包提取:B01/B18 有比分行、
+  B06 干净),clone 后即可运行
+
+### 新增冒烟测试(4 条)
+- `tests/test_regression_check.py`:直接调 `main()` 要求通过数>0;
+  校验 `_load_task` 存在、`REAL` 指向已验证数据、命令行能跑
+- 以后它再坏,测试会直接失败
+
+### --dir 扫描的诚实提示
+- facts 取不到时明确打印"(无对应 facts → 仅检查不依赖 facts 的规则)",
+  不再静默传 None
+
+### 验证
+- 102 例测试全过(43+46+9+4);regression_check 3/3 通过
+
+---
 ## v1.5.0 (2026-10-13) — 第六轮反馈
 
 ### S14 排除表修复(上一版反作用)
