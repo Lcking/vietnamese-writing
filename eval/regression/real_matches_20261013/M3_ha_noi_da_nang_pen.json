@@ -1,0 +1,40 @@
+{
+  "competition": "Cúp Quốc gia 2026/27 - vòng loại",
+  "competition_type": "cup",
+  "date": null,
+  "venue": null,
+  "home": "Hà Nội",
+  "away": "SHB Đà Nẵng",
+  "final": [
+    1,
+    1
+  ],
+  "penalties": [
+    3,
+    4
+  ],
+  "events": [
+    {
+      "minute": 19,
+      "type": "goal",
+      "team": "away",
+      "player": "Kalvin Luong"
+    },
+    {
+      "minute": 28,
+      "type": "goal",
+      "team": "home",
+      "player": "Jung"
+    }
+  ],
+  "context": [
+    "giải không đá hiệp phụ, hòa sau 90 phút thì đá luân lưu",
+    "đội thắng vào vòng 1/8"
+  ],
+  "_verified": true,
+  "_sources": [
+    "vpf.vn 07/10/2026",
+    "vi.wikipedia Cúp Quốc gia 2026-27"
+  ],
+  "_note": "Đối chiếu với báo Việt Nam (xem _sources). Trường null = chưa xác minh được, để trống có chủ đích."
+}

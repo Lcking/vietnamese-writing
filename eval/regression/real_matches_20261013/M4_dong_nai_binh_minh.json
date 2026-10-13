@@ -1,0 +1,72 @@
+{
+  "competition": "Cúp Quốc gia 2026/27 - vòng loại",
+  "competition_type": "cup",
+  "date": "2026-10-06",
+  "venue": null,
+  "home": "TP. Đồng Nai",
+  "away": "Bình Minh Sài Gòn",
+  "final": [
+    4,
+    3
+  ],
+  "events": [
+    {
+      "minute": 16,
+      "type": "goal",
+      "team": "home",
+      "player": "Lưu Tự Nhân"
+    },
+    {
+      "minute": 23,
+      "type": "goal",
+      "team": "away",
+      "player": "Bùi Duy Nam"
+    },
+    {
+      "minute": 33,
+      "type": "goal",
+      "team": "away",
+      "player": "Nguyễn Hoàng Quốc Chí"
+    },
+    {
+      "minute": 49,
+      "type": "goal",
+      "team": "home",
+      "player": "Công Phượng"
+    },
+    {
+      "minute": 51,
+      "type": "red",
+      "team": "away",
+      "player": "Đỗ Minh Quang"
+    },
+    {
+      "minute": 56,
+      "type": "goal",
+      "team": "home",
+      "player": "Nguyễn Quốc Lộc"
+    },
+    {
+      "minute": 64,
+      "type": "goal",
+      "team": "away",
+      "player": "Jok Atem Dor"
+    },
+    {
+      "minute": 76,
+      "type": "goal",
+      "team": "home",
+      "player": "Ivan"
+    }
+  ],
+  "context": [
+    "Bình Minh Sài Gòn là đội hạng Nhất"
+  ],
+  "_verified": true,
+  "_sources": [
+    "bongda.com.vn",
+    "vi.wikipedia Cúp Quốc gia 2026-27",
+    "sggp.org.vn 06/10/2026"
+  ],
+  "_note": "Đối chiếu với báo Việt Nam (xem _sources). Trường null = chưa xác minh được, để trống có chủ đích."
+}

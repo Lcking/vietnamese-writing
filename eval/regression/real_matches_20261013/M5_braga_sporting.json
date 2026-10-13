@@ -1,0 +1,50 @@
+{
+  "competition": "VĐQG Bồ Đào Nha",
+  "competition_type": "league",
+  "round": 8,
+  "date": null,
+  "venue": null,
+  "home": "Braga",
+  "away": "Sporting",
+  "final": [
+    1,
+    3
+  ],
+  "events": [
+    {
+      "minute": null,
+      "type": "own_goal",
+      "team": "away",
+      "player": "Rui Silva",
+      "detail": "cuối hiệp một, cú sút của Huseinbasic dội cột"
+    },
+    {
+      "minute": null,
+      "type": "goal",
+      "team": "away",
+      "player": "Luis Suarez",
+      "detail": "đầu hiệp hai"
+    },
+    {
+      "minute": 71,
+      "type": "own_goal",
+      "team": "home",
+      "player": "Bernardo"
+    },
+    {
+      "minute": null,
+      "type": "goal",
+      "team": "away",
+      "player": "Rodrigo Zalazar"
+    }
+  ],
+  "context": [
+    "Sporting kém đội đầu bảng Porto 3 điểm",
+    "Luis Suarez có 7 bàn sau 8 trận"
+  ],
+  "_verified": true,
+  "_sources": [
+    "vietnam.vn (HTV) 11/10/2026"
+  ],
+  "_note": "Đối chiếu với báo Việt Nam (xem _sources). Trường null = chưa xác minh được, để trống có chủ đích."
+}

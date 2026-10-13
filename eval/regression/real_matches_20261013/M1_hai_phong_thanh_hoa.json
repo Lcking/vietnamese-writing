@@ -1,0 +1,44 @@
+{
+  "competition": "V.League 2026/27",
+  "competition_type": "league",
+  "round": 3,
+  "date": "2026-10-10",
+  "venue": "Lạch Tray",
+  "home": "Hải Phòng",
+  "away": "Thanh Hóa",
+  "final": [
+    1,
+    2
+  ],
+  "events": [
+    {
+      "minute": 15,
+      "type": "goal",
+      "team": "away",
+      "player": "Matheus Martins"
+    },
+    {
+      "minute": 19,
+      "type": "penalty",
+      "team": "home",
+      "player": "Makaric",
+      "detail": "bóng chạm tay hậu vệ Văn Lợi"
+    },
+    {
+      "minute": 57,
+      "type": "goal",
+      "team": "away",
+      "player": "Damoth Thongkhamsavath",
+      "assist": "Matheus Martins"
+    }
+  ],
+  "context": [
+    "Thanh Hóa tạm xếp thứ 4 với 6 điểm"
+  ],
+  "_verified": true,
+  "_sources": [
+    "vietnam.vn (QĐND) 10/10/2026",
+    "hoanvu.vn"
+  ],
+  "_note": "Đối chiếu với báo Việt Nam (xem _sources). Trường null = chưa xác minh được, để trống có chủ đích."
+}
