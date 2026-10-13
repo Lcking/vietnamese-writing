@@ -486,10 +486,11 @@ def check(task_text, facts=None, task=None):
                                    "msg": f"Tên riêng '{name}' không có trong dữ kiện → kiểm tra bịa đặt"})
             # 扩展: "sân + 专名"、"người + 国籍"、"bảng + 字母"
             # 排除普通词:sân nhà / sân khách / sân đối phương(非专名)
+            # 只在**整词完全匹配**时跳过(不能只看首字,否则会误排除真地名如 'Nhà Bè')
             COMMON_SAN = {"nhà", "khách", "đối phương", "trung lập", "chính"}
             for m in re.finditer(r"\bsân\s+([A-ZĐ][\wÀ-ỹ]+(?:[ \t]+[A-ZĐ][\wÀ-ỹ]+)*)", task_text):
                 nm = m.group(1).strip()
-                if nm.split()[0].lower() in COMMON_SAN:
+                if nm.lower() in COMMON_SAN:
                     continue
                 # 队名可作球场名("sân Thể Công"); 只要 token 命中允许集合就不报
                 ntoks = [_bucket(x) for x in nm.split()]
@@ -707,6 +708,8 @@ def main():
     ap.add_argument("--text-file")
     ap.add_argument("--text")
     ap.add_argument("--facts", help="facts.json(用于 S1/S9)")
+    ap.add_argument("--task", default=None, help="任务文本(用于 S14 专名核对;不传会误报)")
+    ap.add_argument("--task-file", default=None, help="从文件读任务文本")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
@@ -719,7 +722,14 @@ def main():
     if args.facts:
         facts = json.loads(Path(args.facts).read_text(encoding="utf-8"))
 
-    issues = check(text, facts)
+    task = args.task
+    if args.task_file and not task:
+        task = Path(args.task_file).read_text(encoding="utf-8")
+    issues = check(text, facts, task)
+    # 不传 task 且传了 facts → 明确提示 S14 可能误报(不悄悄降级)
+    if facts and not task:
+        print("⚠ 未提供 --task: S14(专名核对)可能把任务里写了、facts 里没有的名字误报为编造",
+              file=sys.stderr)
     if args.json:
         print(json.dumps(issues, ensure_ascii=False, indent=2))
     else:

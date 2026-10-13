@@ -51,7 +51,8 @@ def main():
         if fxpath.exists():
             facts = json.loads(fxpath.read_text(encoding="utf-8"))
         text = fp.read_text(encoding="utf-8")
-        rules = {i["rule"] for i in check(text, facts)}
+        task = _load_task(fx)
+        rules = {i["rule"] for i in check(text, facts, task)}
         ok = all(r in rules for r in must) and all(r not in rules for r in mustnot)
         total += 1
         passed += int(ok)
@@ -65,7 +66,8 @@ def main():
             print(f"\n扫描 {d}:")
             for fp in sorted(d.rglob("*.txt")):
                 txt = fp.read_text(encoding="utf-8", errors="ignore")
-                blocking = [i["rule"] for i in check(txt) if i.get("blocking")]
+                task = _load_task(fp.stem)
+                blocking = [i["rule"] for i in check(txt, None, task) if i.get("blocking")]
                 if blocking:
                     print(f"  {fp.name}: 阻断级 {sorted(set(blocking))}")
 

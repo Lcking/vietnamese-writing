@@ -344,5 +344,40 @@ class TestS21ScorelineLeak(unittest.TestCase):
         self.assertIn("S21", {i["rule"] for i in check("TP. Đồng Nai 4-3 Bình Minh Sài Gòn.", f)})
 
 
+class TestS14VenueWords(unittest.TestCase):
+    """S14:sân + 普通词/真地名的取舍(v1.4.9 修复)。"""
+
+    DP = _pl.Path(__file__).resolve().parent.parent / "eval/regression/real_matches_20261013"
+
+    def _f(self, name):
+        import json as _j
+        return _j.loads((self.DP / f"{name}.json").read_text(encoding="utf-8"))
+
+    def test_san_nha_lowercase_ok(self):
+        """'sân nhà'(小写普通词)不报。"""
+        f = self._f("M4_dong_nai_binh_minh")
+        self.assertNotIn("S14", {i["rule"] for i in check("Hải Phòng thua trên sân nhà.", f)})
+
+    def test_san_nha_be_reported(self):
+        """'sân Nhà Bè'(真地名)要报。"""
+        f = self._f("M4_dong_nai_binh_minh")
+        self.assertIn("S14", {i["rule"] for i in check("trên sân Nhà Bè.", f)})
+
+    def test_san_doi_phuong_word_ok(self):
+        """'sân Đối Phương'(整词命中排除表)不报。"""
+        f = self._f("M4_dong_nai_binh_minh")
+        self.assertNotIn("S14", {i["rule"] for i in check("trên sân Đối Phương.", f)})
+
+    def test_san_real_venue_ok(self):
+        """facts.venue 里的真实球场名不报。"""
+        f = self._f("M1_hai_phong_thanh_hoa")
+        self.assertNotIn("S14", {i["rule"] for i in check("Trận diễn ra trên sân Lạch Tray.", f)})
+
+    def test_san_fabricated_reported(self):
+        """facts 里没有的球场名要报。"""
+        f = self._f("M4_dong_nai_binh_minh")
+        self.assertIn("S14", {i["rule"] for i in check("diễn ra trên sân Mỹ Đình", f)})
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
