@@ -34,8 +34,14 @@ CATS = ["ket_qua", "truoc_tran", "chuyen_nhuong", "nhan_vat", "social", "betting
 FOOTBALL_KW = re.compile(
     r"bóng đá|tỷ số|ghi bàn|thủ môn|HLV|V\.?League|Ngoại hạng Anh|"
     r"Champions League|đội tuyển|vòng \d+|phút \d+", re.I)
-SCORE_RE = re.compile(r"\b\d{1,2}\s*-\s*\d{1,2}\b")
+# 比分:两侧不能紧邻 / . (排除日期 07-25)或字母(排除 1-2 thìa 这种量词)
+SCORE_RE = re.compile(r"(?<![\d/.])\b\d{1,2}\s*-\s*\d{1,2}\b(?![\d/.]|\s*(?:thìa|kg|cm|mm|m\b|tuần|ngày|tháng))")
 MIN_RE = re.compile(r"(phút\s*\d+|\b\d{1,3}')", re.I)
+# 足球赛果语境:至少命中一个比赛专属词
+MATCH_CTX_RE = re.compile(
+    r"trận đấu|hiệp|bàn thắng|ghi bàn|đội|CLB|cầu thủ|huấn luyện viên|HLV|"
+    r"vòng \d+|vòng loại|giải|V\.?League|Cúp|chung kết|bán kết|tứ kết|"
+    r"sân vận động|trọng tài|thẻ (?:vàng|đỏ)|luân lưu|phút thứ", re.I)
 GOAL_VERB = re.compile(
     r"mở tỷ số|gỡ hòa|nâng tỷ số|rút ngắn cách biệt|vượt lên dẫn|ấn định", re.I)
 PRE_RE = re.compile(r"nhận định|trước trận|đội hình dự kiến|lực lượng|đối đầu", re.I)
@@ -73,7 +79,16 @@ def is_football(t):
 
 
 def is_ket_qua(t):
-    return bool(SCORE_RE.search(t)) and bool(MIN_RE.search(t) or GOAL_VERB.search(t))
+    """赛果收紧:比分 + 足球语境 + (进球分钟 或 比分动词)。
+
+    加强项(评审后):必须同时有足球比赛语境,排除电子书/百科里
+    的日期(07-25)、量词(1-2 thìa)被误判为比分。
+    """
+    if not SCORE_RE.search(t):
+        return False
+    if not MATCH_CTX_RE.search(t):
+        return False
+    return bool(MIN_RE.search(t) or GOAL_VERB.search(t))
 
 
 def classify(t):
@@ -288,7 +303,7 @@ def cmd_merge(args):
     for cat, recs in dedup.items():
         with (outdir / f"{cat}.jsonl").open("w", encoding="utf-8") as f:
             for r in recs:
-                rr = {k: v for k, v in r.items() if k not in ("sig", "head")}
+                rr = {k: v for k, v in r.items() if k != "sig"}  # 保留 head 供人工确认表
                 f.write(json.dumps(rr, ensure_ascii=False) + "\n")
 
     # 汇总统计
