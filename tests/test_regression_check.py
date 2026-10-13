@@ -23,7 +23,7 @@ class TestRegressionCheckSmoke(unittest.TestCase):
         import regression_check as rc
         buf = io.StringIO()
         with redirect_stdout(buf):
-            code = rc.main()
+            code = rc.main([])
         out = buf.getvalue()
         self.assertEqual(code, 0, f"main() 返回 {code};输出:\n{out}")
         self.assertIn("通过", out)

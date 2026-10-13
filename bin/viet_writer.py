@@ -268,6 +268,8 @@ def pick_examples(genre, budget=None, post_type=None, max_n=None,
             chunks.append(block)
             used += len(block)
             meta.append({"theme": fp.stem, "title": title[:80], "type": r.get("type"),
+                         "article_type": r.get("article_type"),
+                         "type_reviewed": bool(r.get("type_reviewed")),
                          "source_url": r.get("source_url"),
                          "content_sha256": (r.get("content_sha256") or "")[:12]})
         if used >= budget or len(chunks) >= max_n:

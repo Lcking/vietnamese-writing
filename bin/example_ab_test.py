@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""example_ab_test.py — 评审第 9 条:范文池对照实验。
+"""example_ab_test.py — 范文池对照实验(评审第 9 条)。
 
-对 G1-G9 赛果用例跑两组,口径一致:
-  A 组:0 条范文
-  B 组:注入 1-2 条同类型范文(--allow-unreviewed-examples 打开)
+设计要点(本版修正):
+  - 两组**同档位、同配置**,唯一差别是范文:A 组 0 条,B 组 1-2 条
+  - model_tier 真正传给 vw.write
+  - 结果记录:系统提示字符数 + 每条范文的标题与 article_type
+  - 支持每个用例重复 N 次(默认 3),支持 API 端点
 
-两组都经 viet_writer.write 的真实路径(同一份事实块),只差范文。
-比较:阻断级/提示级问题数、篇幅。
-
-前提:仓库现有范文 type_reviewed=False(无人确认),故 B 组用的是**未确认**范文,
-结果只作参考;接入人工确认范文后需重跑。
+⚠ 前提:纯对照需要**人工确认过的同类型范文**。当前库里 ket_qua 有 31 条,
+但 type_reviewed 全为 False(启发式标注,评审已确认不可靠)。
+本脚本照常可跑,但结论必须注明"范文未确认";正式对照待第三阶段产出确认范文。
 
 用法:
-    python bin/example_ab_test.py --out eval/results/ab_examples
-    python bin/example_ab_test.py --limit 3
+    VIET_LLM_DISABLE_THINKING=1 python bin/example_ab_test.py --out eval/results/ab_examples
+    python bin/example_ab_test.py --repeat 5 --tier large
+    VIET_LLM_BASE_URL=... VIET_LLM_MODEL=... VIET_LLM_API_KEY=... python bin/example_ab_test.py  # API 端点
 """
 import argparse
 import importlib.util as ilu
@@ -39,8 +40,10 @@ def main():
     ap.add_argument("--out", default="eval/results/ab_examples")
     ap.add_argument("--tier", default="large", choices=["small", "large"])
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--repeat", type=int, default=3, help="每用例重复次数(默认 3)")
     ap.add_argument("--max-tokens", type=int, default=1500)
     ap.add_argument("--temperature", type=float, default=0.7)
+    ap.add_argument("--pairs", type=int, default=2, help="B 组注入范文条数(1-2)")
     args = ap.parse_args()
 
     import llm_client
@@ -55,36 +58,45 @@ def main():
     if args.limit:
         cases = cases[:args.limit]
 
+    # 两组同档位:都用 full(才有范文预算),唯一差别是 allow_unreviewed 开关
+    # 说明:lite 范文预算为 0,A/B 无法在同档位下区分"有/无范文",故用 full。
+    TIER = args.tier
     results = []
     for case in cases:
         cid, genre, task = case[0], case[2], case[3]
         facts = case[5] if len(case) > 5 else None
 
-        for arm, allow_unrev, prof in (
-                ("A_no_examples", False, "lite"),      # A 组:无范文(lite)
-                ("B_with_examples", True, "full")):    # B 组:有范文预算(full)+允许未确认
-            text = vw.write(
-                client, task, genre=genre, facts=facts,
-                profile=prof, allow_unreviewed=allow_unrev,
-                gen_kw=dict(temperature=args.temperature, max_tokens=args.max_tokens),
-            )
-            meta = getattr(vw.write, "last_meta", {}) or {}
-            n_ex = meta.get("n_examples", 0)
-            try:
-                issues = style_check(text, facts, task)
-            except Exception as e:
-                issues = []
-                print(f"    [check error] {e}")
-            results.append({
-                "case": cid, "arm": arm, "tier": args.tier,
-                "examples_injected": n_ex, "chars": len(text),
-                "blocking": sum(1 for i in issues if i.get("blocking")),
-                "hint": sum(1 for i in issues if i.get("hint_only")),
-                "rules": sorted({i["rule"] for i in issues}),
-                "text": text,
-            })
-            print(f"  {cid} {arm}: 范文{n_ex}条 阻断={results[-1]['blocking']} "
-                  f"篇幅={len(text)} 规则={results[-1]['rules']}")
+        for rep in range(args.repeat):
+            for arm, allow_unrev in (("A_no_examples", False), ("B_with_examples", True)):
+                gen_kw = dict(temperature=args.temperature, max_tokens=args.max_tokens)
+                text = vw.write(
+                    client, task, genre=genre, facts=facts,
+                    profile="full",                 # 同档位
+                    model_tier=TIER,                # 真正传给 write
+                    allow_unreviewed=allow_unrev,
+                    gen_kw=gen_kw,
+                )
+                meta = getattr(vw.write, "last_meta", {}) or {}
+                # 取系统提示字符数 + 范文元数据
+                p = vw.build_prompt(genre, profile="full", model_tier=TIER,
+                                    allow_unreviewed=allow_unrev)
+                try:
+                    issues = style_check(text, facts, task)
+                except Exception:
+                    issues = []
+                results.append({
+                    "case": cid, "arm": arm, "rep": rep, "tier": TIER,
+                    "system_chars": len(p["system"]),
+                    "examples": p["examples_meta"],
+                    "n_examples": p["stats"].get("n_examples", 0),
+                    "chars": len(text),
+                    "blocking": sum(1 for i in issues if i.get("blocking")),
+                    "hint": sum(1 for i in issues if i.get("hint_only")),
+                    "rules": sorted({i["rule"] for i in issues}),
+                    "text": text,
+                })
+                print(f"  {cid} rep{rep} {arm}: sys={len(p['system'])} "
+                      f"范文{p['stats'].get('n_examples',0)}条 阻断={results[-1]['blocking']}")
 
     (outdir / "results.json").write_text(
         json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -93,15 +105,20 @@ def main():
     b = [r for r in results if r["arm"] == "B_with_examples"]
     ab = sum(r["blocking"] for r in a)
     bb = sum(r["blocking"] for r in b)
-    n_ex_b = max((r["examples_injected"] for r in b), default=0)
+    a_ex = sum(1 for m in a[0]["examples"] if True) if a else 0
+    b_ex = len(b[0]["examples"]) if b and b[0]["examples"] else 0
+    a_types = sorted({m.get("article_type") for r in a for m in r["examples"]})
+    b_types = sorted({m.get("article_type") for r in b for m in r["examples"]})
     lines = ["# 第 9 条 范文池对照实验", "",
-             f"- 档位: {args.tier}",
-             f"- 用例: {len(a)} 个赛果用例 × 2 组",
-             f"- B 组实际注入范文: {n_ex_b} 条/篇",
-             "- ⚠ 范文均**未经人工确认**(仓库 473 条 type_reviewed=False),结果仅作参考",
+             f"- 档位: {TIER}(两组相同)",
+             f"- 用例: {len(set(r['case'] for r in a))} 个 × 2 组 × {args.repeat} 次",
+             f"- A 组范文: {a_ex} 条 (article_type={a_types})",
+             f"- B 组范文: {b_ex} 条 (article_type={b_types})",
+             "- ⚠ 范文均**未经人工确认**(type_reviewed=False),结论仅作参考",
              "",
              "| 指标 | A 组(0 条范文) | B 组(注入范文) |",
              "|---|---|---|",
+             f"| 系统提示字符 | {a[0]['system_chars'] if a else '-'} | {b[0]['system_chars'] if b else '-'} |",
              f"| 阻断级问题合计 | {ab} | {bb} |",
              f"| 提示级问题合计 | {sum(r['hint'] for r in a)} | {sum(r['hint'] for r in b)} |",
              f"| 平均篇幅(字符) | {sum(r['chars'] for r in a)//max(1,len(a))} "
@@ -109,20 +126,16 @@ def main():
              "",
              "## 判定", ""]
     if ab == bb == 0:
-        verdict = "两组均无阻断 → 本指标无区分度;需人工盲审或换更细指标"
+        verdict = "两组均无阻断 → 该指标无区分度;需人工盲审或更细指标"
     elif bb < ab:
-        verdict = f"B 组阻断更少({bb} < {ab}) → 范文有正向作用(样本小,建议扩大复验)"
+        verdict = f"B 组阻断更少({bb} < {ab}) → 方向支持范文有用(需确认范文后复验)"
     elif bb > ab:
-        verdict = f"B 组阻断更多({bb} > {ab}) → **范文有负面影响**,不应默认开启"
+        verdict = f"B 组阻断更多({bb} > {ab}) → **范文有负面影响**"
     else:
-        verdict = f"两组阻断相同({ab}) → 无明显差异"
+        verdict = f"两组阻断相同({ab}) → 无差异"
     lines.append(verdict)
-    lines += ["", "## 逐用例", ""]
-    for r in a:
-        x = next((y for y in b if y["case"] == r["case"]), None)
-        lines.append(f"- {r['case']}: A={r['blocking']} / B={x['blocking'] if x else '?'}")
     (outdir / "REPORT.md").write_text("\n".join(lines), encoding="utf-8")
-    print("\n".join(lines[:16]))
+    print("\n".join(lines[:14]))
     print(f"\n→ {outdir}/")
     return 0
 

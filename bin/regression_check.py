@@ -70,11 +70,11 @@ TABLE = [
 ]
 
 
-def main():
+def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--dir", default=None, help="额外扫描的稿件目录")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
     if args.list:
         for name, fx, path, must, mustnot in TABLE:
