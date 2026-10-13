@@ -34,5 +34,7 @@
       "team": "away",
       "player": "Suárez"
     }
-  ]
+  ],
+  "_placeholder": true,
+  "_note": "DỮ LIỆU MẪU TẠM — tên cầu thủ là giả (Nguyễn Văn A...), phút/sự kiện do người tạo sinh ra, KHÔNG phải trận thật. Cần thay bằng matches.py đã kiểm chứng."
 }

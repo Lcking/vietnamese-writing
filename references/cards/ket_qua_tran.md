@@ -35,4 +35,4 @@ Có dữ kiện hệ quả bảng xếp hạng → nêu. Không có → dừng �
 KHÔNG tổng kết lặp kết quả ("giành trọn 3 điểm").
 
 ## Giọng & độ dài
-Trung tính; từ cảm xúc chỉ khi thực sự đặc biệt. 600–900 ký tự.
+Trung tính; từ cảm xúc chỉ khi thực sự đặc biệt. Đủ dữ kiện thì dừng, không độn chữ (tối đa ~900 ký tự).

@@ -30,7 +30,7 @@ sys.path.insert(0, str(ROOT / "bin"))
 def _load_real(name):
     import json as _j, pathlib as _pl
     fp = _pl.Path(__file__).resolve().parent.parent / \
-        "eval/regression/real_matches_20261012" / f"{name}.json"
+        "eval/regression/placeholder_matches_20261013" / f"{name}.json"
     try:
         return _j.loads(fp.read_text(encoding="utf-8"))
     except Exception:
@@ -117,7 +117,7 @@ CASES = [
      {"home": "A", "away": "B", "final": [1, 0], "events": [
          {"minute": 60, "type": "red", "team": "home", "player": "X"},
          {"minute": 75, "type": "goal", "team": "home", "player": "A1"}]}),
-    # --- Nhóm G5-G9: 5 trận thật (E1) ---
+    # --- Nhóm G5-G9: 5 trận MẪU (placeholder — cần thay bằng matches.py đã kiểm chứng) ---
     ("G5", "ket_qua", "football_ket_qua",
      "Hải Phòng tiếp Thanh Hóa ở vòng 3 V-League, ngày 12/10/2026. Viết bản tin kết quả.",
      {"forbid": [], "expect": []}, _load_real("M1_hai_phong_thanh_hoa")),

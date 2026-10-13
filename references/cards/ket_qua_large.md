@@ -39,4 +39,4 @@ không lấy tên cầu thủ đá phản làm nhân vật chính.
 
 ## 7. Định dạng
 Văn bản thuần. Dòng đầu là **tiêu đề**. Không markdown, không gạch đầu dòng, không chữ Hán.
-Độ dài 500–900 ký tự; đủ dữ kiện thì dừng.
+Đủ dữ kiện thì dừng; KHÔNG độn chữ để đủ độ dài (tối đa khoảng 900 ký tự).

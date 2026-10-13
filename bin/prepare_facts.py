@@ -435,7 +435,7 @@ def format_for_prompt(result, warns):
             # 赢者在前(大比分在前) + 按场地写法(主队在前)
             wbig = f"{max(ih, ia)}-{min(ih, ia)}"
             out.append(f"Kết quả: {wname} thắng {wbig} "
-                       f"(viết theo sân: {hn} {ih}-{ia} {an})")
+                       f"(chỉ dùng khi ghi cặp đấu: {hn} {ih}-{ia} {an})")
 
     # ---- B2 进球过程(球队作主语) ----
     reliable = result.get("order_reliable", True)
@@ -449,7 +449,7 @@ def format_for_prompt(result, warns):
     timeline.sort(key=lambda x: (x[0] is None, x[0] if x[0] is not None else 0))
 
     for _, kind, s in timeline:
-        mn = f"{s['minute']}'" if s["minute"] is not None else "(?)"
+        mn = f"{s['minute']}'" if s["minute"] is not None else "(không rõ phút)"
         if kind == "goal":
             team = _side(s.get("team"))
             tail = []

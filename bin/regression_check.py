@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "bin"))
 from check_style import check  # noqa: E402
 
-REAL = ROOT / "eval/regression/real_matches_20261012"
+REAL = ROOT / "eval/regression/placeholder_matches_20261013"
 
 # (名称, 事实文件, 稿件路径(相对), 必须报的规则, 不能报的规则)
 TABLE = [

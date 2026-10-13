@@ -179,7 +179,7 @@ class TestRealRunIssues(unittest.TestCase):
 
     def _facts(self, name):
         import json as _j
-        fp = _pl.Path(__file__).resolve().parent.parent / "eval/regression/real_matches_20261012" / f"{name}.json"
+        fp = _pl.Path(__file__).resolve().parent.parent / "eval/regression/placeholder_matches_20261013" / f"{name}.json"
         return _j.loads(fp.read_text(encoding="utf-8"))
 
     def test_braga_home_away_reversed(self):
@@ -224,7 +224,7 @@ class TestE4RegressionTable(unittest.TestCase):
 
     def _f(self, name):
         import json as _j
-        fp = _pl.Path(__file__).resolve().parent.parent /             "eval/regression/real_matches_20261012" / f"{name}.json"
+        fp = _pl.Path(__file__).resolve().parent.parent /             "eval/regression/placeholder_matches_20261013" / f"{name}.json"
         return _j.loads(fp.read_text(encoding="utf-8"))
 
     def test_qwen_M1_rules_text_must_report(self):
@@ -266,6 +266,48 @@ class TestE4RegressionTable(unittest.TestCase):
         f = self._f("M3_ha_noi_da_nang_pen")
         rules = {i["rule"] for i in check("Tỷ số 4-3 là kết quả loạt luân lưu, không phải tỷ số trong 90 phút.", f)}
         self.assertIn("S18", rules)
+
+
+class TestV147Fixes(unittest.TestCase):
+    """v1.4.7:S1 缺分钟误报、S16/S20/S12 误报、S21 数据行、S22 因果。"""
+
+    DP = _pl.Path(__file__).resolve().parent.parent / "eval/regression/placeholder_matches_20261013"
+
+    def _f(self, name):
+        import json as _j
+        return _j.loads((self.DP / f"{name}.json").read_text(encoding="utf-8"))
+
+    def test_s1_no_false_positive_missing_minute(self):
+        """缺分钟(含乌龙 '? (phản lưới nhà)')时 S1 不该报。"""
+        f = self._f("M5_braga_sporting")
+        clean = ("Sporting thắng Braga 3-1. Bernardo mở tỷ số, Rui Silva phản lưới nhà "
+                 "giúp Sporting, Zalazar phản lưới nhà giúp Braga, Suárez ấn định tỷ số.")
+        self.assertNotIn("S1", {i["rule"] for i in check(clean, f)})
+
+    def test_s16_two_scorers_not_a_brace(self):
+        f = self._f("M4_dong_nai_binh_minh")
+        txt = "Hai bàn thắng của Bùi Duy Nam và Trần Quốc Chí giúp đội nhà dẫn trước."
+        self.assertNotIn("S16", {i["rule"] for i in check(txt, f)})
+
+    def test_s20_team_subject_ok(self):
+        f = self._f("M5_braga_sporting")
+        self.assertNotIn("S20", {i["rule"] for i in check("Sporting vượt lên dẫn 2-1", f)})
+
+    def test_s12_time_range_ok(self):
+        f = self._f("M4_dong_nai_binh_minh")
+        txt = "Đội A dẫn trước từ đầu trận cho đến trước phút 78."
+        self.assertNotIn("S12", {i["rule"] for i in check(txt, f)})
+
+    def test_s21_leaked_scoreline(self):
+        f = self._f("M4_dong_nai_binh_minh")
+        for txt in ("Trận đấu kết thúc.\nHải Phòng 1-2 Thanh Hóa.",
+                    "Kết quả: A 2-1 B"):
+            self.assertIn("S21", {i["rule"] for i in check(txt, f)}, f"未拦: {txt}")
+
+    def test_s22_causal_hint(self):
+        f = self._f("M3_ha_noi_da_nang_pen")
+        txt = "Hà Nội và SHB Đà Nẵng hòa 1-1 sau 90 phút vì giải đấu không đá hiệp phụ."
+        self.assertIn("S22", {i["rule"] for i in check(txt, f, "Viết bản tin.")})
 
 
 if __name__ == "__main__":

@@ -16,5 +16,7 @@
       "team": "home",
       "player": "Phạm Văn D"
     }
-  ]
+  ],
+  "_placeholder": true,
+  "_note": "DỮ LIỆU MẪU TẠM — tên cầu thủ là giả (Nguyễn Văn A...), phút/sự kiện do người tạo sinh ra, KHÔNG phải trận thật. Cần thay bằng matches.py đã kiểm chứng."
 }

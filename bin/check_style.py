@@ -121,13 +121,16 @@ def check(task_text, facts=None, task=None):
             _reliable = result.get("order_reliable", True)
             _skip_s1 = False
             if not _reliable:
-                _with_min = [s for s in result["score_progression"] if s["minute"] is not None]
-                if len(_with_min) != 1 or any(s["verb"] == "?" for s in _with_min):
-                    # 无法可靠核对 → 跳过 S1(置空 map)
+                # 顺序不可靠:correct_map 只放**有分钟且动词非 ?** 的进球
+                _with_min = [s for s in result["score_progression"]
+                             if s["minute"] is not None and not str(s["verb"]).startswith("?")]
+                if len(_with_min) != 1:
                     _skip_s1 = True
+            # 凡动词以 ? 开头(含 '? (phản lưới nhà)')一律排除
             correct_map = ({} if _skip_s1 else
                            {s["score"]: s["verb"]
-                            for s in result["score_progression"] if s["verb"] != "?"})
+                            for s in result["score_progression"]
+                            if s["minute"] is not None and not str(s["verb"]).startswith("?")})
             # 可接受替代(如 1-3 处 nhân đôi cách biệt 可替 nâng tỷ số)
             alt_map = {s["score"]: set(s.get("accept_alt") or [])
                        for s in result["score_progression"]}
@@ -361,6 +364,9 @@ def check(task_text, facts=None, task=None):
     # 先按句切分;同一句里同时有时间词与分钟,且所有分钟都不在范围内 → 报
     for sent in split_sentences(task_text):
         low = sent.lower()
+        # 时间范围说法("từ … cho đến (trước) phút X")不算时间词矛盾
+        if re.search(r"từ\s+.{0,30}(cho đến|đến|tới)\s+(trước\s+)?phút", low):
+            continue
         mins = []
         for m in re.finditer(r"phút\s+(\d{1,3})(?:\s*\+\s*(\d+))?", low):
             mins.append(int(m.group(1)))
@@ -455,13 +461,28 @@ def check(task_text, facts=None, task=None):
             for m in re.finditer(r"\b(HLV|huấn luyện viên)\s+([A-ZĐ][\wÀ-ỹ]*(?:\s+[A-ZĐ][\wÀ-ỹ]*){1,3})", task_text):
                 name = m.group(2).strip()
                 nb = _bucket(name)
-                # 整名匹配,或该名是 facts 里某个整名的前缀(名字可能被截断/带更多成分)
                 matched = nb in full_names or any(
                     fn.startswith(nb) or nb.startswith(fn) for fn in full_names if len(fn) >= 5)
                 if not matched:
                     issues.append({"rule": "S14", "hint_only": True,
                                    "snippet": name[:50],
                                    "msg": f"Tên riêng '{name}' không có trong dữ kiện → kiểm tra bịa đặt"})
+            # 扩展: "sân + 专名"、"người + 国籍"、"bảng + 字母"
+            for m in re.finditer(r"\bsân\s+([A-ZĐ][\wÀ-ỹ]+(?:[ \t]+[A-ZĐ][\wÀ-ỹ]+)*)", task_text):
+                nm = m.group(1).strip()
+                # 队名可作球场名("sân Thể Công"); 只要 token 命中允许集合就不报
+                ntoks = [_bucket(x) for x in nm.split()]
+                if not any(tk in " ".join(full_names) for tk in ntoks) and _bucket(nm) not in full_names:
+                    issues.append({"rule": "S14", "hint_only": True, "snippet": m.group(0)[:40],
+                                   "msg": f"Tên sân '{nm}' không có trong dữ kiện → kiểm tra bịa đặt"})
+            for m in re.finditer(r"người\s+(Uruguay|Brazil|Argentina|Hàn Quốc|Nhật Bản|"
+                                 r"Thái Lan|Trung Quốc|Pháp|Đức|Ý|Tây Ban Nha|Anh|Bồ Đào Nha)",
+                                 task_text, re.I):
+                issues.append({"rule": "S14", "hint_only": True, "snippet": m.group(0),
+                               "msg": f"Thông tin quốc tịch '{m.group(0)}' — kiểm tra có trong dữ kiện không"})
+            for m in re.finditer(r"\bbảng\s+([A-D])\b", task_text):
+                issues.append({"rule": "S14", "hint_only": True, "snippet": m.group(0),
+                               "msg": f"'{m.group(0)}' (chia bảng) — kiểm tra giải có chia bảng không"})
         except Exception:
             pass
 
@@ -469,6 +490,20 @@ def check(task_text, facts=None, task=None):
     def _strip(x):
         return "".join(c for c in _ud2.normalize("NFD", str(x))
                        if _ud2.category(c) != "Mn").lower()
+
+    # ---- S21 数据行泄漏(阻断) ----
+    for ln in task_text.split("\n"):
+        s = ln.strip()
+        if not s:
+            continue
+        if re.match(r"^Kết quả\s*:", s, re.I):
+            issues.append({"rule": "S21", "blocking": True, "snippet": s[:50],
+                           "msg": "Dòng dữ liệu lọt vào bài ('Kết quả: …')"})
+            continue
+        # 整句只有 队名 比分 队名(允许结尾句点)
+        if re.fullmatch(r"[A-ZĐ][\wÀ-ỹ .]*\s+\d+\s*-\s*\d+\s+[A-ZĐ][\wÀ-ỹ .]*\.?", s):
+            issues.append({"rule": "S21", "blocking": True, "snippet": s[:50],
+                           "msg": "Dòng chỉ có 'đội - tỷ số - đội' (lọt từ dữ liệu)"})
 
     # ---- S15 赛果方向(需 facts) ----
     if facts:
@@ -515,12 +550,17 @@ def check(task_text, facts=None, task=None):
                                if _ud2.category(c) != "Mn").lower()
             for pl, c in cnt.items():
                 if c == 1:
-                    for m in re.finditer(r"cú đúp|hat-?trick|lập công hai lần|hai bàn", task_text, re.I):
-                        seg = _strip(task_text[max(0, m.start() - 40):m.end() + 40])
+                    # 只针对"单人"梅开二度措辞;'hai bàn thắng của A và B' 是两人各一球,不算
+                    for m in re.finditer(r"cú đúp|hat-?trick|lập công hai lần", task_text, re.I):
+                        raw = task_text[max(0, m.start() - 40):m.end() + 40]
+                        seg = _strip(raw)
                         toks = [_strip(x) for x in pl.split() if len(_strip(x)) > 2]
+                        # 若窗口里出现"và"(两人并列)则跳过
+                        if " và " in raw.lower():
+                            continue
                         if any(x in seg for x in toks):
                             issues.append({"rule": "S16", "blocking": True,
-                                           "snippet": seg[:50],
+                                           "snippet": raw[:50],
                                            "msg": f"{pl} chỉ ghi 1 bàn — không dùng 'cú đúp/hat-trick'"})
         except Exception:
             pass
@@ -556,6 +596,43 @@ def check(task_text, facts=None, task=None):
             issues.append({"rule": "S18", "blocking": True, "snippet": m.group(0),
                            "msg": f"Không giải thích quy tắc/dữ liệu cho người đọc ('{m.group(0)}')"})
 
+    # ---- S22 因果补写(提示;复用 check_fabrication 的因果检测) ----
+    if facts or task:
+        try:
+            import importlib.util as _ilu, pathlib as _pl2
+            _fp = _pl2.Path(__file__).resolve().parent / "check_fabrication.py"
+            _spec = _ilu.spec_from_file_location("_cf", _fp)
+            _cf = _ilu.module_from_spec(_spec)
+            _spec.loader.exec_module(_cf)
+            # 参照 = 任务描述 + facts 全部文本(含 context/事件细节),避免把有依据的因果误判
+            src_parts = [task or ""]
+            if facts:
+                src_parts.append(json.dumps(facts, ensure_ascii=False))
+                if facts.get("context"):
+                    src_parts.append(str(facts["context"]))
+            src = "\n".join(src_parts)
+            # 在参照里出现过的因果连接短语视为有依据
+            CUE = ["thẻ vàng", "thẻ đỏ", "truất quyền", "VAR", "kiểm tra", "chấn thương",
+                   "vắng mặt", "phản lưới", "sút xa", "kiến tạo", "chuyền"]
+            found = _cf.find_fabrications(src, task_text)
+            for f in found:
+                nhom = str(f.get("nhóm", ""))
+                if "nhân quả" not in nhom and "causal" not in nhom.lower():
+                    continue
+                frag = str(f.get("khớp", ""))
+                # 若该因果片段附近的线索词在参照里有据 → 跳过
+                if any(c.lower() in src.lower() for c in CUE):
+                    # 进一步:该片段的前后上下文是否含线索词
+                    idx = task_text.find(frag)
+                    ctx = task_text[max(0, idx - 60):idx + 60] if idx >= 0 else ""
+                    if any(c.lower() in ctx.lower() for c in CUE):
+                        continue
+                issues.append({"rule": "S22", "hint_only": True,
+                               "snippet": frag[:50],
+                               "msg": "Nghi bổ sung quan hệ nhân quả không có trong dữ kiện"})
+        except Exception:
+            pass
+
     # ---- S19 重复(提示) ----
     ev_seen = {}
     for m in re.finditer(r"(\d{1,3})'", task_text):
@@ -569,13 +646,22 @@ def check(task_text, facts=None, task=None):
                            "msg": f"Sự kiện phút {mn}' được nhắc {n} lần — kiểm tra trùng lặp"})
 
     # ---- S20 动词主语(提示) ----
+    team_names = set()
+    if facts:
+        for v in (facts.get("home"), facts.get("away")):
+            if v:
+                team_names.add(_strip(v))
     for m in re.finditer(r"([A-ZĐ][\wÀ-ỹ]+(?:\s+[A-ZĐ][\wÀ-ỹ]+)*)\s+"
                          r"(vượt lên dẫn|gỡ hòa|nâng tỷ số|rút ngắn cách biệt)", task_text):
+        subj = m.group(1).strip()
+        # 队名作主语是正确的 → 排除
+        if any(_strip(subj) == tn or _strip(subj) in tn or tn in _strip(subj) for tn in team_names):
+            continue
         ctx = task_text[max(0, m.start() - 30):m.start()]
         if not re.search(r"đưa|giúp|mang về|ghi bàn", ctx, re.I):
             issues.append({"rule": "S20", "hint_only": True, "snippet": m.group(0)[:50],
-                           "msg": f"'{m.group(1)}' không nên làm chủ ngữ trực tiếp — "
-                                  f"nên viết 'đưa/giúp {m.group(1)} …'"})
+                           "msg": f"'{subj}' không nên làm chủ ngữ trực tiếp — "
+                                  f"nên viết 'đưa/giúp {subj} …'"})
 
     # 去重
     seen_i, uniq_i = set(), []
