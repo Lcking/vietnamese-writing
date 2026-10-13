@@ -20,7 +20,9 @@ DEFAULT_CONFIG = {
     "temperature": float(os.environ.get("VIET_LLM_TEMPERATURE", "0.7")),
     "timeout": int(os.environ.get("VIET_LLM_TIMEOUT", "180")),
     "max_retries": int(os.environ.get("VIET_LLM_MAX_RETRIES", "3")),
-    "disable_thinking": False,
+    # 本地 Qwen3 等:关思考链(否则 token 全花在思考上,正文可能为空)
+    "disable_thinking": os.environ.get("VIET_LLM_DISABLE_THINKING", "").lower()
+                       in ("1", "true", "yes", "on"),
 }
 
 

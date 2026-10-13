@@ -475,7 +475,7 @@ def build_user_prompt(task, genre=None, extra="", format_contract=None, length=N
 
 def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
           profile=None, post_type=None, length=None, facts=None, revise=False,
-          model_tier=None):
+          model_tier=None, allow_unreviewed=False):
     """调用模型写作。genre 为 None 时自动识别。生成参数由 gen_kw 显式传入(否则用配置)。
 
     length: 篇幅合同(如 "500-900")
@@ -485,7 +485,8 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
     if genre is None:
         genre = detect_genre(task)
     prompt = build_prompt(genre, format_contract=format_contract,
-                          profile=profile, post_type=post_type, model_tier=model_tier)
+                          profile=profile, post_type=post_type, model_tier=model_tier,
+                          allow_unreviewed=allow_unreviewed)
     # B1: 事实预处理 → 注入(small 档视为必需)
     facts_block = ""
     tier_cfg = MODEL_TIERS.get(model_tier) if model_tier else None
@@ -544,6 +545,7 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
         "finish_reason": getattr(result, "finish_reason", None),
         "truncated": getattr(result, "truncated", False),
         "usage": getattr(result, "usage", {}),
+        "n_examples": prompt["stats"].get("n_examples", 0),
         "first_draft": first_draft if revise else None,
         "revise_issues": revise_issues,
         "revise_after": revise_after,

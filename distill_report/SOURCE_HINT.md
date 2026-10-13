@@ -2,36 +2,36 @@
 
 ## 全库来源统计(前 30)
 
-- (không rõ): 5759
-- pháp luật: 421
-- người lao động: 223
-- thanh niên: 180
-- Thanh niên: 94
-- VOV: 80
-- Dân trí: 70
-- VTV: 40
-- Tuổi trẻ: 38
-- Báo: 34
-- tuổi trẻ: 32
-- Tuổi Trẻ: 32
-- https: 30
-- VnExpress: 28
-- Pháp luật: 24
-- Thanh Niên: 22
-- Người Lao Động: 20
-- Vnexpress: 16
-- TTXVN: 15
-- Vietnamnet: 15
-- Tiền Phong: 15
-- Người lao động: 14
-- vnexpress: 13
-- VietNamNet: 12
-- SGGP: 12
-- Nguoiduatin.vn: 9
-- Tiền phong: 9
-- HTV: 7
-- báo mới: 7
-- vov: 6
+- (không rõ): 7599
+- pháp luật: 707
+- người lao động: 264
+- thanh niên: 214
+- Thanh niên: 120
+- Dân trí: 100
+- VOV: 87
+- Báo: 50
+- Pháp luật: 50
+- Tuổi Trẻ: 48
+- Tuổi trẻ: 45
+- https: 43
+- VTV: 42
+- VnExpress: 38
+- tuổi trẻ: 37
+- Thanh Niên: 30
+- Vnexpress: 25
+- Người Lao Động: 22
+- Người lao động: 19
+- Vietnamnet: 18
+- Tiền Phong: 17
+- TTXVN: 16
+- vnexpress: 16
+- VietNamNet: 13
+- SGGP: 13
+- Nguoiduatin.vn: 11
+- Tiền phong: 10
+- báo mới: 10
+- HTV: 8
+- Pháp Luật: 8
 
 ## 各子体裁有来源比例
 
@@ -48,5 +48,10 @@
 - local_social: 163/500 (33%)
 - local_travel: 98/500 (20%)
 - local_work: 233/500 (47%)
+- prof_academic: 91/500 (18%)
+- prof_education: 136/500 (27%)
+- prof_finance: 74/500 (15%)
 - prof_institutions: 183/500 (37%)
+- prof_law: 291/500 (58%)
 - prof_medicine: 93/500 (19%)
+- prof_technology: 68/500 (14%)

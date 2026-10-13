@@ -17,8 +17,13 @@
 | local_social | 500 | 7.75 | 7.75 | 8.25 | 8.75 | 9.25 | 0 | calibration_local_social.csv |
 | local_travel | 500 | 7.5 | 7.5 | 8.25 | 8.75 | 9.25 | 0 | calibration_local_travel.csv |
 | local_work | 500 | 7.75 | 7.75 | 8.25 | 8.75 | 9.25 | 0 | calibration_local_work.csv |
+| prof_academic | 500 | 7.0 | 7.25 | 8.0 | 8.5 | 9.25 | 8 | calibration_prof_academic.csv |
+| prof_education | 500 | 7.0 | 7.25 | 8.0 | 8.5 | 9.0 | 30 | calibration_prof_education.csv |
+| prof_finance | 500 | 7.75 | 8.0 | 8.25 | 9.0 | 9.25 | 0 | calibration_prof_finance.csv |
 | prof_institutions | 500 | 7.5 | 7.5 | 8.25 | 8.75 | 9.25 | 0 | calibration_prof_institutions.csv |
+| prof_law | 500 | 8.0 | 8.25 | 8.5 | 9.0 | 9.25 | 0 | calibration_prof_law.csv |
 | prof_medicine | 500 | 7.5 | 7.75 | 8.25 | 8.75 | 9.25 | 0 | calibration_prof_medicine.csv |
+| prof_technology | 500 | 7.5 | 7.5 | 8.25 | 8.75 | 9.25 | 0 | calibration_prof_technology.csv |
 
 ## 说明
 

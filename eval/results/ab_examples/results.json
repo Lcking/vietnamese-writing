@@ -1,0 +1,227 @@
+[
+  {
+    "case": "G1",
+    "arm": "A_no_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 616,
+    "blocking": 0,
+    "hint": 0,
+    "rules": [],
+    "text": "Daniel Passira lập cú đúp, Hà Tĩnh thắng 3-1 trước Thể Công\n\nTrên sân nhà, Thể Công để thua 1-3 trước Hà Tĩnh trong khuôn khổ V-League ngày 8/10. Đội khách nhanh chóng chiếm thế thượng phong khi Luiz Antonio mở tỷ số ở phút 16. Tuy nhiên, đến phút 33, Khuất Văn Khang đã cân bằng tỷ số 1-1 cho đội chủ nhà sau pha kiến tạo của Triệu Việt Hưng.\n\nBước ngoặt diễn ra ở đầu hiệp hai khi Daniel Passira đưa Hà Tĩnh vượt lên dẫn 2-1 ở phút 60. Chỉ bốn phút sau, chính Passira hoàn tất cú đúp, ấn định chiến thắng 3-1 cho đội khách. Trong trận đấu, Quốc Dân bên phía Hà Tĩnh nhận thẻ vàng thứ hai và bị truất quyền thi đấu."
+  },
+  {
+    "case": "G1",
+    "arm": "B_with_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 478,
+    "blocking": 0,
+    "hint": 1,
+    "rules": [
+      "S20"
+    ],
+    "text": "Daniel Passira lập cú đúp giúp Hà Tĩnh đánh bại Thể Công\n\nHà Tĩnh thắng 3-1 trước Thể Công trong khuôn khổ V-League. Luiz Antonio mở tỷ số cho đội khách ở phút 16. Phút 33, Khuất Văn Khang gỡ hòa 1-1 cho Thể Công sau tình huống được VAR xác nhận.\n\nBước ngoặt đến ở phút 60 khi Daniel Passira đưa Hà Tĩnh vượt lên dẫn 2-1. Chỉ 4 phút sau, tiền đạo này hoàn tất cú đúp, ấn định chiến thắng 3-1. Trong trận đấu, Quốc Dân của Hà Tĩnh nhận thẻ vàng thứ hai và bị truất quyền thi đấu."
+  },
+  {
+    "case": "G2",
+    "arm": "A_no_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 230,
+    "blocking": 0,
+    "hint": 0,
+    "rules": [],
+    "text": "A ngược dòng hạ B 2-1\n\nB1 mở tỷ số ở phút 20, đưa B dẫn trước 1-0. Phải đến phút 50, A1 mới có bàn gỡ hòa 1-1. Bước ngoặt đến ở phút 80 khi A2 ghi bàn giúp A vượt lên dẫn 2-1, qua đó ấn định chiến thắng ngược dòng cho đội chủ nhà."
+  },
+  {
+    "case": "G2",
+    "arm": "B_with_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 241,
+    "blocking": 0,
+    "hint": 1,
+    "rules": [
+      "S1",
+      "S22"
+    ],
+    "text": "A ngược dòng hạ B 2-1\n\nB mở tỷ số ở phút 20 nhờ công của B1, đưa đội khách vượt lên dẫn 1-0. Sang hiệp hai, A gỡ hòa 1-1 ở phút 50 do A1 thực hiện. Phút 80, A2 ghi bàn ấn định tỷ số 2-1, giúp A hoàn thành màn ngược dòng để giành chiến thắng."
+  },
+  {
+    "case": "G3",
+    "arm": "A_no_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 520,
+    "blocking": 0,
+    "hint": 0,
+    "rules": [],
+    "text": "Hòa 2-2 sau màn rượt đuổi tỷ số kịch tính\n\nHai đội hòa nhau với tỷ số 2-2 trong một trận đấu đầy cảm xúc. A là đội khởi sắc trước khi B thể hiện bản lĩnh ở những phút cuối.\n\nA mở tỷ số từ rất sớm khi A1 ghi bàn ở phút thứ 10. Phút 30, A2 nâng cách biệt lên 2-0, đưa đội chủ nhà vào thế chủ động hoàn toàn.\n\nTuy nhiên, cục diện thay đổi trong hiệp hai. Phút 70, B1 ghi bàn rút ngắn cách biệt, đưa trận đấu về thế cân bằng. Phút 90, B2 hoàn tất màn ngược dòng với bàn gỡ hòa 2-2, giúp đội khách giành lại một điểm quý giá."
+  },
+  {
+    "case": "G3",
+    "arm": "B_with_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 253,
+    "blocking": 0,
+    "hint": 0,
+    "rules": [],
+    "text": "A 2-2 B: B gỡ hòa ở phút 90\n\nA có khởi đầu thuận lợi khi A1 mở tỷ số ở phút 10. Ba mươi phút sau, A2 nâng cách biệt lên 2-0 cho đội chủ nhà.\n\nBước ngoặt đến ở phút 70 khi B1 rút ngắn cách biệt. Phút 90, B2 ghi bàn gỡ hòa, ấn định kết quả 2-2 chung cuộc."
+  },
+  {
+    "case": "G4",
+    "arm": "A_no_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 582,
+    "blocking": 0,
+    "hint": 2,
+    "rules": [
+      "S13",
+      "S4"
+    ],
+    "text": "A 1-0 B: A1 ghi bàn quyết định khi đội nhà chơi thiếu người\n\nĐội A đã có chiến thắng 1-0 trước đội khách B trong một trận đấu đầy kịch tính. Diễn biến đáng chú nhất đến ở phút 60 khi cầu thủ X của đội A phải nhận thẻ đỏ, khiến đội chủ nhà phải thi đấu với 10 người trong phần lớn thời gian còn lại của trận đấu.\n\nDù gặp bất lợi về quân số, đội A vẫn duy trì được sự bình tĩnh và tổ chức tốt. Phút 75, A1 lập công mở tỷ số 1-0, đưa đội nhà vươn lên dẫn trước. Bàn thắng này cũng là pha lập công duy nhất của trận đấu, giúp đội A bảo toàn mành lưới và giành trọn 3 điểm trước đối thủ."
+  },
+  {
+    "case": "G4",
+    "arm": "B_with_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 361,
+    "blocking": 0,
+    "hint": 2,
+    "rules": [
+      "S13",
+      "S22"
+    ],
+    "text": "A1 lập công giúp A thắng B 1-0 dù thi đấu thiếu người\n\nA giành chiến thắng 1-0 trước B trong một trận đấu đầy kịch tính khi phải chơi với 10 người trong 30 phút cuối. Phút 60, X của A phải nhận thẻ đỏ, khiến đội chủ nhà rơi vào thế bất lợi. Tuy nhiên, A vẫn duy trì được sự tập trung và tìm được bàn thắng ở phút 75 do công của A1, ấn định tỷ số 1-0 chung cuộc."
+  },
+  {
+    "case": "G5",
+    "arm": "A_no_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 667,
+    "blocking": 0,
+    "hint": 0,
+    "rules": [],
+    "text": "Damoth Thongkhamsavath ấn định chiến thắng 2-1 cho Thanh Hóa tại Lạch Tray\n\nTrong trận đấu thuộc vòng 3 V.League 2026/27 diễn ra ngày 10/10/2025 trên sân Lạch Tray, Đông Á Thanh Hóa đã có chiến thắng 2-1 trước Hải Phòng.\n\nBước ngoặt đến từ bàn thắng mở tỷ số của Matheus Martins ở phút 15. Tuy nhiên, chỉ 4 phút sau, Hải Phòng đã gỡ hòa 1-1 nhờ pha thực hiện thành công quả phạt đền của Makaric, sau tình huống bóng chạm tay hậu vệ Văn Lợi.\n\nSang hiệp hai, Damoth Thongkhamsavath ghi bàn quyết định ở phút 57 sau đường chọc khe chính xác của Matheus Martins, giúp Thanh Hóa vượt lên dẫn 2-1. Chiến thắng này giúp Thanh Hóa tạm xếp thứ 4 trên bảng xếp hạng với 6 điểm."
+  },
+  {
+    "case": "G5",
+    "arm": "B_with_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 630,
+    "blocking": 0,
+    "hint": 0,
+    "rules": [],
+    "text": "Damoth Thongkhamsavath ấn định chiến thắng 2-1 cho Thanh Hóa trước Hải Phòng\n\nTrong trận đấu thuộc vòng 3 V.League 2026/27 trên sân Lạch Tray ngày 10/10/2026, đội khách Đông Á Thanh Hóa đã đánh bại chủ nhà Hải Phòng với tỷ số 2-1.\n\nMatheus Martins mở tỷ số cho Thanh Hóa ở phút 15. Ba phút sau, Makaric thực hiện thành công quả phạt đền để giúp Hải Phòng gỡ hòa 1-1, sau tình huống bóng chạm tay hậu vệ Văn Lợi. Bước ngoặt của trận đấu đến ở phút 57 khi Damoth Thongkhamsavath ghi bàn từ đường chọc khe của Matheus Martins, đưa Thanh Hóa vượt lên dẫn 2-1.\n\nThắng lợi này giúp Thanh Hóa tạm xếp thứ 4 trên bảng xếp hạng với 6 điểm."
+  },
+  {
+    "case": "G6",
+    "arm": "A_no_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 449,
+    "blocking": 0,
+    "hint": 1,
+    "rules": [
+      "S4"
+    ],
+    "text": "Andrew Jung ấn định chiến thắng 1-0 cho Hà Nội FC\n\nĐội chủ nhà Hà Nội FC đã có khởi đầu suôn sẻ dưới thời HLV Harry Kewell khi đánh bại tân binh Bắc Ninh với tỷ số 1-0 tại vòng 3 V.League 2026/27.\n\nBước ngoặt của trận đấu diễn ra ở phút 78. Từ pha phối hợp nhanh, Hai Long thực hiện đường chuyền ngang chính xác để Andrew Jung dứt điểm mở tỷ số. Đây cũng là bàn thắng duy nhất trong 90 phút, giúp Hà Nội FC giành trọn 3 điểm đầu tiên ở mùa giải này."
+  },
+  {
+    "case": "G6",
+    "arm": "B_with_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 405,
+    "blocking": 0,
+    "hint": 0,
+    "rules": [],
+    "text": "Andrew Jung ghi bàn quyết định, Hà Nội FC thắng Bắc Ninh 1-0\n\nTrong trận đấu thuộc vòng 3 V.League 2026/27, Hà Nội FC đã có chiến thắng tối thiểu 1-0 trước tân binh Bắc Ninh. Bàn duy nhất của trận đấu được ghi ở phút 78 khi Andrew Jung bật cao đánh đầu tung lưới đối phương sau đường chuyền ngang của Hai Long.\n\nĐây là 3 điểm đầu tiên của Hà Nội FC dưới sự dẫn dắt của HLV Harry Kewell trong mùa giải này."
+  },
+  {
+    "case": "G7",
+    "arm": "A_no_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 658,
+    "blocking": 0,
+    "hint": 1,
+    "rules": [
+      "S22"
+    ],
+    "text": "SHB Đà Nẵng thắng 4-3 trên chấm luân lưu, giành vé vào vòng 1/8 Cúp Quốc gia\n\nTrận đấu giữa Hà Nội và SHB Đà Nẵng tại vòng loại Cúp Quốc gia 2026/27 khép lại với kết quả hòa 1-1 sau 90 phút thi đấu chính thức. Do thể lệ giải không tổ chức hiệp phụ, hai đội phải phân định thắng thua trên chấm luân lưu.\n\nSHB Đà Nẵng là đội mở tỷ số trước. Phút 19, Kalvin Luong ghi bàn giúp đội khách dẫn 1-0. Tuy nhiên, lợi thế này không kéo dài khi phút 28, Jung lập công gỡ hòa 1-1 cho Hà Nội.\n\nBước vào loạt sút luân lưu, SHB Đà Nẵng thể hiện sự bản lĩnh hơn khi đánh bại đối thủ với tỷ số 4-3. Kết quả này giúp đội bóng sông Hàn chính thức giành vé đi tiếp vào vòng 1/8."
+  },
+  {
+    "case": "G7",
+    "arm": "B_with_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 227,
+    "blocking": 0,
+    "hint": 3,
+    "rules": [
+      "S2",
+      "S20",
+      "S4"
+    ],
+    "text": "SHB Đà Nẵng thắng 4-3 trên chấm luân lưu\n\nHai đội hòa 1-1 sau 90 phút. Phút 19, Kalvin Luong mở tỷ số cho SHB Đà Nẵng. Phút 28, Jung gỡ hòa 1-1 cho Hà Nội. Bước vào loạt luân lưu, SHB Đà Nẵng thắng 4-3 để giành vé vào vòng 1/8."
+  },
+  {
+    "case": "G8",
+    "arm": "A_no_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 966,
+    "blocking": 0,
+    "hint": 1,
+    "rules": [
+      "S1",
+      "S20"
+    ],
+    "text": "Ivan đưa TP. Đồng Nai ngược dòng thắng 4-3 trước Bình Minh Sài Gòn\n\nTrong trận đấu thuộc vòng loại Cúp Quốc gia 2026/27, TP. Đồng Nai đã có màn ngược dòng kịch tính để đánh bại Bình Minh Sài Gòn với tỷ số 4-3. Đội khách, hiện đang thi đấu tại hạng Nhất, đã hai lần vượt lên dẫn trước nhưng không thể giữ vững lợi thế.\n\nLưu Tự Nhân mở tỷ số phút 16, giúp TP. Đồng Nai dẫn 1-0. Tuy nhiên, Bình Minh Sài Gòn nhanh chóng đáp trả khi Bùi Duy Nam gỡ hòa 1-1 phút 23, trước khi Nguyễn Hoàng Quốc Chí đưa đội khách vượt lên dẫn 2-1 ở phút 33. Công Phượng xuất hiện đúng lúc để đưa trận đấu về thế cân bằng 2-2 ở phút 49, chỉ hai phút trước khi hậu vệ Đỗ Minh Quang của Bình Minh Sài Gòn nhận thẻ đỏ trực tiếp.\n\nChơi hơn người, TP. Đồng Nai tạo ra bước ngoặt khi Nguyễn Quốc Lộc ghi bàn nâng tỷ số lên 3-2 ở phút 56. Bình Minh Sài Gòn tiếp tục gây khó dễ khi Jok Atem Dor san bằng tỷ số 3-3 phút 64. Phút 76, Ivan ghi bàn quyết định, ấn định chiến thắng 4-3 cho TP. Đồng Nai."
+  },
+  {
+    "case": "G8",
+    "arm": "B_with_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 819,
+    "blocking": 0,
+    "hint": 3,
+    "rules": [
+      "S13",
+      "S20"
+    ],
+    "text": "Ivan định đoạt cuộc ngược dòng của TP. Đồng Nai trước Bình Minh Sài Gòn\n\nTrận đấu tại vòng loại Cúp Quốc gia 2026/27 giữa TP. Đồng Nai và Bình Minh Sài Gòn kết thúc với tỷ số 4-3 nghiêng về đội chủ nhà.\n\nLưu Tự Nhân mở tỷ số ở phút 16, nhưng Bình Minh Sài Gòn nhanh chóng phản đòn. Bùi Duy Nam gỡ hòa 1-1 ở phút 23, trước khi Nguyễn Hoàng Quốc Chí đưa đội khách vượt lên dẫn 2-1 ở phút 33.\n\nCông Phượng giúp TP. Đồng Nai gỡ hòa 2-2 ở phút 49. Chỉ hai phút sau, hậu vệ Đỗ Minh Quang của Bình Minh Sài Gòn nhận thẻ đỏ trực tiếp, buộc đội khách phải chơi thiếu người từ phút 51.\n\nLợi thế hơn người giúp TP. Đồng Nai vượt lên dẫn 3-2 nhờ bàn thắng của Nguyễn Quốc Lộc ở phút 56. Tuy nhiên, Jok Atem Dor gỡ hòa 3-3 cho Bình Minh Sài Gòn ở phút 64. Ivan ghi bàn quyết định ở phút 76, ấn định chiến thắng 4-3 cho TP. Đồng Nai."
+  },
+  {
+    "case": "G9",
+    "arm": "A_no_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 684,
+    "blocking": 0,
+    "hint": 1,
+    "rules": [
+      "S20"
+    ],
+    "text": "Braga 1-3 Sporting: Luis Suarez mở màn, Zalazar ấn định chiến thắng\n\nTrận đấu tại vòng 8 giải VĐQG Bồ Đào Nha chứng kiến Sporting đánh bại Braga 3-1. Cuối hiệp một, Braga có bàn mở tỷ số nhờ sai lầm của thủ môn Rui Silva. Cú sút xa của Huseinbasic dội cột rồi chạm tay thủ môn đội khách, đưa bóng vào lưới, giúp Braga dẫn 1-0.\n\nSang hiệp hai, Luis Suarez gỡ hòa cho Sporting, đây là bàn thắng thứ 7 của anh sau 8 trận. Phút 71, thủ môn Bernardo của Braga phản lưới nhà khi xử lý đường chuyền về của Victor Carvalho, giúp Sporting vượt lên dẫn 2-1. Rodrigo Zalazar sau đó ấn định tỷ số 3-1 chung cuộc.\n\nThắng lợi này giúp Sporting thu hẹp khoảng cách với đội đầu bảng Porto còn 3 điểm."
+  },
+  {
+    "case": "G9",
+    "arm": "B_with_examples",
+    "tier": "large",
+    "examples_injected": 0,
+    "chars": 647,
+    "blocking": 0,
+    "hint": 0,
+    "rules": [],
+    "text": "Sporting hạ Braga 3-1, thu hẹp khoảng cách với Porto\n\nTrên sân nhà, Braga mở tỷ số trước nhờ bàn phản lưới nhà của thủ môn Rui Silva (Sporting) sau cú sút xa của Huseinbasic, khi trận đấu bước vào phút bù giờ cuối cùng của hiệp một. Sang hiệp hai, Luis Suarez lập công giúp Sporting gỡ hòa 1-1, đây là bàn thắng thứ 7 của anh sau 8 trận đấu.\n\nBước ngoặt đến ở phút 71 khi thủ môn Bernardo của Braga phản lưới nhà trong tình huống xử lý đường chuyền về của Victor Carvalho, giúp Sporting vượt lên dẫn 2-1. Rodrigo Zalazar là người ấn định tỷ số 3-1 cho đội khách. Chiến thắng này giúp Sporting thu hẹp khoảng cách với đội đầu bảng Porto còn 3 điểm."
+  }
+]
