@@ -23,3 +23,10 @@ distill_work/
 
 # 赛果抽查确认表含正文,不入库
 distill_football/
+
+# 第三阶段全量产物(含正文,不入库)
+distill_football/candidates_full.jsonl
+distill_football/review_candidates_90.csv
+distill_football/ket_qua_full_judged.jsonl
+distill_football/ket_qua_ids.jsonl
+distill_football/mg_parts/
