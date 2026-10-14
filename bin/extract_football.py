@@ -46,9 +46,15 @@ DATE_RE = re.compile(
     r"\bngày\s+\d{1,2}[/.-]\d{1,2}(?:[/.-]\d{2,4})?"
     r"|\b\d{2}[/.-]\d{2}[/.-]\d{2,4}\b"
     r"|\b\d{2}[/.-]\d{2}\b(?![\s]*[-–]\s*\d)")   # 独立的 07-25
+# 量词：先挖掉"1-2 thìa / 5-10 kg"这类，避免当成比分
+# 要点：① 每个单位都要有词边界（否则 tr 会吃掉 trước/trên/trong）
+#       ② 不列 phút/giờ —— 足球报道里 "1-0 phút 90"、"1-0 giờ nghỉ" 是比分写法
+#       ③ tỷ 用 (?!\s*số) 避免吃掉 "tỷ số"（比分本身）
 UNIT_RE = re.compile(
-    r"\b\d{1,2}\s*-\s*\d{1,2}\s*(?:thìa|kg|g\b|cm|mm|m\b|tuần|ngày|"
-    r"tháng|giờ|phút|triệu|nghìn|tỷ|tr)", re.I)
+    r"\b\d{1,2}\s*-\s*\d{1,2}\s*(?:"
+    r"thìa|kg|g\b|cm|mm|m\b|tuần|ngày|tháng|triệu|nghìn|"
+    r"tỷ\b(?!\s*số)|tr\b|tấn|gam|ml|l\b|km|inch|foot|feet"
+    r")(?![\wÀ-ỹ])", re.I)
 SCORE_RE = re.compile(r"(?<![\d/.])(\d{1,2})\s*-\s*(\d{1,2})(?![\d/])")
 
 
@@ -86,6 +92,54 @@ PRE_RE = re.compile(r"nhận định|trước trận|đội hình dự kiến|l�
 TRANSFER_RE = re.compile(r"chuyển nhượng|chiêu mộ|ký hợp đồng|gia nhập", re.I)
 PROFILE_RE = re.compile(r"chân dung|sự nghiệp|tiểu sử", re.I)
 BET_RE = re.compile(r"soi kèo|tỷ lệ kèo|tài xỉu|kèo châu Á|nhà cái", re.I)
+# 博彩扩充词表（复审要求）
+BET_RE2 = re.compile(
+    r"cá cược|đặt cược|kèo nhà cái|link vào|W88|Fun88|188bet|nhacai|"
+    r"soi kèo|tỷ lệ kèo|tài xỉu|kèo châu Á|nhà cái|kèo cược|bắt kèo|"
+    r"dự đoán tỷ số|keonhacai|m88|12bet|bk8|sbobet", re.I)
+
+
+def is_betting(t):
+    return bool(BET_RE2.search(t))
+
+
+def ket_qua_score(t):
+    """赛果稿的排序分（不做硬过滤，改排序）。
+    各加分项：首段/标题出现比分；首段出现结果动词；全文 ≥2 个进球分钟。"""
+    head = t[:400]          # 首段近似
+    score = 0
+    # 首段或标题里有比分
+    if find_scores(head):
+        score += 3
+    # 首段出现结果动词
+    if GOAL_VERB.search(head) or re.search(
+            r"\b(thắng|đánh bại|hạ|hòa|thua|kết thúc)\b", head, re.I):
+        score += 2
+    # 全文 ≥2 个进球分钟
+    mins = MIN_RE.findall(t)
+    if len(mins) >= 2:
+        score += 2
+    elif len(mins) == 1:
+        score += 1
+    return score
+
+
+def classify(t):
+    # 博彩稿：只打 betting，不进入任何其他类别（也不参与 ngram/名称表统计）
+    if is_betting(t):
+        return ["betting"]
+    tags = []
+    if is_ket_qua(t):
+        tags.append("ket_qua")
+    if PRE_RE.search(t):
+        tags.append("truoc_tran")
+    if TRANSFER_RE.search(t):
+        tags.append("chuyen_nhuong")
+    if PROFILE_RE.search(t):
+        tags.append("nhan_vat")
+    if len(t) < 600 and re.search(r"[!?]", t):
+        tags.append("social")
+    return tags
 
 # ---- 年份 ----
 TOURNAMENT_RE = re.compile(
@@ -162,23 +216,6 @@ def is_ket_qua(t):
     if _ctx_near_scores(t) < 2:
         return False
     return bool(MIN_RE.search(t) or GOAL_VERB.search(t))
-
-
-def classify(t):
-    tags = []
-    if is_ket_qua(t):
-        tags.append("ket_qua")
-    if PRE_RE.search(t):
-        tags.append("truoc_tran")
-    if TRANSFER_RE.search(t):
-        tags.append("chuyen_nhuong")
-    if PROFILE_RE.search(t):
-        tags.append("nhan_vat")
-    if len(t) < 600 and re.search(r"[!?]", t):
-        tags.append("social")
-    if BET_RE.search(t):
-        tags.append("betting")
-    return tags
 
 
 def extract_year(t):

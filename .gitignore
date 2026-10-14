@@ -20,3 +20,6 @@ distill_football/
 # 第三阶段样本含正文,不入库
 distill_report/football_recon/stage3_samples/
 distill_work/
+
+# 赛果抽查确认表含正文,不入库
+distill_football/

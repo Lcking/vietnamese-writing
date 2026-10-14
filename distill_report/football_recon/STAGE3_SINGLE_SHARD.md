@@ -56,7 +56,7 @@
 |---|---|
 | 扫描行 | 200,000 |
 | 足球稿 | 10,645（5.3%） |
-| **赛果（ket_qua）** | **954** |
+| **赛果（ket_qua）** | **1,018**（修正后；修正前 954） |
 | 赛前（truoc_tran） | 2,814 |
 | 转会（chuyen_nhuong） | 1,426 |
 | 人物（nhan_vat） | 953 |
@@ -66,9 +66,11 @@
 
 ## 2. 两张表
 
-- `ngram_football_ket_qua.tsv`：37,292 行（count ≥ 5），只用赛果类全文，
+- `ngram_football_ket_qua.tsv`：**37,055 行**（count ≥ 5），只用赛果类全文，
   已剔除 2015 年以前
-- `entity_names_football.tsv`：7,847 行，含 name/count/first_year/last_year
+- `entity_names_football.tsv`：**7,889 行**，含 name/count/first_year/last_year
+
+> 数字以 `FIX_REPORT_2026-10-14.md` 为准（本文件为早期版本）。
 
 前 50 行见随附文件。
 
