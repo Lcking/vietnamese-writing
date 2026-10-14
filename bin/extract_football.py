@@ -81,6 +81,26 @@ MATCH_CTX_TERMS = [
 MATCH_CTX_RES = [re.compile(p, re.I) for p in MATCH_CTX_TERMS]
 
 # ---- 其他球类/项目:出现则不判赛果 ----
+# 其他运动项目的球队名(评审建议:NBA/NFL 等)
+OTHER_SPORT_TEAMS = re.compile(
+    r"\b(?:NBA|NFL|MLB|NHL|76ers|Lakers|Celtics|Warriors|Bucks|Nets|Heat|"
+    r"Rockets|Mavericks|Clippers|Nuggets|Suns|Knicks|Bulls|Spurs|Kings|"
+    r"Wizards|Hornets|Pistons|Pacers|Cavaliers|Raptors|Grizzlies|Pelicans|"
+    r"Thunder|Timberwolves|Blazers|Jazz|Magic|Hawks)\b", re.I)
+# 标签聚合页特征(评审建议剔除)
+AGGREGATOR_RE = re.compile(
+    r"^\s*Tags?\s*[-|]|\|\s*Tags\s*\||^\s*[a-z\s]{3,25}\s*\|\s*Tags\s*\|", re.I)
+
+
+def is_aggregator(t):
+    """标签聚合页/多摘要混杂页(评审要求剔除,不进词组表)。"""
+    head = t[:200]
+    if AGGREGATOR_RE.search(head):
+        return True
+    # 大量"X ngày trước"/"X giờ trước"的相对时间 → 聚合页
+    return len(re.findall(r"\d+\s*(?:giờ|ngày|phút)\s*trước", head)) >= 2
+
+
 EXCLUDE_SPORT_RE = re.compile(
     r"bóng chuyền|bóng rổ|quần vợt|cầu lông|bóng bàn|pencak|quyền anh|futsal|"
     r"võ thuật|karate|taekwondo|judo|bơi lội|điền kinh|golf|đua xe|"
@@ -128,6 +148,9 @@ def classify(t):
     # 博彩稿：只打 betting，不进入任何其他类别（也不参与 ngram/名称表统计）
     if is_betting(t):
         return ["betting"]
+    # 标签聚合页：剔除,不进任何类别
+    if is_aggregator(t):
+        return []
     tags = []
     if is_ket_qua(t):
         tags.append("ket_qua")
@@ -217,7 +240,7 @@ def _ctx_near_scores(t):
 def is_ket_qua(t):
     """赛果收紧:比分 + 比分附近(±400 字符)≥2 个不同比赛语境词
     + (进球分钟 或 比分动词)。排除其他球类/项目。"""
-    if EXCLUDE_SPORT_RE.search(t):
+    if EXCLUDE_SPORT_RE.search(t) or OTHER_SPORT_TEAMS.search(t):
         return False
     if not find_scores(t):
         return False
@@ -405,6 +428,13 @@ def cmd_status(args):
     return 0
 
 
+# 足球无关稿(财经/星座/生活等,评审要求剔除)
+EF_OFFTOPIC_RE = re.compile(
+    r"chòm sao|tử vi|horoscope|cung hoàng đạo|giá vàng|chứng khoán|"
+    r"bất động sản|tuyển sinh|thời tiết|nấu ăn|công thức|cách làm|"
+    r"khuyến mãi|mua sắm|thời trang|làm đẹp", re.I)
+
+
 def _ngram_counts(text, n):
     toks = re.findall(r"\w+", text.lower())
     return Counter(" ".join(toks[i:i + n]) for i in range(len(toks) - n + 1))
@@ -457,11 +487,17 @@ def cmd_merge(args):
                         ent_years[nm][1] = max(ent_years[nm][1], y)
                         ent_years[nm][0] = min(ent_years[nm][0], y)
 
-    # --- ngram 表:只用赛果类,只剔 2015 前 ---
+    # --- ngram 表:宽口径(评审) ---
+    # 赛后衍生稿用语与赛果稿基本一致 → 纳入;只剔除:
+    #   标签聚合页、足球无关稿、其他运动项目;并剔 2015 年前
     ng = Counter()
     n_used = 0
     for r, txt in kq_full:
         if (r.get("year") or 0) and r["year"] < 2015:
+            continue
+        if is_aggregator(txt) or OTHER_SPORT_TEAMS.search(txt):
+            continue
+        if EF_OFFTOPIC_RE.search(txt[:600]):
             continue
         n_used += 1
         for n in (2, 3, 4):
