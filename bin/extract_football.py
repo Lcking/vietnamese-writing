@@ -456,36 +456,42 @@ def cmd_merge(args):
         allc.update(d["counters"])
     # 读全文
     seen_ids = set()
+    bad_lines = 0
     for fp in sorted(FULLDIR.glob("*.jsonl")):
-        for line in fp.read_text(encoding="utf-8").splitlines():
-            if not line.strip():
-                continue
-            r = json.loads(line)
-            if r["id"] in seen_ids:
-                continue
-            seen_ids.add(r["id"])
-            y = r.get("year")
-            if y:
-                year_hist[y] += 1
-            txt = r["text"]
-            if "ket_qua" in r["tags"]:
-                kq_full.append((r, txt))
-            # 实体抽取:只保留**足球实体**(队名/Cúp 名/赛事名/俱乐部后缀),
-            # 不抽普通词。用尾词判定,避免 được/đến 这类句首词。
-            for nm in ENT_RE.findall(txt):
-                nm = " ".join(nm.split())
-                if len(nm) < 4:
+        with fp.open(encoding="utf-8", errors="ignore") as fh:
+            for line in fh:
+                if not line.strip():
                     continue
-                low = nm.lower()
-                if low in ENT_STOP:
+                try:
+                    r = json.loads(line)
+                except Exception:
+                    bad_lines += 1
                     continue
-                ents[nm] += 1
+                if r["id"] in seen_ids:
+                    continue
+                seen_ids.add(r["id"])
+                y = r.get("year")
                 if y:
-                    if nm not in ent_years:
-                        ent_years[nm] = [y, y]
-                    else:
-                        ent_years[nm][1] = max(ent_years[nm][1], y)
-                        ent_years[nm][0] = min(ent_years[nm][0], y)
+                    year_hist[y] += 1
+                txt = r["text"]
+                if "ket_qua" in r["tags"]:
+                    kq_full.append((r, txt))
+                # 实体抽取:只保留**足球实体**(队名/Cúp 名/赛事名/俱乐部后缀),
+                # 不抽普通词。用尾词判定,避免 được/đến 这类句首词。
+                for nm in ENT_RE.findall(txt):
+                    nm = " ".join(nm.split())
+                    if len(nm) < 4:
+                        continue
+                    low = nm.lower()
+                    if low in ENT_STOP:
+                        continue
+                    ents[nm] += 1
+                    if y:
+                        if nm not in ent_years:
+                            ent_years[nm] = [y, y]
+                        else:
+                            ent_years[nm][1] = max(ent_years[nm][1], y)
+                            ent_years[nm][0] = min(ent_years[nm][0], y)
 
     # --- ngram 表:宽口径(评审) ---
     # 赛后衍生稿用语与赛果稿基本一致 → 纳入;只剔除:
