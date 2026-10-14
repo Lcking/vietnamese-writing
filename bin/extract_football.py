@@ -147,6 +147,14 @@ TOURNAMENT_RE = re.compile(
     r"U-?\d{2}|Copa America|Confederation|Nations League|Vòng loại)"
     r"[\s\w]*?(19[89]\d|20[0-2]\d)\b", re.I)
 FULL_DATE_RE = re.compile(r"\bngày\s+\d{1,2}[/.-]\d{1,2}[/.-](19[89]\d|20[0-2]\d)\b", re.I)
+# 发布时间格式(优先): "dd/mm/yyyy hh:mm" 或 "dd/mm/yyyy hh:mm GMT+7"
+PUBDATE_RE = re.compile(
+    r"\b(\d{1,2})[/.-](\d{1,2})[/.-](20[0-2]\d|19[89]\d)"
+    r"(?:\s+\d{1,2}:\d{2}(?:\s*GMT[+-]\d+)?)?")
+# 忽略的头部行: "Thứ X, ngày ... tháng ... năm ..."(星期几+越南语年月日)
+SKIP_HEADER_RE = re.compile(
+    r"\b(?:Thứ\s*(?:[2-7]|hai|ba|tư|năm|sáu|bảy)|Chủ nhật)\s*,?\s*"
+    r"ngày\s+\d{1,2}\s+tháng\s+\d{1,2}\s+năm\s+(20[0-2]\d|19[89]\d)", re.I)
 SEASON_RE = re.compile(r"\b(19[89]\d|20[0-2]\d)\s*/\s*\d{2}\b")
 HAN_RE = re.compile(r"[\u4e00-\u9fff]")
 EN_WORD = re.compile(r"\b(the|and|of|with|for|from|this|that)\b", re.I)
@@ -219,15 +227,30 @@ def is_ket_qua(t):
 
 
 def extract_year(t):
+    """提取发布时间(年)。
+
+    优先级(评审要求):
+      1. "dd/mm/yyyy hh:mm GMT+7" 这类**发布时间**格式 → 取**最早**的一个
+         (文章正文里常混入其他日期;发布时间通常在开头)
+      2. 赛季写法(2023/24)
+      3. 孤立年份(兜底)
+    同时忽略 "Thứ X, ngày ... tháng ... năm ..." 这类页面头部行。
+    """
     cleaned = TOURNAMENT_RE.sub(" ", t)
-    fd = [int(y) for y in FULL_DATE_RE.findall(cleaned) if 1990 <= int(y) <= 2026]
-    if fd:
-        return max(fd)
+    head = cleaned[:2000]          # 发布时间前 2000 字符内找
+    # 1) 发布时间(dd/mm/yyyy)
+    pub = [int(m.group(3)) for m in PUBDATE_RE.finditer(head)
+           if 1990 <= int(m.group(3)) <= 2026]
+    if pub:
+        return min(pub)            # 取最早(正文里后续日期多为引述)
+    # 2) 赛季
     se = [int(m.group(1)) for m in SEASON_RE.finditer(cleaned)
           if 1990 <= int(m.group(1)) <= 2026]
     if se:
         return max(se)
-    ys = [int(y) for y in re.findall(r"\b(19[89]\d|20[0-2]\d)\b", cleaned)
+    # 3) 孤立年份(排除头部行里的)
+    no_head = SKIP_HEADER_RE.sub(" ", cleaned)
+    ys = [int(y) for y in re.findall(r"\b(19[89]\d|20[0-2]\d)\b", no_head)
           if 1990 <= int(y) <= 2026]
     return max(ys) if ys else None
 
