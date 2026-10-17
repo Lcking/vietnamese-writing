@@ -30,3 +30,18 @@ distill_football/review_candidates_90.csv
 distill_football/ket_qua_full_judged.jsonl
 distill_football/ket_qua_ids.jsonl
 distill_football/mg_parts/
+
+# 真人评测产物(含正文/个人信息,不入库)
+human_eval/returned/
+human_eval/parsed/
+human_eval/*.png
+node_modules/
+
+# 生成的任务页含语料原文片段,不入库(用 bin/make_single_task_html.py 可复现)
+human_eval/html/task_*.html
+human_eval/blind_pack_*.md
+human_eval/score_*.csv
+human_eval/phieu_cham_mu.md
+human_eval/phieu_cham.csv
+human_eval/review_candidates_90.csv
+human_eval/review_ket_qua_50.csv

@@ -1,0 +1,40 @@
+{
+  "note": "不发给评审员",
+  "meta": [
+    {
+      "gid": "G5",
+      "arm_keys": [
+        "bare",
+        "facts"
+      ]
+    },
+    {
+      "gid": "G6",
+      "arm_keys": [
+        "bare",
+        "facts"
+      ]
+    },
+    {
+      "gid": "G7",
+      "arm_keys": [
+        "bare",
+        "facts"
+      ]
+    },
+    {
+      "gid": "G8",
+      "arm_keys": [
+        "bare",
+        "facts"
+      ]
+    },
+    {
+      "gid": "G9",
+      "arm_keys": [
+        "bare",
+        "facts"
+      ]
+    }
+  ]
+}
