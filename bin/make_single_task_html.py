@@ -111,16 +111,8 @@ __CSS__
 
   <div class="export">
     <h2 style="margin:0 0 6px">Xong rồi! Tải kết quả</h2>
-    <div class="sub" style="margin-bottom:14px">Điền tên của bạn (để người phụ trách biết file của ai),
-      rồi bấm nút tải về. Gửi file đó lại cho người phụ trách.</div>
-    <div style="max-width:420px;margin:0 auto 16px;text-align:left">
-      <label style="display:block;font-size:13px;font-weight:650;color:#4a5666;margin-bottom:6px">
-        Tên của bạn <span style="color:#c8382f">*</span>
-        <span style="font-weight:400;color:#7c8899">(ví dụ: Nguyen Van A)</span></label>
-      <input type="text" id="whoName" placeholder="Nhập họ tên của bạn…"
-             oninput="updateProgress()"
-             style="width:100%;border:1.5px solid #d5dce7;border-radius:10px;padding:11px 13px;font:inherit">
-    </div>
+    <div class="sub" style="margin-bottom:16px">Bấm nút dưới — một file sẽ được tải về máy.
+      Gửi file đó lại cho người phụ trách.</div>
     <button class="primary" onclick="exportAll()">⬇ Tải kết quả (.json)</button>
     <div class="done" id="done"></div>
   </div>
@@ -355,18 +347,9 @@ function updateProgress() {
   const pct = Math.round(got/need*100);
   document.getElementById('bar').style.width = pct + '%';
   const p = document.getElementById('pill');
-  const nameEl = document.getElementById('whoName');
-  const hasName = nameEl && nameEl.value.trim();
-  if (got >= need && hasName) {
-    p.textContent = 'Đã xong ✓'; p.classList.add('done');
-    document.getElementById('bar').style.width = '100%';
-  } else if (got >= need && !hasName) {
-    p.textContent = 'Xong phần chấm — nhớ điền tên ở cuối trang';
-    p.classList.remove('done');
-  } else {
-    p.textContent = 'Đã làm ' + got + '/' + need;
-    p.classList.remove('done');
-  }
+  if (got >= need) { p.textContent = 'Đã xong ✓'; p.classList.add('done');
+                     document.getElementById('bar').style.width = '100%'; }
+  else { p.textContent = 'Đã làm ' + got + '/' + need; p.classList.remove('done'); }
   // 侧边栏勾选
   ['A','B','C'].forEach(s => {
     const el = document.getElementById('ck'+s);
@@ -374,35 +357,9 @@ function updateProgress() {
   });
 }
 
-/* 名称转 ASCII(去声调)——保证跨系统/邮件附件不乱码;原名仍存在 JSON 里 */
-const VI_MAP = {'à':'a','á':'a','ả':'a','ã':'a','ạ':'a','ă':'a','ằ':'a','ắ':'a','ẳ':'a','ẵ':'a','ặ':'a',
-  'â':'a','ầ':'a','ấ':'a','ẩ':'a','ẫ':'a','ậ':'a','đ':'d','è':'e','é':'e','ẻ':'e','ẽ':'e','ẹ':'e',
-  'ê':'e','ề':'e','ế':'e','ể':'e','ễ':'e','ệ':'e','ì':'i','í':'i','ỉ':'i','ĩ':'i','ị':'i',
-  'ò':'o','ó':'o','ỏ':'o','õ':'o','ọ':'o','ô':'o','ồ':'o','ố':'o','ổ':'o','ỗ':'o','ộ':'o',
-  'ơ':'o','ờ':'o','ớ':'o','ở':'o','ỡ':'o','ợ':'o','ù':'u','ú':'u','ủ':'u','ũ':'u','ụ':'u',
-  'ư':'u','ừ':'u','ứ':'u','ử':'u','ữ':'u','ự':'u','ỳ':'y','ý':'y','ỷ':'y','ỹ':'y','ỵ':'y'};
-function toAscii(s) {
-  return (s || '').toLowerCase().split('').map(ch => VI_MAP[ch] || ch).join('')
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-
-/* 姓名 → 文件名安全段 */
-function slugName(s) {
-  const a = toAscii(s).trim().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
-  return a.replace(/-+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || '';
-}
-
 function exportAll() {
-  const nameEl = document.getElementById('whoName');
-  const rawName = nameEl ? nameEl.value.trim() : '';
-  if (!rawName) {
-    alert('Vui lòng điền tên của bạn trước khi tải kết quả.');
-    if (nameEl) nameEl.focus();
-    return;
-  }
   const person = String(DATA.person).padStart(2, '0');
-  const out = {person: DATA.person, person_code: person, ho_ten: rawName,
-               blind:[], audit:[], cands:[]};
+  const out = {person: DATA.person, person_code: person, blind:[], audit:[], cands:[]};
   DATA.blind.forEach((it,i)=>{
     const pairs = fixPairs(i);
     out.blind.push({code:it.code, game:it.game,
@@ -416,7 +373,7 @@ function exportAll() {
     answer:val('c'+i), note:fld('c'+i+'_note')}));
 
   // 文件名: ket_qua_<编号>_<姓名>.json
-  const fname = 'ket_qua_' + person + '_' + slugName(rawName) + '.json';
+  const fname = 'ket_qua_nguoi_' + person + '.json';
   const blob = new Blob([JSON.stringify(out,null,2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
