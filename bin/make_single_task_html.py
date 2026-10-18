@@ -79,6 +79,12 @@ __CSS__
   <div class="pbar"><i id="bar"></i></div>
 </header>
 
+<div class="sidenav" id="sidenav">
+  <a href="#secA" data-sec="A"><span class="b">A</span>Chấm bản tin<span class="ck" id="ckA"></span></a>
+  <a href="#secB" data-sec="B"><span class="b">B</span>Phân loại tin<span class="ck" id="ckB"></span></a>
+  <a href="#secC" data-sec="C"><span class="b">C</span>Xác nhận thể loại<span class="ck" id="ckC"></span></a>
+</div>
+
 <div class="wrap">
   <div class="card intro">
     <h2>Cảm ơn bạn đã giúp! 🙏</h2>
@@ -91,15 +97,15 @@ __CSS__
     <p class="note" style="margin:12px 0 0">Không cần đoán bài nào do công cụ nào viết — cứ chấm theo cảm nhận người Việt.</p>
   </div>
 
-  <div class="sec"><span class="n">A</span><h2>Chấm bản tin kết quả</h2>
+  <div class="sec" id="secA"><span class="n">A</span><h2>Chấm bản tin kết quả</h2>
     <span class="meta">2 bài</span></div>
   <div id="A"></div>
 
-  <div class="sec"><span class="n">B</span><h2>Bài này có phải bản tin kết quả không?</h2>
+  <div class="sec" id="secB"><span class="n">B</span><h2>Bài này có phải bản tin kết quả không?</h2>
     <span class="meta">5 tin</span></div>
   <div id="B"></div>
 
-  <div class="sec"><span class="n">C</span><h2>Bài này có đúng thể loại không?</h2>
+  <div class="sec" id="secC"><span class="n">C</span><h2>Bài này có đúng thể loại không?</h2>
     <span class="meta">9 bài</span></div>
   <div id="C"></div>
 
@@ -135,6 +141,80 @@ function val(name) {
 }
 function fld(name) { const e = document.querySelector('[name="'+name+'"]'); return e ? e.value : ""; }
 
+function stars(name, label1, label5) {
+  let h = '<div class="stars" data-name="'+name+'">';
+  for (let v=1; v<=5; v++) h += '<div class="star" data-v="'+v+
+    '" onclick="setStar(this)">'+v+'</div>';
+  h += '</div><span class="scoreval" id="v_'+name+'">chưa chọn</span>';
+  return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">' +
+    h + '</div><div style="display:flex;gap:6px;margin-top:7px;font-size:12px;color:#7c8899">' +
+    '<span style="min-width:76px">'+label1+'</span>' +
+    '<span style="flex:1;height:2px;background:linear-gradient(90deg,#e4e9f0,#c9d3e3,#b6c4d8);border-radius:2px;max-width:190px"></span>' +
+    '<span>'+label5+'</span></div>';
+}
+function setStar(el) {
+  const box = el.parentNode;
+  const v = +el.dataset.v;
+  box.dataset.val = v;
+  box.querySelectorAll('.star').forEach(s => {
+    const sv = +s.dataset.v;
+    s.classList.toggle('on', sv <= v);
+    s.classList.remove('low','mid','high');
+    if (sv <= v) s.classList.add(v <= 2 ? 'low' : (v === 3 ? 'mid' : 'high'));
+  });
+  const out = document.getElementById('v_' + box.dataset.name);
+  if (out) out.textContent = v + '/5';
+  updateProgress();
+}
+function starVal(name) {
+  const b = document.querySelector('.stars[data-name="'+name+'"]');
+  return b && b.dataset.val ? b.dataset.val : "";
+}
+
+/* 改稿条目:一对输入框(原句 / 正确写法),可增删 */
+function fixItem(bi, idx) {
+  return `<div class="fixitem" data-bi="${bi}">
+    <div class="hdr"><span class="idx">${idx}</span>
+      <span class="t">Câu số ${idx}</span>
+      <button type="button" class="del" onclick="delFix(this)">✕ Xóa</button></div>
+    <div class="pair">
+      <div class="col bad"><label>Câu viết chưa ổn</label>
+        <textarea class="fix_bad" placeholder="Dán nguyên câu trong bài…"></textarea></div>
+      <div class="col good"><label>Câu nên viết lại</label>
+        <textarea class="fix_good" placeholder="Viết lại cho đúng / tự nhiên hơn…"></textarea></div>
+    </div>
+  </div>`;
+}
+function addFix(btn) {
+  const list = btn.previousElementSibling;
+  const bi = list.dataset.bi;
+  const n = list.querySelectorAll('.fixitem').length + 1;
+  if (n > 6) { alert('Tối đa 6 câu cho mỗi bài.'); return; }
+  list.insertAdjacentHTML('beforeend', fixItem(bi, n));
+  updateProgress();
+}
+function delFix(btn) {
+  const list = btn.closest('.fixlist');
+  btn.closest('.fixitem').remove();
+  // 重新编号
+  list.querySelectorAll('.fixitem').forEach((it, i) => {
+    it.querySelector('.idx').textContent = i + 1;
+    it.querySelector('.t').textContent = 'Câu số ' + (i + 1);
+  });
+  updateProgress();
+}
+function fixPairs(bi) {
+  const list = document.querySelector('.fixlist[data-bi="'+bi+'"]');
+  if (!list) return [];
+  const out = [];
+  list.querySelectorAll('.fixitem').forEach(it => {
+    const bad = it.querySelector('.fix_bad').value.trim();
+    const good = it.querySelector('.fix_good').value.trim();
+    if (bad || good) out.push({sai: bad, dung: good});
+  });
+  return out;
+}
+
 function renderA() {
   const h = document.getElementById('A');
   DATA.blind.forEach((it, i) => {
@@ -161,27 +241,13 @@ ${esc(it.facts)}</div>
       <div class="q">
         <div class="lab"><span class="num">2</span>Tự nhiên
           <span class="hint">đọc như người Việt viết?</span></div>
-        <div class="numscore">
-          <input type="number" name="a${i}_nat" min="1" max="5" step="1"
-                 oninput="updateProgress()" placeholder="?">
-          <div class="scale"><span class="lbl">1 máy móc</span>
-            <span class="d"></span><span class="d"></span><span class="d"></span>
-            <span class="d"></span><span class="d"></span>
-            <span class="lbl">5 tự nhiên</span></div>
-        </div>
+        ${stars('a'+i+'_nat', '1 · máy móc', '5 · tự nhiên')}
       </div>
 
       <div class="q">
         <div class="lab"><span class="num">3</span>Đúng chuẩn báo chí
           <span class="hint">động từ tỷ số, cách ghi tỷ số, tiêu đề</span></div>
-        <div class="numscore">
-          <input type="number" name="a${i}_std" min="1" max="5" step="1"
-                 oninput="updateProgress()" placeholder="?">
-          <div class="scale"><span class="lbl">1 sai nhiều</span>
-            <span class="d"></span><span class="d"></span><span class="d"></span>
-            <span class="d"></span><span class="d"></span>
-            <span class="lbl">5 chuẩn</span></div>
-        </div>
+        ${stars('a'+i+'_std', '1 · sai nhiều', '5 · chuẩn')}
       </div>
 
       <div class="q">
@@ -195,14 +261,17 @@ ${esc(it.facts)}</div>
       <div class="q key">
         <div class="lab"><span class="num">✎</span>Câu cần sửa
           <span class="hint">quan trọng nhất!</span></div>
-        <div class="hint2">Chép nguyên câu chưa ổn, rồi viết lại cho đúng.
-          Nếu bài không có gì cần sửa, để trống.</div>
-        <textarea name="a${i}_fix" placeholder="Câu chưa ổn: ...&#10;Câu nên viết: ..."></textarea>
+        <div class="hint2">Mỗi câu chưa ổn: dán nguyên câu vào ô trái, viết lại cho đúng ở ô phải.
+          Có nhiều câu thì bấm "Thêm câu". Bài không có gì phải sửa thì để trống.</div>
+        <div class="fixlist" data-bi="${i}">
+          ${fixItem(i, 1)}
+        </div>
+        <div class="addfix" onclick="addFix(this)">＋ Thêm câu cần sửa</div>
       </div>
 
       <div class="q">
         <div class="lab"><span class="num">+</span>Ghi chú thêm
-          <span class="hint">không bắt buộc</span></div>
+          <span class="hint">không bắt buộc — ví dụ: cả bài nhìn chung thế nào</span></div>
         <textarea name="a${i}_note" style="min-height:52px"></textarea>
       </div>
     </div>`);
@@ -230,21 +299,28 @@ function renderB() {
 
 function renderC() {
   const h = document.getElementById('C');
+  const guide = {
+    ket_qua: 'Bản tin kết quả một trận cụ thể: có tỷ số, có diễn biến bàn thắng, đội thắng/thua rõ.',
+    truoc_tran: 'Nhận định / dự đoán TRƯỚC khi trận đấu diễn ra: đội hình dự kiến, phong độ, đối đầu, ai sẽ thắng.',
+    social: 'Bài ngắn kiểu mạng xã hội / tin nhanh: vài câu, giọng khẩu ngữ, có thể có emoji hoặc dấu chấm than.'
+  };
   DATA.cands.forEach((it, i) => {
     h.insertAdjacentHTML('beforeend', `
     <div class="card">
       <h2>Bài ${i+1} / 9<span class="tag cat">${CATNAME[it.cat]||it.cat}</span></h2>
-      <div class="sub">Thể loại cần kiểm tra: <b>${CATNAME[it.cat]||it.cat}</b>.
-        Bài này có đúng thể loại đó không?</div>
+      <div class="sub"><b>Thể loại cần kiểm tra: ${CATNAME[it.cat]||it.cat}</b><br>
+        ${guide[it.cat]||''}</div>
       <div class="art"><div class="bd">${esc(it.head)}</div></div>
       <div class="q">
-        <div class="lab"><span class="num">?</span>Kết luận</div>
-        ${chips('c'+i, [{v:"ok",t:"Dùng được",cls:"ok"},{v:"no",t:"Không dùng",cls:"no"}])}
+        <div class="lab"><span class="num">?</span>Bài này có đúng thể loại trên không?</div>
+        ${chips('c'+i, [{v:"ok",t:"Đúng thể loại — dùng được",cls:"ok"},
+                        {v:"no",t:"Sai thể loại — không dùng",cls:"no"}])}
       </div>
       <div class="q">
-        <div class="lab"><span class="num">+</span>Ghi chú
+        <div class="lab"><span class="num">+</span>Nếu sai thể loại, bài này thực ra là gì?
           <span class="hint">không bắt buộc</span></div>
-        <input type="text" name="c${i}_note">
+        <input type="text" name="c${i}_note"
+               placeholder="Ví dụ: đây là tin chuyển nhượng / chân dung cầu thủ / tin chấn thương…">
       </div>
     </div>`);
   });
@@ -253,23 +329,44 @@ function renderC() {
 function updateProgress() {
   const need = DATA.blind.length*4 + DATA.audit.length + DATA.cands.length;
   let got = 0;
-  for (let i=0;i<DATA.blind.length;i++)
-    got += (val('a'+i+'_fact')?1:0) + (fld('a'+i+'_nat')?1:0)
-         + (fld('a'+i+'_std')?1:0) + (val('a'+i+'_pub')?1:0);
-  for (let i=0;i<DATA.audit.length;i++) got += val('b'+i)?1:0;
-  for (let i=0;i<DATA.cands.length;i++) got += val('c'+i)?1:0;
+  const perSec = {A:[0,0], B:[0,0], C:[0,0]};
+  for (let i=0;i<DATA.blind.length;i++) {
+    let n = 0;
+    n += starVal('a'+i+'_nat')?1:0;
+    n += starVal('a'+i+'_std')?1:0;
+    n += val('a'+i+'_fact')?1:0;
+    n += val('a'+i+'_pub')?1:0;
+    got += n; perSec.A[0] += n; perSec.A[1] += 4;
+  }
+  for (let i=0;i<DATA.audit.length;i++) {
+    const k = val('b'+i)?1:0; got += k; perSec.B[0] += k; perSec.B[1] += 1;
+  }
+  for (let i=0;i<DATA.cands.length;i++) {
+    const k = val('c'+i)?1:0; got += k; perSec.C[0] += k; perSec.C[1] += 1;
+  }
   const pct = Math.round(got/need*100);
   document.getElementById('bar').style.width = pct + '%';
   const p = document.getElementById('pill');
-  p.textContent = got >= need ? 'Đã xong ✓' : ('Đã làm ' + got + '/' + need);
-  if (got >= need) { p.classList.add('done'); document.getElementById('bar').style.width='100%'; }
+  if (got >= need) { p.textContent = 'Đã xong ✓'; p.classList.add('done');
+                     document.getElementById('bar').style.width = '100%'; }
+  else { p.textContent = 'Đã làm ' + got + '/' + need; p.classList.remove('done'); }
+  // 侧边栏勾选
+  ['A','B','C'].forEach(s => {
+    const el = document.getElementById('ck'+s);
+    if (el) el.textContent = (perSec[s][0] >= perSec[s][1]) ? '✓' : '';
+  });
 }
 
 function exportAll() {
   const out = {person: DATA.person, blind:[], audit:[], cands:[]};
-  DATA.blind.forEach((it,i)=>out.blind.push({code:it.code, game:it.game,
-    fact:val('a'+i+'_fact'), nat:fld('a'+i+'_nat'), std:fld('a'+i+'_std'),
-    pub:val('a'+i+'_pub'), fix:fld('a'+i+'_fix'), note:fld('a'+i+'_note')}));
+  DATA.blind.forEach((it,i)=>{
+    const pairs = fixPairs(i);
+    out.blind.push({code:it.code, game:it.game,
+      fact:val('a'+i+'_fact'), nat:starVal('a'+i+'_nat'), std:starVal('a'+i+'_std'),
+      pub:val('a'+i+'_pub'), fixes:pairs,
+      fix:(pairs[0] ? (pairs[0].sai + ' → ' + pairs[0].dung) : ''),
+      note:fld('a'+i+'_note')});
+  });
   DATA.audit.forEach((it,i)=>out.audit.push({id:it.id, answer:val('b'+i)}));
   DATA.cands.forEach((it,i)=>out.cands.push({id:it.id, cat:it.cat,
     answer:val('c'+i), note:fld('c'+i+'_note')}));
@@ -284,7 +381,23 @@ function exportAll() {
     String(DATA.person).padStart(2,'0') + '.json</b>. Hãy gửi file này cho người phụ trách. Cảm ơn bạn!';
 }
 
-renderA(); renderB(); renderC(); updateProgress();
+/* 侧边栏:滚动时高亮当前分区 */
+function initNav() {
+  const nav = document.querySelectorAll('.sidenav a');
+  if (!nav.length) return;
+  const secs = ['secA','secB','secC'].map(id => document.getElementById(id));
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        nav.forEach(a => a.classList.toggle('act', a.dataset.sec ===
+          e.target.id.replace('sec','')));
+      }
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+  secs.forEach(s => s && io.observe(s));
+}
+
+renderA(); renderB(); renderC(); updateProgress(); initNav();
 </script>
 </body>
 </html>

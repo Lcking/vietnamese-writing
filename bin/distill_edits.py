@@ -72,6 +72,16 @@ def main(argv=None):
              if l.strip()]
     pairs, unsplit = [], []
     for e in edits:
+        # 新版:网页已按「原句 / 正确写法」两个框分开,直接用
+        if e.get("sai") or e.get("dung"):
+            if e.get("sai") and e.get("dung"):
+                pairs.append({"ma_bai": e.get("ma_bai"), "nguoi": e.get("nguoi"),
+                              "sai": e["sai"], "dung": e["dung"],
+                              "do_dai": f"{len(e['sai'])}->{len(e['dung'])}"})
+            else:
+                unsplit.append(e)   # 只填了一半
+            continue
+        # 旧版:单字符串,需拆
         bad, good = split_pair(e.get("sua", ""))
         if bad and good:
             pairs.append({"ma_bai": e.get("ma_bai"), "nguoi": e.get("nguoi"),

@@ -59,10 +59,21 @@ def main(argv=None):
                           "title": blindmeta.get(code, {}).get("title", ""),
                           "fact": b.get("fact", ""), "nat": b.get("nat", ""),
                           "std": b.get("std", ""), "pub": b.get("pub", ""),
+                          "so_cau_sua": len(b.get("fixes") or []),
                           "fix": b.get("fix", ""), "note": b.get("note", "")})
-            if (b.get("fix") or "").strip():
-                edits.append({"ma_bai": code, "nguoi": person,
-                              "sua": b["fix"], "note": b.get("note", "")})
+            # 多句改稿:优先用 fixes 数组,兼容旧版单字符串 fix
+            pairs = b.get("fixes") or []
+            if pairs:
+                for k, pr in enumerate(pairs, 1):
+                    edits.append({"ma_bai": code, "nguoi": person,
+                                  "thu_tu": k,
+                                  "sai": (pr.get("sai") or "").strip(),
+                                  "dung": (pr.get("dung") or "").strip(),
+                                  "note": b.get("note", "")})
+            elif (b.get("fix") or "").strip():
+                edits.append({"ma_bai": code, "nguoi": person, "thu_tu": 1,
+                              "sai": b["fix"], "dung": "",
+                              "note": b.get("note", "")})
         for a in d.get("audit", []):
             audit.append({"nguoi": person, "id": a.get("id"),
                           "tra_loi": a.get("answer", "")})

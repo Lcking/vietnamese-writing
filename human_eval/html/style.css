@@ -172,6 +172,96 @@ header {
 
 /* 数字输入 */
 .numscore { display: flex; align-items: center; gap: 11px; flex-wrap: wrap; }
+
+/* ---- 星级评分(1-5 圆点,可点) ---- */
+.stars { display: flex; gap: 8px; align-items: center; }
+.star {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid var(--line2); background: #fff;
+  cursor: pointer; transition: all .16s ease;
+  display: grid; place-items: center;
+  font-size: 13px; font-weight: 700; color: var(--mut);
+  user-select: none;
+}
+.star:hover { border-color: #a9b8d0; transform: scale(1.06); }
+.star.on {
+  border-color: var(--acc); background: var(--acc); color: #fff;
+  box-shadow: 0 4px 12px -6px rgba(52,87,213,.95);
+}
+.star.on.low { border-color: #d97706; background: #d97706;
+  box-shadow: 0 4px 12px -6px rgba(217,119,6,.9); }
+.star.on.mid { border-color: #ca8a04; background: #eab308;
+  box-shadow: 0 4px 12px -6px rgba(202,138,4,.9); }
+.star.on.high { border-color: #0f8a5f; background: #0f8a5f;
+  box-shadow: 0 4px 12px -6px rgba(15,138,95,.9); }
+.scoreval { font-size: 13.5px; font-weight: 700; color: var(--txt2);
+  min-width: 62px; font-variant-numeric: tabular-nums; }
+
+/* ---- 改稿条目(可增删) ---- */
+.fixlist { display: flex; flex-direction: column; gap: 14px; }
+.fixitem {
+  border: 1px solid var(--line2); border-radius: 11px;
+  padding: 14px; background: #fff; position: relative;
+}
+.fixitem .hdr {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.fixitem .hdr .idx {
+  width: 22px; height: 22px; border-radius: 6px; background: var(--acc-soft);
+  color: var(--acc); font-size: 12px; font-weight: 800;
+  display: grid; place-items: center; flex: none;
+}
+.fixitem .hdr .t { font-size: 13px; font-weight: 650; color: var(--txt2); }
+.fixitem .hdr .del {
+  margin-left: auto; border: 0; background: transparent; cursor: pointer;
+  color: var(--mut); font-size: 13px; padding: 3px 8px; border-radius: 6px;
+}
+.fixitem .hdr .del:hover { background: var(--no-soft); color: var(--no); }
+.fixitem .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fixitem .pair .col label {
+  display: block; font-size: 12px; font-weight: 650; margin-bottom: 5px;
+}
+.fixitem .pair .col.bad label { color: var(--no); }
+.fixitem .pair .col.good label { color: var(--ok); }
+.fixitem textarea { min-height: 74px; font-size: 14px; }
+.fixitem .col.bad textarea { background: #fffafa; }
+.fixitem .col.good textarea { background: #f9fdfb; }
+.addfix {
+  border: 1.5px dashed var(--line2); border-radius: 11px; background: #fff;
+  padding: 11px; text-align: center; cursor: pointer; color: var(--acc);
+  font-size: 13.5px; font-weight: 650; transition: all .16s;
+}
+.addfix:hover { border-color: var(--acc); background: var(--acc-soft); }
+@media (max-width: 620px) {
+  .fixitem .pair { grid-template-columns: 1fr; }
+  .star { width: 31px; height: 31px; font-size: 12px; }
+}
+
+/* ---- 侧边栏导航 ---- */
+.sidenav {
+  position: fixed; left: 18px; top: 50%; transform: translateY(-50%);
+  z-index: 40; display: flex; flex-direction: column; gap: 6px;
+  background: rgba(255,255,255,.92); backdrop-filter: blur(10px);
+  border: 1px solid var(--line); border-radius: 14px;
+  padding: 9px; box-shadow: var(--shadow);
+}
+.sidenav a {
+  display: flex; align-items: center; gap: 9px; text-decoration: none;
+  color: var(--txt2); font-size: 12.5px; font-weight: 600;
+  padding: 8px 11px; border-radius: 9px; white-space: nowrap;
+  transition: all .16s;
+}
+.sidenav a .b {
+  width: 20px; height: 20px; border-radius: 6px; flex: none;
+  background: var(--bg2); color: var(--mut); font-size: 11px; font-weight: 800;
+  display: grid; place-items: center;
+}
+.sidenav a:hover { background: var(--acc-soft); color: var(--acc); }
+.sidenav a.act { background: var(--acc); color: #fff; }
+.sidenav a.act .b { background: rgba(255,255,255,.25); color: #fff; }
+.sidenav a .ck { font-size: 11px; color: var(--ok); margin-left: auto; }
+.sidenav a.act .ck { color: #c8f5e0; }
+@media (max-width: 1180px) { .sidenav { display: none; } }
 input[type=number] {
   width: 82px; border: 1.5px solid var(--line2); border-radius: 10px;
   padding: 9px 12px; font: inherit; font-weight: 650; text-align: center;
