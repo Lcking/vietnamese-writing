@@ -129,7 +129,14 @@ class TestCards(unittest.TestCase):
             txt = fp.read_text(encoding="utf-8")
             n = len(txt)
             # lite 卡 ≤1700;large 专用卡(线上模型,内容更全)≤3000
-            limit = 3000 if fp.name.endswith("_large.md") else 1700
+            # ket_qua_tran: 2026-10 导师盲审后加入 6 条母语确认规则,
+            #   上限放宽到 2400(仍远小于 large 档 8000 预算),理由见卡内 [BT] 标记
+            if fp.name == "ket_qua_tran.md":
+                limit = 2400
+            elif fp.name.endswith("_large.md"):
+                limit = 3000
+            else:
+                limit = 1700
             self.assertLess(n, limit, f"{fp.name} 超长({n} 字符 > {limit})")
             han = re.findall(r"[\u4e00-\u9fff]+", txt)
             self.assertEqual(han, [], f"{fp.name} 含汉字: {han}")

@@ -513,27 +513,31 @@ def check(task_text, facts=None, task=None):
         return "".join(c for c in _ud2.normalize("NFD", str(x))
                        if _ud2.category(c) != "Mn").lower()
 
-    # ---- S21 数据行泄漏(阻断) ----
-    # 按句判断(段中夹的比分行也要拦);只用 facts 的两个队名做精确匹配
+    # ---- S21 独立比分句(建议修订,非阻断) ----
+    # 导师盲审(10/2026)结论: 6 次评分对应的稿件带独立比分行,其中 B01 两位导师
+    # 都判"可以直接发",只有 B13 顺手改。故从阻断级降为提示级,
+    # 修订时提示改写成 'ấn định thắng lợi X-Y' 类句子。
     hn21 = (facts or {}).get("home") if facts else None
     an21 = (facts or {}).get("away") if facts else None
     for sent in split_sentences(task_text):
         s = sent.strip()
         if not s:
             continue
-        # ① 'Kết quả:' 开头,不论位置
+        # ① 'Kết quả:' 开头
         if re.match(r"^Kết quả\s*:", s, re.I):
-            issues.append({"rule": "S21", "blocking": True, "snippet": s[:50],
-                           "msg": "Dòng dữ liệu lọt vào bài ('Kết quả: …')"})
+            issues.append({"rule": "S21", "blocking": False, "snippet": s[:50],
+                           "msg": "Dòng dữ liệu ('Kết quả: …') — nên viết thành câu: "
+                                  "'ấn định thắng lợi X-Y'"})
             continue
-        # ② 整句只有 '队A 比分 队B'(队名取自 facts,精确)
+        # ② 整句只有 '队A 比分 队B'
         if hn21 and an21:
             pat = (r"^(?:" + re.escape(hn21) + r"|" + re.escape(an21) + r")\s+"
                    r"\d+\s*-\s*\d+\s+"
                    r"(?:" + re.escape(hn21) + r"|" + re.escape(an21) + r")\.?$")
             if re.match(pat, s):
-                issues.append({"rule": "S21", "blocking": True, "snippet": s[:50],
-                               "msg": "Câu chỉ có 'đội - tỷ số - đội' (lọt từ dữ liệu)"})
+                issues.append({"rule": "S21", "blocking": False, "snippet": s[:50],
+                               "msg": "Câu chỉ có 'đội - tỷ số - đội' — nên gộp vào câu "
+                                      "diễn biến: 'ghi bàn ấn định thắng lợi X-Y'"})
 
     # ---- S15 赛果方向(需 facts) ----
     if facts:

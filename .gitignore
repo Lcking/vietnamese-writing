@@ -45,3 +45,7 @@ human_eval/phieu_cham_mu.md
 human_eval/phieu_cham.csv
 human_eval/review_candidates_90.csv
 human_eval/review_ket_qua_50.csv
+
+# 导师确认范文池(含语料正文,版权原因不入库;由脚本可复现)
+references/examples_football/
+examples/football/*_reviewed.jsonl

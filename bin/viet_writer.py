@@ -133,14 +133,17 @@ GENERIC_MAP = {
 THEME_MAP = {
     "football_binh_luan": ["doi_tuyen_vn", "world_cup", "phan_tich_chien_thuat"],
     "football_tin_tuc": ["world_cup", "ngoai_hang", "champions_league"],
-    "football_ket_qua": ["world_cup", "ngoai_hang", "champions_league", "v_league", "chau_a"],
+    # ket_qua_reviewed = 2026-10 由 6 位越南语导师逐条确认的范文(type_reviewed=True),
+    # 放在最前:优先于语料启发式挖掘的池子
+    "football_ket_qua": ["ket_qua_reviewed", "world_cup", "ngoai_hang",
+                         "champions_league", "v_league", "chau_a"],
     "football_chuyen_nhuong": ["chuyen_nhuong"],
     "football_doi_tuyen": ["doi_tuyen_vn", "chau_a"],
     "football_nhan_vat": ["ngoai_hang", "world_cup", "doi_tuyen_vn"],
     "football_thuat_ngu": ["phan_tich_chien_thuat"],
     "football_pre_match": ["doi_tuyen_vn", "chau_a", "world_cup"],
     "football_analysis": ["phan_tich_chien_thuat", "champions_league"],
-    "social_post": ["social_post", "doi_tuyen_vn"],
+    "social_post": ["social_reviewed", "social_post", "doi_tuyen_vn"],
 }
 
 EXAMPLE_HEADER = (

@@ -1,0 +1,16 @@
+[
+  {
+    "ma_bai": "B03",
+    "reviewer": "2",
+    "sai": "Không có phút chính xác của bàn thứ nhất, thứ hai và thứ tư.",
+    "dung": "Câu thừa , không thêm .",
+    "reason": "不是改写(评语)或引用任务说明"
+  },
+  {
+    "ma_bai": "B04",
+    "reviewer": "2",
+    "sai": "Viết bản tin kết quả trận Hà Nội FC - Bắc Ninh, vòng 3 V.League 2026/27. Dữ kiện: Hà Nội 1-0 Bắc Nin",
+    "dung": "Ở vòng 3 V.League mùa giải 2026/2027, Câu Lạc Bộ Hà Nội đánh bại các cầu thủ của Bắc Ninh với tỉ số ",
+    "reason": "不是改写(评语)或引用任务说明"
+  }
+]

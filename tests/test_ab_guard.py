@@ -42,13 +42,19 @@ class TestExampleSlotSwitches(unittest.TestCase):
         self.assertEqual(len(p["examples_meta"]), 0)
 
     def test_b_use_examples_but_none_reviewed(self):
-        """B. use_examples=True + 不放宽 → 只能注入人工确认过的;
-        当前仓库没有确认过的赛果范文 → 0 条。"""
+        """B. use_examples=True + 不放宽 → 只注入人工确认过的范文。
+
+        2026-10 起仓库已有 6 位导师确认的 17 条赛果范文,
+        故此处应注入 >0 条,且全部 type_reviewed=True。
+        (此前范文池无确认条目时,这里断言为 0 条。)
+        """
         p = _prompt(use_examples=True)
-        self.assertEqual(p["stats"]["n_examples"], 0,
-                         "没有确认过的范文时应注入 0 条,不能拿未确认的凑数")
-        for m in p["examples_meta"]:
-            self.assertTrue(m.get("type_reviewed"))
+        metas = p["examples_meta"]
+        self.assertGreater(len(metas), 0,
+                           "已有导师确认范文时应能注入")
+        for m in metas:
+            self.assertTrue(m.get("type_reviewed"),
+                            "放宽关闭时只能注入人工确认过的范文")
 
     def test_d_allow_unreviewed_alone_no_examples(self):
         """D. 只开 allow_unreviewed、不开 use_examples → 仍 0 条(两开关已解耦)。"""
@@ -56,37 +62,46 @@ class TestExampleSlotSwitches(unittest.TestCase):
         self.assertEqual(p["stats"]["n_examples"], 0,
                          "放宽确认不应顺带打开范文位(large 档)")
 
-    def test_c_both_switches_injects_unreviewed(self):
-        """C. 两个都开 → 可注入,但注入项均为未确认(type_reviewed=False),
-        脚本据此报错。"""
+    def test_c_both_switches_capped(self):
+        """C. 两个都开 → 仍受 large 档 ≤2 条限制;注入项均为已确认。"""
         p = _prompt(use_examples=True, allow_unreviewed=True)
         metas = p["examples_meta"]
         self.assertGreater(len(metas), 0, "两个开关都开时应能注入范文")
-        self.assertTrue(all(not m.get("type_reviewed") for m in metas),
-                        "当前仓库范文均未人工确认,故应全部 type_reviewed=False")
         self.assertLessEqual(len(metas), 2, "large 档范文位 ≤2 条")
+        # 已确认范文优先,故即使放宽也应是确认过的
+        self.assertTrue(all(m.get("type_reviewed") for m in metas),
+                        "已确认范文应优先进池")
 
     def test_e_ab_script_exit2_when_b_empty(self):
-        """E. 脚本在 B 组范文为 0 时 exit 2,不出报告。"""
+        """E. 去掉已确认范文后,B 组为 0 条,脚本应 exit 2。"""
         import example_ab_test as abt
-        buf_err, buf_out = io.StringIO(), io.StringIO()
-        with redirect_stderr(buf_err), redirect_stdout(buf_out):
-            code = abt.main(["--use-examples", "--limit", "1", "--out", "/tmp/ab_guard_t"])
-        self.assertEqual(code, 2, "B 组 0 条范文应 exit 2")
-        self.assertIn("实验无效", buf_err.getvalue())
+        from pathlib import Path
+        import viet_writer as vw
+        # 临时把 reviewed 池移走,模拟"没有确认范文"的世界
+        target = Path(vw.EXAMPLES) / "football" / "ket_qua_reviewed.jsonl"
+        backup = target.with_suffix(".jsonl.bak")
+        moved = False
+        try:
+            if target.exists():
+                target.rename(backup); moved = True
+            buf_err, buf_out = io.StringIO(), io.StringIO()
+            with redirect_stderr(buf_err), redirect_stdout(buf_out):
+                code = abt.main(["--use-examples", "--limit", "1",
+                                 "--out", "/tmp/ab_guard_t"])
+            self.assertEqual(code, 2, "B 组 0 条范文应 exit 2")
+            self.assertIn("实验无效", buf_err.getvalue())
+        finally:
+            if moved and backup.exists():
+                backup.rename(target)
 
-    def test_f_ab_script_rejects_unreviewed_without_flag(self):
-        """E2. 脚本默认拒绝注入未确认范文(需显式 --allow-unreviewed)。"""
+    def test_f_ab_script_accepts_reviewed_without_flag(self):
+        """F. 未加 --allow-unreviewed 也应能跑(因为范文已确认)。"""
         import example_ab_test as abt
-        # 直接构造 probe 检验判定逻辑,不真跑模型
-        p = _prompt(use_examples=True, allow_unreviewed=True)
-        unrev = [m for m in p["examples_meta"] if not m.get("type_reviewed")]
-        self.assertTrue(unrev, "当前范文应全为未确认,断言才有意义")
-        # 未加 --allow-unreviewed 时应被拒
-        buf_err, buf_out = io.StringIO(), io.StringIO()
-        with redirect_stderr(buf_err), redirect_stdout(buf_out):
-            code = abt.main(["--use-examples", "--limit", "1", "--out", "/tmp/ab_guard_t2"])
-        self.assertEqual(code, 2)
+        p = _prompt(use_examples=True)
+        metas = p["examples_meta"]
+        self.assertGreater(len(metas), 0)
+        self.assertTrue(all(m.get("type_reviewed") for m in metas),
+                        "确认过的范文不需要 --allow-unreviewed")
 
 
 if __name__ == "__main__":
