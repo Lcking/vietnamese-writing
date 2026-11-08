@@ -539,6 +539,12 @@ def check(task_text, facts=None, task=None):
                                "msg": "Câu chỉ có 'đội - tỷ số - đội' — nên gộp vào câu "
                                       "diễn biến: 'ghi bàn ấn định thắng lợi X-Y'"})
 
+    # ---- S23 导师确认的常见错搭配(提示级) ----
+    m = re.search(r"làm chủ thế đoạn đầu", task_text, re.I)
+    if m:
+        issues.append({"rule": "S23", "hint_only": True, "snippet": m.group(0),
+                       "msg": "Cụm sai (BT): 'làm chủ thế đoạn đầu' → 'làm chủ thế trận'"})
+
     # ---- S15 赛果方向(需 facts) ----
     if facts:
         try:

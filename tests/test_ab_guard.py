@@ -44,9 +44,8 @@ class TestExampleSlotSwitches(unittest.TestCase):
     def test_b_use_examples_but_none_reviewed(self):
         """B. use_examples=True + 不放宽 → 只注入人工确认过的范文。
 
-        2026-10 起仓库已有 6 位导师确认的 17 条赛果范文,
+        2026-11 起仓库有可入库的 mentor_bt 种子(导师盲审认可的评测稿),
         故此处应注入 >0 条,且全部 type_reviewed=True。
-        (此前范文池无确认条目时,这里断言为 0 条。)
         """
         p = _prompt(use_examples=True)
         metas = p["examples_meta"]
@@ -77,13 +76,16 @@ class TestExampleSlotSwitches(unittest.TestCase):
         import example_ab_test as abt
         from pathlib import Path
         import viet_writer as vw
-        # 临时把 reviewed 池移走,模拟"没有确认范文"的世界
-        target = Path(vw.EXAMPLES) / "football" / "ket_qua_reviewed.jsonl"
-        backup = target.with_suffix(".jsonl.bak")
-        moved = False
+        # 临时把确认范文池移走(mentor 种子 + WanJuan reviewed)
+        foot = Path(vw.EXAMPLES) / "football"
+        moved = []
         try:
-            if target.exists():
-                target.rename(backup); moved = True
+            for name in ("ket_qua_mentor_bt.jsonl", "ket_qua_reviewed.jsonl"):
+                target = foot / name
+                if target.exists():
+                    backup = target.with_suffix(".jsonl.bak")
+                    target.rename(backup)
+                    moved.append((target, backup))
             buf_err, buf_out = io.StringIO(), io.StringIO()
             with redirect_stderr(buf_err), redirect_stdout(buf_out):
                 code = abt.main(["--use-examples", "--limit", "1",
@@ -91,8 +93,9 @@ class TestExampleSlotSwitches(unittest.TestCase):
             self.assertEqual(code, 2, "B 组 0 条范文应 exit 2")
             self.assertIn("实验无效", buf_err.getvalue())
         finally:
-            if moved and backup.exists():
-                backup.rename(target)
+            for target, backup in moved:
+                if backup.exists():
+                    backup.rename(target)
 
     def test_f_ab_script_accepts_reviewed_without_flag(self):
         """F. 未加 --allow-unreviewed 也应能跑(因为范文已确认)。"""

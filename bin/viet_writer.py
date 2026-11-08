@@ -133,10 +133,10 @@ GENERIC_MAP = {
 THEME_MAP = {
     "football_binh_luan": ["doi_tuyen_vn", "world_cup", "phan_tich_chien_thuat"],
     "football_tin_tuc": ["world_cup", "ngoai_hang", "champions_league"],
-    # ket_qua_reviewed = 2026-10 由 6 位越南语导师逐条确认的范文(type_reviewed=True),
-    # 放在最前:优先于语料启发式挖掘的池子
-    "football_ket_qua": ["ket_qua_reviewed", "world_cup", "ngoai_hang",
-                         "champions_league", "v_league", "chau_a"],
+    # ket_qua_mentor_bt = 导师盲审认可的评测稿(自有生成稿+导师改句,可入库)。
+    # ket_qua_reviewed = WanJuan 语料确认后 hydrate 的范文(版权不入库;远端恢复后补)。
+    "football_ket_qua": ["ket_qua_mentor_bt", "ket_qua_reviewed", "world_cup",
+                         "ngoai_hang", "champions_league", "v_league", "chau_a"],
     "football_chuyen_nhuong": ["chuyen_nhuong"],
     "football_doi_tuyen": ["doi_tuyen_vn", "chau_a"],
     "football_nhan_vat": ["ngoai_hang", "world_cup", "doi_tuyen_vn"],

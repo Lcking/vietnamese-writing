@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.7.1 (2026-11-08) — 远端离线后的可复现范文种子
+
+### 背景
+- v1.7.0 已落地导师盲审：规则卡 `[BT]`、S21 降为建议修订、13 条改稿回归。
+- 但 `*_reviewed.jsonl` 依赖远端 `distill_work/` 才能 hydrate，干净 clone 上
+  4 项范文相关测试失败；对照实验也因算力舱离线未跑。
+
+### 本版
+- 新增可入库种子 `examples/football/ket_qua_mentor_bt.jsonl`（6 篇）：
+  来自导师判可发/小改后的 E5 评测稿（自有生成内容，非 WanJuan），
+  并套用导师改句（`đón tiếp`、相对时间、`quân bình`/`lội ngược dòng`/
+  `ấn định thắng lợi` 等）；**不**套用会编造过程的改句（如「tạo nhiều cơ hội」）。
+- `THEME_MAP` 优先读 `ket_qua_mentor_bt`，WanJuan 的 `ket_qua_reviewed` 仍保留
+  为可选第二源。
+- 干净 clone 上 `use_examples=True, allow_unreviewed=False` 可注入确认范文。
+
+### 仍待远端恢复后
+- hydrate WanJuan 17 条赛果确认范文；赛前候选过 Qwen 后再交导师。
+- 目标 API 上跑纯范文对照（0 条 vs 1–2 条，`--repeat 3`）。
+
+---
 ## v1.5.1 (2026-10-13) — 修复 regression_check 崩溃
 
 ### 崩溃修复(P0)
