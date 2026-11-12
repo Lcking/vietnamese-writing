@@ -108,7 +108,21 @@ EXCLUDE_SPORT_RE = re.compile(
 FU_COUNT = 0  # futsal 由用户单独决定:暂按"不收录"
 
 # ---- 其他类别 ----
-PRE_RE = re.compile(r"nhận định|trước trận|đội hình dự kiến|lực lượng|đối đầu", re.I)
+# 赛前前瞻:必须同时满足"前瞻强信号 + 无赛果强信号"。
+# 原 PRE_RE 里的 `lực lượng`(阵容/兵力)、`đối đầu`(交锋) 在赛后新闻、
+# 转会、场外花絮里极其常见,是误判主因(导师确认通过率仅 12%)。
+PRE_STRONG_RE = re.compile(
+    r"nhận định|trước trận|đội hình dự kiến|dự đoán|soi kèo trước|"
+    r"chuẩn bị cho trận|sẵn sàng cho trận|họp báo trước trận|"
+    r"lực lượng trước trận|phong độ trước trận|tiền vệ.*đối đầu", re.I)
+# 赛前弱信号:单独出现不足以判为赛前
+PRE_WEAK_RE = re.compile(r"lực lượng|đối đầu|phong độ|chấn thương|treo giò", re.I)
+# 赛果强信号:出现则不是赛前
+POST_STRONG_RE = re.compile(
+    r"\d+\s*-\s*\d+.*(?:kết thúc|chung cuộc|thắng|thua|hòa)|"
+    r"(?:thắng|thua|hòa|đánh bại|hạ)\s+\d+\s*-\s*\d+|"
+    r"phút\s+\d+.*(?:ghi bàn|rút ngắn|gỡ hòa|nâng tỷ số)", re.I)
+
 TRANSFER_RE = re.compile(r"chuyển nhượng|chiêu mộ|ký hợp đồng|gia nhập", re.I)
 PROFILE_RE = re.compile(r"chân dung|sự nghiệp|tiểu sử", re.I)
 BET_RE = re.compile(r"soi kèo|tỷ lệ kèo|tài xỉu|kèo châu Á|nhà cái", re.I)
@@ -154,7 +168,10 @@ def classify(t):
     tags = []
     if is_ket_qua(t):
         tags.append("ket_qua")
-    if PRE_RE.search(t):
+    # 赛前前瞻:强信号必须命中,且全文不能是赛果报道。
+    # 弱信号(lực lượng/đối đầu/phong độ)单独不算——它们遍地都是。
+    if PRE_STRONG_RE.search(t) and not POST_STRONG_RE.search(t) \
+            and not is_ket_qua(t):
         tags.append("truoc_tran")
     if TRANSFER_RE.search(t):
         tags.append("chuyen_nhuong")

@@ -43,6 +43,11 @@ PROMPTS = ROOT / "prompts"
 # 所有可用体裁(显式指定时校验)
 GENRES = ["van_hoc", "bao_chi", "bach_khoa", "cong_van",
           "mang_xa_hoi", "doi_song", "chuyen_mon", "lich_su",
+          # 20 个通用子体裁(来自 WanJuan 蒸馏,见 GENERIC_MAP)
+          "van_hoa_phong_tuc", "nghe_thuat", "ton_giao", "giai_tri",
+          "am_thuc", "du_lich", "cong_viec", "dia_ly", "di_san",
+          "quan_su", "the_che", "y_te", "tai_chinh", "cong_nghe",
+          "hoc_thuat", "phap_luat", "giao_duc",
           "football_thuat_ngu", "football_binh_luan", "football_tin_tuc",
           "football_chuyen_nhuong", "football_doi_tuyen", "football_nhan_vat",
           "football_pre_match", "football_analysis", "social_post",
@@ -63,6 +68,13 @@ CARD_MAP = {
     "football_pre_match": "nhan_dinh_truoc_tran.md",
     "social_post": "social_post.md",
 }
+# 通用子体裁:卡文件名即体裁名(由 bin/extract_generic_cards.py 从范文提炼)
+for _g in ("van_hoc", "van_hoa_phong_tuc", "nghe_thuat", "ton_giao",
+           "doi_song", "giai_tri", "am_thuc", "du_lich", "cong_viec",
+           "lich_su", "dia_ly", "di_san", "quan_su", "the_che",
+           "y_te", "tai_chinh", "cong_nghe", "hoc_thuat", "phap_luat",
+           "giao_duc"):
+    CARD_MAP.setdefault(_g, f"{_g}.md")
 
 # 新增体裁对应的 reference 文件(有些新体裁复用已有规范文件)
 GENRE_FILE = {
@@ -117,16 +129,37 @@ FOOTBALL_HINTS = ["bóng đá", "bình luận", "trận đấu", "cầu thủ", 
                   "足球", "解说", "比赛", "球队", "世界杯", "转会", "赛前", "前瞻",
                   "签约", "加盟", "前锋"]
 
-# 通用体裁 → 蒸馏范文文件(examples/generic/{cat}_top.jsonl)
+# 通用体裁 → 蒸馏范文文件(examples/generic/{genre}.jsonl)
+# 20 个子体裁各 500 条,来自 WanJuan 蒸馏(bin/build_generic_examples.py 生成)。
+# type_reviewed=False:模型打分选的,未经人工确认,分数只能排序不能证明质量。
 GENERIC_MAP = {
-    "van_hoc": "culture_top.jsonl",
-    "bach_khoa": "encyclopedia_top.jsonl",
-    "doi_song": "general_top.jsonl",
-    "lich_su": "history_policy_top.jsonl",
-    "bao_chi": "news_top.jsonl",
-    "chuyen_mon": "professional_field_top.jsonl",
-    "cong_van": "history_policy_top.jsonl",   # 公文与政策文近亲,复用
-    "mang_xa_hoi": "general_top.jsonl",        # 社交帖短文本,先用 general 池兜底
+    # 原有 8 个体裁(保持兼容),改指向最贴近的细分池
+    "van_hoc": "van_hoc.jsonl",
+    "bach_khoa": "hoc_thuat.jsonl",          # 原指 encyclopedia(不存在),改用学术池
+    "doi_song": "doi_song.jsonl",
+    "lich_su": "lich_su.jsonl",
+    "bao_chi": "the_che.jsonl",              # 原指 news(不存在),改用制度/时政池
+    "chuyen_mon": "hoc_thuat.jsonl",
+    "cong_van": "phap_luat.jsonl",           # 公文与法律文书近亲
+    "mang_xa_hoi": "doi_song.jsonl",         # 社交短帖先用生活池兜底
+    # 20 个子体裁细分入口
+    "van_hoa_phong_tuc": "van_hoa_phong_tuc.jsonl",
+    "nghe_thuat": "nghe_thuat.jsonl",
+    "ton_giao": "ton_giao.jsonl",
+    "giai_tri": "giai_tri.jsonl",
+    "am_thuc": "am_thuc.jsonl",
+    "du_lich": "du_lich.jsonl",
+    "cong_viec": "cong_viec.jsonl",
+    "dia_ly": "dia_ly.jsonl",
+    "di_san": "di_san.jsonl",
+    "quan_su": "quan_su.jsonl",
+    "the_che": "the_che.jsonl",
+    "y_te": "y_te.jsonl",
+    "tai_chinh": "tai_chinh.jsonl",
+    "cong_nghe": "cong_nghe.jsonl",
+    "hoc_thuat": "hoc_thuat.jsonl",
+    "phap_luat": "phap_luat.jsonl",
+    "giao_duc": "giao_duc.jsonl",
 }
 
 # 各足球体裁对应的范文主题(可多个)
@@ -222,9 +255,18 @@ def pick_examples(genre, budget=None, post_type=None, max_n=None,
     import datetime
     cutoff_year = datetime.date.today().year - max_age_years
 
-    # 通用体裁:读蒸馏范文池(单文件);足球体裁:读 THEME_MAP 多文件
+    # 通用体裁:优先入库的种子子集(*_seed.jsonl,干净 clone 可用),
+    # 其次本地全量池(23MB,不入库)。足球体裁:读 THEME_MAP 多文件。
     if genre in GENERIC_MAP:
-        sources = [EXAMPLES / "generic" / GENERIC_MAP[genre]]
+        _base = EXAMPLES / "generic"
+        _seed = _base / GENERIC_MAP[genre].replace(".jsonl", "_seed.jsonl")
+        _full = _base / GENERIC_MAP[genre]
+        if _seed.exists():
+            sources = [_seed]
+        elif _full.exists():
+            sources = [_full]
+        else:
+            sources = [_seed]   # 两者都缺:报缺失(下面会记 sources_missing)
     else:
         sources = [EXAMPLES / "football" / f"{d}.jsonl" for d in THEME_MAP.get(genre, [])]
 
@@ -331,6 +373,13 @@ def build_prompt(genre=None, budget=None, examples=True, format_contract=None,
                  "truncations", "format_contract" }
     """
     # 决定 profile(显式 profile > model_tier > 体裁默认)
+    # 显式给了 genre 却不在 GENRES 里 → 直接报错。否则拼错体裁名会静默
+    # 退化成"只有核心提示",用户以为用了特定体裁,实际拿到通用输出。
+    if genre is not None and genre not in GENRES:
+        raise ValueError(
+            f"未知体裁: {genre!r}。可用体裁见 viet_writer.GENRES"
+            f"(共 {len(GENRES)} 个);拼写错误不会被静默忽略。"
+        )
     tier = MODEL_TIERS.get(model_tier) if model_tier else None
     if profile is None:
         if tier:

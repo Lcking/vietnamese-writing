@@ -100,19 +100,24 @@ def main(argv=None):
 
 
         for rep in range(args.repeat):
-            for arm, allow_unrev in (("A_no_examples", False), ("B_with_examples", True)):
+            # A 组:不放范文。B 组:放范文,且严格只放人工确认过的(type_reviewed=True)。
+            # 用独立开关 use_examples 控制范文,allow_unreviewed 保持 False,
+            # 这样 B 组注入的一定是导师确认过的范文,而不是旧池子里误标的稿子。
+            for arm, use_ex in (("A_no_examples", False), ("B_with_examples", args.use_examples)):
                 gen_kw = dict(temperature=args.temperature, max_tokens=args.max_tokens)
                 text = vw.write(
                     client, task, genre=genre, facts=facts,
                     profile="full",                 # 同档位
                     model_tier=TIER,                # 真正传给 write
-                    allow_unreviewed=allow_unrev,
+                    use_examples=use_ex,
+                    allow_unreviewed=args.allow_unreviewed,
                     gen_kw=gen_kw,
                 )
                 meta = getattr(vw.write, "last_meta", {}) or {}
                 # 取系统提示字符数 + 范文元数据
                 p = vw.build_prompt(genre, profile="full", model_tier=TIER,
-                                    allow_unreviewed=allow_unrev)
+                                    use_examples=use_ex,
+                                    allow_unreviewed=args.allow_unreviewed)
                 try:
                     issues = style_check(text, facts, task)
                 except Exception:
@@ -130,6 +135,12 @@ def main(argv=None):
                 })
                 print(f"  {cid} rep{rep} {arm}: sys={len(p['system'])} "
                       f"范文{p['stats'].get('n_examples',0)}条 阻断={results[-1]['blocking']}")
+                # 运行时断言:B 组必须真的注入了范文。预检只查第一例,
+                # 若生成路径漏传 use_examples,预检会过而实际为 0(曾发生过)。
+                if arm == "B_with_examples" and p["stats"].get("n_examples", 0) == 0:
+                    print(f"ERROR: {cid} B 组实际注入范文为 0——生成路径未生效,实验无效。",
+                          file=sys.stderr)
+                    return 2
 
     (outdir / "results.json").write_text(
         json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -146,12 +157,21 @@ def main(argv=None):
     if args.allow_unreviewed:
         lines += ["> ⚠⚠ **范文未经人工确认,本次结果无效。** "
                   "本报告仅用于调试,不得据以判定范文是否有用。", ""]
+    # 确认状态按实际注入的范文判定,不能无条件写"未确认"
+    _b_metas = [m for r in b for m in (r.get("examples") or [])]
+    _n_unrev = sum(1 for m in _b_metas if not m.get("type_reviewed"))
+    if _b_metas and _n_unrev == 0:
+        _conf = f"- ✓ 全部 {len(_b_metas)} 条范文均为**人工确认**(type_reviewed=True)"
+    elif _b_metas:
+        _conf = f"- ⚠ {_n_unrev}/{len(_b_metas)} 条范文**未经人工确认**,结论仅作参考"
+    else:
+        _conf = "- ⚠ B 组未注入任何范文,实验对照无效"
     lines += [
              f"- 档位: {TIER}(两组相同)",
              f"- 用例: {len(set(r['case'] for r in a))} 个 × 2 组 × {args.repeat} 次",
              f"- A 组范文: {a_ex} 条 (article_type={a_types})",
              f"- B 组范文: {b_ex} 条 (article_type={b_types})",
-             "- ⚠ 范文均**未经人工确认**(type_reviewed=False),结论仅作参考",
+             _conf,
              "",
              "| 指标 | A 组(0 条范文) | B 组(注入范文) |",
              "|---|---|---|",

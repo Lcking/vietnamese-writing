@@ -49,3 +49,8 @@ human_eval/review_ket_qua_50.csv
 # 导师确认范文池(含语料正文,版权原因不入库;由脚本可复现)
 references/examples_football/
 examples/football/*_reviewed.jsonl
+
+# 通用体裁全量池(23MB,含语料正文)本地保留不入库;
+# 入库的是精简种子 *_seed.jsonl(每体裁 top50,1.8MB),见 bin/build_generic_examples.py
+examples/generic/*.jsonl
+!examples/generic/*_seed.jsonl
