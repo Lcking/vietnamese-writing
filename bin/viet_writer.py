@@ -126,6 +126,7 @@ FOOTBALL_HINTS = ["bóng đá", "bình luận", "trận đấu", "cầu thủ", 
                   "sea games", "ghi bàn", "thủ môn", "vòng loại", "penalty",
                   "tỷ số", "kết quả", "tiền đạo", "hậu vệ", "tiền vệ", "clb",
                   "câu lạc bộ", "giải bóng", "cúp", "sân vận động",
+                  "bản tin trận", "trận đấu", "trận ", "huấn luyện viên",
                   "足球", "解说", "比赛", "球队", "世界杯", "转会", "赛前", "前瞻",
                   "签约", "加盟", "前锋"]
 
@@ -350,7 +351,56 @@ def detect_genre(task):
         return "football_binh_luan"   # 默认足球 = 解说
     if any(k in t for k in ["mạng xã hội", "facebook", "status", "社交"]):
         return "social_post"
+    # 通用体裁自动路由:按关键词命中数打分,取最高分(同分按顺序优先)。
+    # 只在 --genre 未指定时作为回退;用户显式指定永远优先。
+    best, best_score = None, 0
+    for genre, kws in GENERIC_ROUTE:
+        score = sum(1 for k in kws if k in t)
+        if score > best_score:
+            best, best_score = genre, score
+    if best:
+        return best
     return None    # 无体裁:走最小通用规则
+
+
+# 通用体裁路由关键词(越南语 + 中文,小写匹配)
+GENERIC_ROUTE = [
+    ("am_thuc", ["ẩm thực", "món ăn", "phở", "bún", "đặc sản", "nấu ăn",
+                 "nhà hàng", "美食", "菜", "小吃"]),
+    ("du_lich", ["du lịch", "điểm đến", "tour", "khách sạn", "resort",
+                 "旅游", "景点", "行程"]),
+    ("tai_chinh", ["lãi suất", "chứng khoán", "đầu tư", "ngân hàng", "tài chính",
+                   "giá vàng", "lạm phát", "财经", "股票", "利率", "投资"]),
+    ("cong_nghe", ["công nghệ", "trí tuệ nhân tạo", "ai ", "smartphone",
+                   "phần mềm", "internet", "科技", "人工智能", "手机"]),
+    ("y_te", ["sức khỏe", "y tế", "bệnh", "thuốc", "bác sĩ", "tiêm chủng",
+              "dinh dưỡng", "医疗", "健康", "疾病"]),
+    ("giao_duc", ["giáo dục", "trường học", "học sinh", "sinh viên", "tuyển sinh",
+                  "dạy học", "教育", "学校", "学生"]),
+    ("phap_luat", ["pháp luật", "luật", "quy định", "nghị định", "hợp đồng",
+                   "tòa án", "法律", "法规", "合同"]),
+    ("lich_su", ["lịch sử", "triều đại", "kháng chiến", "năm 19", "chiến thắng",
+                 "trận đánh", "vua", "历史", "朝代", "战役"]),
+    ("dia_ly", ["địa lý", "sông", "núi", "tỉnh", "vùng", "khí hậu", "地理", "地形"]),
+    ("di_san", ["di sản", "nhã nhạc", "cổ vật", "di tích", "文化遗产", "遗迹"]),
+    ("ton_giao", ["tôn giáo", "chùa", "đền", "nhà thờ", "tín ngưỡng", "宗教", "寺庙"]),
+    ("van_hoa_phong_tuc", ["phong tục", "tập quán", "lễ hội", "tết", "cúng",
+                           "风俗", "习俗", "节庆"]),
+    ("nghe_thuat", ["nghệ thuật", "hội họa", "âm nhạc", "điện ảnh", "triển lãm",
+                    "艺术", "绘画", "电影"]),
+    ("giai_tri", ["giải trí", "phim", "ca sĩ", "showbiz", "ngôi sao",
+                  "娱乐", "明星"]),
+    ("quan_su", ["quân sự", "quốc phòng", "tác chiến", "vũ khí", "军事", "国防"]),
+    ("the_che", ["chính sách", "cải cách", "hành chính", "thể chế", "政策", "制度"]),
+    ("cong_viec", ["việc làm", "nghề nghiệp", "kỹ năng", "tuyển dụng",
+                   "职场", "职业", "招聘"]),
+    ("hoc_thuat", ["nghiên cứu", "học thuật", "luận văn", "khoa học",
+                   "学术", "研究", "论文"]),
+    ("doi_song", ["đời sống", "xã hội", "người trẻ", "gia đình",
+                  "生活", "社会", "家庭"]),
+    ("van_hoc", ["truyện", "tiểu thuyết", "nhà văn", "thơ", "văn học",
+                 "小说", "故事", "文学"]),
+]
 
 
 # 体裁 → 默认 article_type(用于范文匹配)
@@ -580,6 +630,14 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
     kw = dict(gen_kw or {})
     result = client.chat(prompt["system"], user, **kw)
     text = result.text if hasattr(result, "text") else str(result)
+    # 生成后立即规范化:清掉首行标题外层的 ** / # 与首尾空白。
+    # 不调模型,纯字符串处理。否则用户拿到的正文带 markdown 标记
+    # (S11 在 check_style 里能拦,但 write() 此前从不经过它)。
+    try:
+        from check_style import normalize_output
+        text = normalize_output(text)
+    except Exception:
+        pass
     first_draft = text
     revise_issues = []
 
@@ -606,6 +664,12 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
         except Exception as e:
             print(f"[revise] 修订失败: {e}", file=sys.stderr)
 
+    # 最终自检:汉字残留是硬错误(越南语正文里不该出现汉字)。
+    # 不静默返回——标记在 meta 里,让调用方决定是否重生成。
+    # 实测 20 个通用体裁里有 1 篇混入中文词(布满),说明这层必要。
+    import re as _re
+    _han = _re.findall(r"[\u4e00-\u9fff]+", text)
+
     setattr(write, "last_meta", {
         "genre": prompt["genre"],
         "finish_reason": getattr(result, "finish_reason", None),
@@ -615,6 +679,8 @@ def write(client, task, genre=None, extra="", format_contract=None, gen_kw=None,
         "first_draft": first_draft if revise else None,
         "revise_issues": revise_issues,
         "revise_after": revise_after,
+        "han_residue": _han,          # 非空 = 正文混入汉字,建议重生成
+        "han_clean": not _han,
     })
     return text
 
